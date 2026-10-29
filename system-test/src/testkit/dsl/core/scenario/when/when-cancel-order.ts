@@ -1,0 +1,28 @@
+import { DEFAULTS } from '../defaults.js';
+import type { UseCaseContext } from '../../shared/use-case-context.js';
+import type { AppContext } from '../app-context.js';
+import type { ScenarioContext } from '../scenario-context.js';
+import { ThenCancelOrderResultStage } from '../then/then-cancel-order.js';
+import { assertNotAwaited } from '../assert-not-awaited.js';
+
+export class WhenCancelOrder {
+  private orderNumber: string = DEFAULTS.ORDER_NUMBER;
+
+  constructor(
+    private readonly app: AppContext,
+    private readonly ctx: ScenarioContext,
+    private readonly useCaseContext: UseCaseContext,
+  ) {}
+
+  withOrderNumber(orderNumber: string): this {
+    this.orderNumber = orderNumber;
+    return this;
+  }
+
+  then(): ThenCancelOrderResultStage;
+  then(...args: unknown[]): ThenCancelOrderResultStage {
+    assertNotAwaited(args);
+    this.ctx.markExecuted();
+    return new ThenCancelOrderResultStage(this.app, this.ctx, this.useCaseContext, this.orderNumber);
+  }
+}

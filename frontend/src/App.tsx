@@ -1,0 +1,46 @@
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { ErrorBoundary } from './components';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { useNotificationContext } from './contexts/useNotificationContext';
+import { RequireAdmin } from './auth/RequireAdmin';
+import { RequireCanPlaceOrder } from './auth/RequireCanPlaceOrder';
+import { Home, NewOrder, OrderHistory, OrderDetails, AdminCoupons } from './pages';
+
+/**
+ * Component that clears notifications on route change
+ */
+function RouteChangeHandler() {
+  const location = useLocation();
+  const { clearNotification } = useNotificationContext();
+
+  useEffect(() => {
+    clearNotification();
+  }, [location.pathname, clearNotification]);
+
+  return null;
+}
+
+/**
+ * Main application component with routing configuration
+ * Wrapped in ErrorBoundary for graceful error handling
+ * NotificationProvider provides global notification state
+ */
+export function App() {
+  return (
+    <ErrorBoundary>
+      <NotificationProvider>
+        <BrowserRouter>
+          <RouteChangeHandler />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/new-order" element={<RequireCanPlaceOrder><NewOrder /></RequireCanPlaceOrder>} />
+            <Route path="/order-history" element={<OrderHistory />} />
+            <Route path="/order-details/:orderNumber" element={<OrderDetails />} />
+            <Route path="/admin-coupons" element={<RequireAdmin><AdminCoupons /></RequireAdmin>} />
+          </Routes>
+        </BrowserRouter>
+      </NotificationProvider>
+    </ErrorBoundary>
+  );
+}

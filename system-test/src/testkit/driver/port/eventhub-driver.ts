@@ -1,0 +1,33 @@
+import type { Result } from '../../common/result.js';
+import type { AsyncCloseable } from './async-closeable.js';
+import type { GoToEventhubRequest } from './dtos/GoToEventhubRequest.js';
+import type { GoToEventhubResponse } from './dtos/GoToEventhubResponse.js';
+import type { PlaceOrderRequest } from './dtos/PlaceOrderRequest.js';
+import type { PlaceOrderResponse } from './dtos/PlaceOrderResponse.js';
+import type { CancelOrderRequest } from './dtos/CancelOrderRequest.js';
+import type { CancelOrderResponse } from './dtos/CancelOrderResponse.js';
+import type { DeliverOrderRequest } from './dtos/DeliverOrderRequest.js';
+import type { DeliverOrderResponse } from './dtos/DeliverOrderResponse.js';
+import type { ViewOrderRequest } from './dtos/ViewOrderRequest.js';
+import type { ViewOrderResponse } from './dtos/ViewOrderResponse.js';
+import type { SystemError } from './dtos/errors/SystemError.js';
+import type { BrowseOrderHistoryRequest } from './dtos/BrowseOrderHistoryRequest.js';
+import type { BrowseOrderHistoryResponse } from './dtos/BrowseOrderHistoryResponse.js';
+import type { UserIdentity } from './user-identity.js';
+import type { PublishCouponRequest } from './dtos/PublishCouponRequest.js';
+import type { PublishCouponResponse } from './dtos/PublishCouponResponse.js';
+import type { BrowseCouponsRequest } from './dtos/BrowseCouponsRequest.js';
+import type { BrowseCouponsResponse } from './dtos/BrowseCouponsResponse.js';
+
+export interface EventhubDriver extends AsyncCloseable {
+  /** Selects who subsequent operations are performed as. */
+  actAs(identity: UserIdentity): void;
+  goToEventhub(request: GoToEventhubRequest): Promise<Result<GoToEventhubResponse, SystemError>>;
+  placeOrder(request: PlaceOrderRequest): Promise<Result<PlaceOrderResponse, SystemError>>;
+  cancelOrder(request: CancelOrderRequest): Promise<Result<CancelOrderResponse, SystemError>>;
+  deliverOrder(request: DeliverOrderRequest): Promise<Result<DeliverOrderResponse, SystemError>>;
+  viewOrder(request: ViewOrderRequest): Promise<Result<ViewOrderResponse, SystemError>>;
+  browseOrderHistory(request: BrowseOrderHistoryRequest): Promise<Result<BrowseOrderHistoryResponse, SystemError>>;
+  publishCoupon(request: PublishCouponRequest): Promise<Result<PublishCouponResponse, SystemError>>;
+  browseCoupons(request: BrowseCouponsRequest): Promise<Result<BrowseCouponsResponse, SystemError>>;
+}

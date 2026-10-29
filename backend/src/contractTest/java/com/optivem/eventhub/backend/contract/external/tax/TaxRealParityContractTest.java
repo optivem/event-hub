@@ -1,0 +1,34 @@
+package com.optivem.eventhub.backend.contract.external.tax;
+
+import com.optivem.eventhub.backend.contract.external.ExternalSystemReal;
+import com.optivem.eventhub.backend.core.services.external.TaxGateway;
+import com.optivem.eventhub.backend.testkit.driver.adapter.external.tax.client.TaxRealClient;
+
+/**
+ * The {@code Real} side of the tax country contract: same two scenarios as
+ * {@link TaxStubParityContractTest}, run against the actual tax simulator instead of a WireMock
+ * stand-in. Closes the gap where {@code TaxStubDriver} was consumability-checked (its JSON parses
+ * through the production gateway) but never held against the real system, so a field rename on the
+ * tax side would have gone unnoticed until a deployed-system test caught it.
+ *
+ * <p>The simulator comes from {@link ExternalSystemReal} — see there for how it is started and
+ * how to point this at an already-running instance instead.
+ */
+class TaxRealParityContractTest extends BaseTaxCountryParityContractTest {
+
+    private static final String BASE_URL = ExternalSystemReal.baseUrl("/tax");
+
+    private final TaxRealClient client = new TaxRealClient(BASE_URL);
+
+    private final TaxGateway taxGateway = new TaxGateway(BASE_URL);
+
+    @Override
+    protected void arrangeCountry(String code, String taxRate) {
+        client.createCountry(code, taxRate);
+    }
+
+    @Override
+    protected TaxGateway taxGateway() {
+        return taxGateway;
+    }
+}

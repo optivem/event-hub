@@ -1,0 +1,949 @@
+{
+  "consumer": {
+    "name": "frontend"
+  },
+  "interactions": [
+    {
+      "description": "a browse-coupons request",
+      "providerStates": [
+        {
+          "name": "at least one coupon exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/coupons"
+      },
+      "response": {
+        "body": {
+          "coupons": [
+            {
+              "code": "SAVE10",
+              "discountRate": 0.2,
+              "usageLimit": 100,
+              "usedCount": 0
+            }
+          ]
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.coupons": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ]
+            },
+            "$.coupons[*].code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.coupons[*].discountRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.coupons[*].usageLimit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.coupons[*].usedCount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a browse-order-history request",
+      "providerStates": [
+        {
+          "name": "at least one order exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "orders": [
+            {
+              "appliedCouponCode": null,
+              "country": "US",
+              "orderNumber": "ORD-1",
+              "orderTimestamp": "2026-03-10T12:00:00Z",
+              "quantity": 2,
+              "sku": "BOOK-123",
+              "status": "PLACED",
+              "totalPrice": 22
+            }
+          ]
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.orders": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ]
+            },
+            "$.orders[*].country": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.orders[*].orderNumber": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.orders[*].orderTimestamp": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.orders[*].quantity": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.orders[*].sku": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.orders[*].status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.orders[*].totalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a place-order request during the blackout",
+      "providerStates": [
+        {
+          "name": "order placement is blocked by the New Year blackout"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "US",
+          "quantity": 2,
+          "sku": "BOOK-123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "detail": "Orders cannot be placed on December 31",
+          "status": 422
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.detail": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 422
+      }
+    },
+    {
+      "description": "a place-order request for BOOK-123 qty 2 from US",
+      "providerStates": [
+        {
+          "name": "product BOOK-123 exists and US is taxable"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "US",
+          "quantity": 2,
+          "sku": "BOOK-123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "orderNumber": "ORD-1"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.orderNumber": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a place-order request for BOOK-123 qty 2 from US with coupon SAVE10",
+      "providerStates": [
+        {
+          "name": "product BOOK-123 exists and US is taxable"
+        },
+        {
+          "name": "coupon SAVE10 exists"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "US",
+          "couponCode": "SAVE10",
+          "quantity": 2,
+          "sku": "BOOK-123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "orderNumber": "ORD-1"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.orderNumber": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a place-order request for the unknown SKU NON-EXISTENT-SKU-12345",
+      "providerStates": [
+        {
+          "name": "product NON-EXISTENT-SKU-12345 does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "US",
+          "quantity": 2,
+          "sku": "NON-EXISTENT-SKU-12345"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "detail": "The request contains one or more validation errors",
+          "errors": [
+            {
+              "field": "sku",
+              "message": "Product does not exist for SKU: NON-EXISTENT-SKU-12345"
+            }
+          ],
+          "status": 422
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "status": 422
+      }
+    },
+    {
+      "description": "a place-order request from the untaxed country XX",
+      "providerStates": [
+        {
+          "name": "product BOOK-123 exists and XX is not taxable"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "XX",
+          "quantity": 2,
+          "sku": "BOOK-123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "detail": "The request contains one or more validation errors",
+          "errors": [
+            {
+              "field": "country",
+              "message": "Country does not exist: XX"
+            }
+          ],
+          "status": 422
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "status": 422
+      }
+    },
+    {
+      "description": "a place-order request with the unknown coupon INVALIDCOUPON",
+      "providerStates": [
+        {
+          "name": "coupon INVALIDCOUPON does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "country": "US",
+          "couponCode": "INVALIDCOUPON",
+          "quantity": 2,
+          "sku": "BOOK-123"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "response": {
+        "body": {
+          "detail": "The request contains one or more validation errors",
+          "errors": [
+            {
+              "field": "couponCode",
+              "message": "Coupon code INVALIDCOUPON does not exist"
+            }
+          ],
+          "status": 422
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "status": 422
+      }
+    },
+    {
+      "description": "a publish-coupon request for SAVE10",
+      "providerStates": [
+        {
+          "name": "no coupon SAVE10 exists yet"
+        }
+      ],
+      "request": {
+        "body": {
+          "code": "SAVE10",
+          "discountRate": 0.2
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api/coupons"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "a view-order-details request for ORD-1 (cancelled)",
+      "providerStates": [
+        {
+          "name": "order ORD-1 is cancelled"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/orders/ORD-1"
+      },
+      "response": {
+        "body": {
+          "appliedCouponCode": null,
+          "basePrice": 20,
+          "country": "US",
+          "discountAmount": 0,
+          "discountRate": 0,
+          "orderNumber": "ORD-1",
+          "orderTimestamp": "2026-03-10T12:00:00Z",
+          "quantity": 2,
+          "sku": "BOOK-123",
+          "status": "CANCELLED",
+          "subtotalPrice": 20,
+          "taxAmount": 2,
+          "taxRate": 0.1,
+          "totalPrice": 22,
+          "unitPrice": 10
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.basePrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.country": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.discountAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.discountRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.orderTimestamp": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.quantity": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.sku": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.subtotalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.totalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.unitPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a view-order-details request for ORD-1 (delivered)",
+      "providerStates": [
+        {
+          "name": "order ORD-1 is delivered"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/orders/ORD-1"
+      },
+      "response": {
+        "body": {
+          "appliedCouponCode": null,
+          "basePrice": 20,
+          "country": "US",
+          "discountAmount": 0,
+          "discountRate": 0,
+          "orderNumber": "ORD-1",
+          "orderTimestamp": "2026-03-10T12:00:00Z",
+          "quantity": 2,
+          "sku": "BOOK-123",
+          "status": "DELIVERED",
+          "subtotalPrice": 20,
+          "taxAmount": 2,
+          "taxRate": 0.1,
+          "totalPrice": 22,
+          "unitPrice": 10
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.basePrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.country": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.discountAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.discountRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.orderTimestamp": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.quantity": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.sku": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.subtotalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.totalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.unitPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a view-order-details request for ORD-1 (placed)",
+      "providerStates": [
+        {
+          "name": "order ORD-1 is placed"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/orders/ORD-1"
+      },
+      "response": {
+        "body": {
+          "appliedCouponCode": null,
+          "basePrice": 20,
+          "country": "US",
+          "discountAmount": 0,
+          "discountRate": 0,
+          "orderNumber": "ORD-1",
+          "orderTimestamp": "2026-03-10T12:00:00Z",
+          "quantity": 2,
+          "sku": "BOOK-123",
+          "status": "PLACED",
+          "subtotalPrice": 20,
+          "taxAmount": 2,
+          "taxRate": 0.1,
+          "totalPrice": 22,
+          "unitPrice": 10
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.basePrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.country": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.discountAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.discountRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.orderTimestamp": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.quantity": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.sku": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.subtotalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxAmount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.taxRate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.totalPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.unitPrice": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a cancel-order request for ORD-1",
+      "providerStates": [
+        {
+          "name": "order ORD-1 is placed"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/api/orders/ORD-1/cancel"
+      },
+      "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "a cancel-order request for ORD-1 during the blackout",
+      "providerStates": [
+        {
+          "name": "order cancellation is blocked by the New Year blackout"
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "path": "/api/orders/ORD-1/cancel"
+      },
+      "response": {
+        "body": {
+          "detail": "Order cancellation is not allowed on December 31st between 22:00 and 23:00",
+          "status": 422
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "status": 422
+      }
+    },
+    {
+      "description": "a view-order-details request for a missing order",
+      "providerStates": [
+        {
+          "name": "no order UNKNOWN exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/api/orders/UNKNOWN"
+      },
+      "response": {
+        "body": {
+          "detail": "Order not found",
+          "status": 404
+        },
+        "headers": {
+          "Content-Type": "application/problem+json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.detail": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 404
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "13.2.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "backend"
+  }
+}

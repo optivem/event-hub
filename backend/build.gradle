@@ -1,0 +1,197 @@
+plugins {
+	id 'java'
+	id 'checkstyle'
+	id 'jacoco'
+	id 'org.sonarqube' version '7.2.3.7755'
+	id 'org.springframework.boot' version '3.5.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+checkstyle {
+	toolVersion = '10.21.4'
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+// Override Spring Boot's managed Testcontainers version: 1.21.3 fails to talk to Docker Engine
+// 29.x (docker-java returns HTTP 400 on the daemon handshake); 1.21.4 fixes it.
+ext['testcontainers.version'] = '1.21.4'
+
+group = 'com.optivem.eventhub.backend'
+version = '0.0.1-SNAPSHOT'
+description = 'Eventhub - Backend'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+// Opt-in test layers, kept off the default `test`/`build` so the template's build stays fast and Docker-light.
+sourceSets {
+	// Shared stub drivers/DSLs (support/), consumed by every opt-in test layer. Its own source set
+	// so contract/integration tests depend only on the helpers, not on the whole componentTest suite.
+	testSupport {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+	componentTest {
+		compileClasspath += sourceSets.main.output + sourceSets.testSupport.output
+		runtimeClasspath += sourceSets.main.output + sourceSets.testSupport.output
+	}
+	contractTest {
+		// componentTest.output because the Pact verifier reuses BaseComponentTest's harness.
+		compileClasspath += sourceSets.componentTest.output + sourceSets.testSupport.output + sourceSets.main.output
+		runtimeClasspath += sourceSets.componentTest.output + sourceSets.testSupport.output + sourceSets.main.output
+	}
+	integrationTest {
+		// testSupport.output so integration `latest/` tests can import the shared stub DSL in support/.
+		compileClasspath += sourceSets.main.output + sourceSets.testSupport.output
+		runtimeClasspath += sourceSets.main.output + sourceSets.testSupport.output
+	}
+}
+
+configurations {
+	testSupportImplementation.extendsFrom testImplementation
+	testSupportRuntimeOnly.extendsFrom testRuntimeOnly
+	componentTestImplementation.extendsFrom testSupportImplementation
+	componentTestRuntimeOnly.extendsFrom testSupportRuntimeOnly
+	contractTestImplementation.extendsFrom componentTestImplementation
+	contractTestRuntimeOnly.extendsFrom componentTestRuntimeOnly
+	integrationTestImplementation.extendsFrom testSupportImplementation
+	integrationTestRuntimeOnly.extendsFrom testSupportRuntimeOnly
+}
+
+repositories {
+	mavenCentral()
+	// Fallback mirror in case Maven Central has a transient outage (502/503).
+	maven { url 'https://maven-central.storage-download.googleapis.com/maven2/' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+	runtimeOnly 'org.postgresql:postgresql'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.flywaydb:flyway-core'
+	testImplementation 'org.flywaydb:flyway-database-postgresql'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Shared stub helpers (support/) need WireMock; declared once here and inherited by the
+	// component, contract, and integration layers via the testSupportImplementation extendsFrom chain.
+	testSupportImplementation 'org.wiremock:wiremock-standalone:3.9.2'
+
+	// Pact contract layer only (inherits the testSupport + test deps above).
+	componentTestImplementation 'au.com.dius.pact.provider:junit5spring:4.6.14'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+tasks.withType(Test).configureEach {
+	// Default Gradle mechanisms so test names + counts show in the console
+	// (Gradle is otherwise silent on success). Applies to test + componentTest.
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+		exceptionFormat 'full'
+	}
+	afterSuite { desc, result ->
+		if (desc.parent == null) {  // root suite only
+			println "Test results: ${result.testCount} tests, " +
+				"${result.successfulTestCount} passed, " +
+				"${result.failedTestCount} failed, ${result.skippedTestCount} skipped"
+		}
+	}
+}
+
+tasks.register('componentTest', Test) {
+	description = 'Runs in-process component tests (requires Docker). Opt-in; not part of `build`.'
+	group = 'verification'
+	testClassesDirs = sourceSets.componentTest.output.classesDirs
+	classpath = sourceSets.componentTest.runtimeClasspath
+	useJUnitPlatform()
+	shouldRunAfter tasks.named('test')
+}
+
+tasks.register('contractTest', Test) {
+	description = 'Runs Pact provider-verification contract tests (requires Docker). Opt-in; not part of `build`.'
+	group = 'verification'
+	testClassesDirs = sourceSets.contractTest.output.classesDirs
+	classpath = sourceSets.contractTest.runtimeClasspath
+	useJUnitPlatform()
+	shouldRunAfter tasks.named('componentTest')
+}
+
+tasks.register('integrationTest', Test) {
+	description = 'Runs narrow-integration tests against real Postgres via Testcontainers (requires Docker). Opt-in; not part of `build`.'
+	group = 'verification'
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+	useJUnitPlatform()
+	shouldRunAfter tasks.named('test')
+}
+
+// Builds the external-system simulator image that the `*RealParityContractTest` classes run via
+// Testcontainers. Kept a plain `docker build` rather than Testcontainers' ImageFromDockerfile
+// because the simulator's Dockerfile uses BuildKit-only syntax (`RUN --mount=type=cache`) and
+// ImageFromDockerfile drives docker-java's classic builder, which rejects it. Deliberately NOT a
+// dependsOn of `contractTest`: the other contract suites (provider-verification, external-contract)
+// don't need the image and shouldn't pay for the build — the `external-contract-real` suite in
+// component-tests.yaml names this task explicitly alongside `contractTest`.
+tasks.register('externalSimulatorImage', Exec) {
+	description = 'Builds the external-system simulator Docker image used by the real-mode parity contract tests.'
+	group = 'verification'
+	// Depth-coupled to gh-optivem's scaffolder: the "../../.." here is shop's own
+	// monorepo depth (system/multitier/backend-java -> shop root). gh-optivem's
+	// simulatorContextPathReplacements rewrites this literal to "..", matching the
+	// scaffold's flattened backend/ layout. If this depth changes, mirror the
+	// rewrite in gh-optivem's internal/scaffolding/steps/apply_template.go.
+	workingDir = file("${rootDir}/..")
+	commandLine 'docker', 'build', '-t', 'eventhub/external-system-simulators:contract-test', 'external-systems/simulators'
+	environment 'DOCKER_BUILDKIT', '1'
+}
+
+// Lints every source set, including the opt-in ones kept off `build`. CI calls this instead of
+// naming individual checkstyle tasks, so a new source set is linted the moment it is added —
+// scaffolded projects run the full `check`, and anything shop skips here fails downstream instead.
+tasks.register('checkstyleAll') {
+	description = 'Runs checkstyle on all source sets (main, test, and the opt-in test layers).'
+	group = 'verification'
+	dependsOn tasks.withType(Checkstyle)
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+	}
+}
+
+sonar {
+	properties {
+		property 'sonar.projectKey', 'optivem_event-hub-backend'
+		property 'sonar.projectName', 'event-hub-backend'
+		property 'sonar.organization', 'optivem'
+		property 'sonar.coverage.jacoco.xmlReportPaths', "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		property 'sonar.issue.ignore.multicriteria', 'e1,e2'
+		property 'sonar.issue.ignore.multicriteria.e1.ruleKey', 'java:S2699'
+		property 'sonar.issue.ignore.multicriteria.e1.resourceKey', 'src/test/**'
+		property 'sonar.issue.ignore.multicriteria.e2.ruleKey', 'java:S2638'
+		property 'sonar.issue.ignore.multicriteria.e2.resourceKey', '**/*ExceptionHandler*'
+	}
+}

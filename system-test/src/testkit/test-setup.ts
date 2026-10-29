@@ -1,0 +1,73 @@
+import { loadConfiguration, type TestConfig } from '../../config/configuration-loader.js';
+import { ScenarioDsl, AppContext } from './dsl/scenario-dsl.js';
+import type { ChannelMode } from './dsl/scenario-dsl.js';
+import { UseCaseContext } from './dsl/core/shared/use-case-context.js';
+import { EventhubApiDriver } from './driver/adapter/api/eventhub-api-driver.js';
+import { EventhubUiDriver } from './driver/adapter/ui/eventhub-ui-driver.js';
+import { ErpRealDriver } from './driver/adapter/external/erp/erp-real-driver.js';
+import { ErpStubDriver } from './driver/adapter/external/erp/erp-stub-driver.js';
+import { ClockRealDriver } from './driver/adapter/external/clock/clock-real-driver.js';
+import { ClockStubDriver } from './driver/adapter/external/clock/clock-stub-driver.js';
+import { TaxRealDriver } from './driver/adapter/external/tax/tax-real-driver.js';
+import { TaxStubDriver } from './driver/adapter/external/tax/tax-stub-driver.js';
+import type { ErpDriver } from './driver/port/external/erp/erp-driver.js';
+import type { ClockDriver } from './driver/port/external/clock/clock-driver.js';
+import type { TaxDriver } from './driver/port/external/tax/tax-driver.js';
+import type { Browser } from '@playwright/test';
+import { ChannelType, type ChannelTypeValue } from './channel/channel-type.js';
+import { channelModeFromEnv } from './common/env.js';
+import type { ExternalSystemMode } from './dsl/port/external-system-mode.js';
+
+export type Channel = ChannelTypeValue;
+export type { ChannelMode } from './dsl/scenario-dsl.js';
+export type { ExternalSystemMode } from './dsl/port/external-system-mode.js';
+
+export interface ScenarioOptions {
+  channel?: Channel;
+  channelMode?: ChannelMode;
+  externalSystemMode?: ExternalSystemMode;
+  browser?: Browser;
+}
+
+export function createScenario(options: ScenarioOptions = {}): ScenarioDsl {
+  const mode = options.externalSystemMode ?? 'real';
+  const config = loadConfiguration({ externalSystemMode: mode });
+
+  const channelMode = options.channelMode ?? channelModeFromEnv();
+  const channel = options.channel ?? ChannelType.API;
+
+  const app = new AppContext({
+    channelMode,
+    channel,
+    eventhubDriverFactory: (ch) => createEventhubDriverForChannel(config, ch as Channel, options),
+    erpDriver: createErpDriver(config, mode),
+    clockDriver: createClockDriver(config, mode),
+    taxDriver: createTaxDriver(config, mode),
+  });
+
+  const useCaseContext = new UseCaseContext(mode);
+  return new ScenarioDsl(app, useCaseContext);
+}
+
+function createEventhubDriverForChannel(config: TestConfig, channel: Channel, options: ScenarioOptions) {
+  if (channel === ChannelType.UI) {
+    if (!options.browser) throw new Error('Browser is required for UI channel');
+    return new EventhubUiDriver(config.eventhub.frontendUrl, options.browser, config.keycloakUrl);
+  }
+  return new EventhubApiDriver(config.eventhub.backendApiUrl, config.keycloakUrl);
+}
+
+function createErpDriver(config: TestConfig, mode: ExternalSystemMode): ErpDriver {
+  if (mode === 'stub') return new ErpStubDriver(config.externalSystems.erp.url);
+  return new ErpRealDriver(config.externalSystems.erp.url);
+}
+
+function createClockDriver(config: TestConfig, mode: ExternalSystemMode): ClockDriver {
+  if (mode === 'stub') return new ClockStubDriver(config.externalSystems.clock.url);
+  return new ClockRealDriver();
+}
+
+function createTaxDriver(config: TestConfig, mode: ExternalSystemMode): TaxDriver {
+  if (mode === 'stub') return new TaxStubDriver(config.externalSystems.tax.url);
+  return new TaxRealDriver(config.externalSystems.tax.url);
+}

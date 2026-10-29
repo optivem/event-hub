@@ -1,0 +1,23 @@
+package com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.clock.usecases;
+
+import com.optivem.eventhub.backend.testkit.driver.port.external.clock.ClockDriver;
+import com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.clock.usecases.base.BaseClockUseCase;
+
+public class ReturnsTime extends BaseClockUseCase {
+
+    private String time;
+
+    public ReturnsTime(ClockDriver driver) {
+        super(driver);
+    }
+
+    public ReturnsTime time(String isoInstant) {
+        this.time = isoInstant;
+        return this;
+    }
+
+    @Override
+    public void execute() {
+        driver.returnsTime(time);
+    }
+}

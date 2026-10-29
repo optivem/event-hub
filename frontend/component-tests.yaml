@@ -1,0 +1,22 @@
+setupCommands:
+  - name: Install Dependencies
+    command: npm ci
+compileCommands:
+  - name: Typecheck production + test sources
+    command: npm run typecheck
+testFilter: -t '<test>'
+suites:
+  - id: unit
+    name: Unit
+    command: npm run test:unit
+    sampleTest: "test harness"
+  - id: integration
+    name: Narrow Integration
+    command: npm run test:integration
+    sampleTest: "places an order via orderService directly"
+  - id: component
+    name: Component
+    command: npm run test:component
+    sampleTest: "NewOrder — client-side validation"
+suiteGroups:
+  all: [unit, integration, component]

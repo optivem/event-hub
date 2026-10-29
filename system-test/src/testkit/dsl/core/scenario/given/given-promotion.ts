@@ -1,0 +1,37 @@
+import type { PromotionConfig } from '../scenario-context.js';
+import type { ThenContractStage } from '../then/then-contract.js';
+import type { WhenStage } from '../when/when-stage.js';
+import type { GivenStage } from './given-stage.js';
+import type { GivenPromotion as IGivenPromotion } from '../../../port/given/steps/given-promotion.js';
+import { assertNotAwaited } from '../assert-not-awaited.js';
+
+export class GivenPromotion implements IGivenPromotion {
+  constructor(
+    private readonly stage: GivenStage,
+    private readonly config: PromotionConfig,
+  ) {}
+
+  withActive(promotionActive: boolean): this {
+    this.config.promotionActive = promotionActive;
+    return this;
+  }
+
+  withDiscount(discount: number | string): this {
+    this.config.discount = typeof discount === 'number' ? discount.toFixed(2) : discount;
+    return this;
+  }
+
+  and(): GivenStage {
+    return this.stage;
+  }
+
+  when(): WhenStage {
+    return this.stage.when();
+  }
+
+  then(): ThenContractStage;
+  then(...args: unknown[]): ThenContractStage {
+    assertNotAwaited(args);
+    return this.stage.then();
+  }
+}

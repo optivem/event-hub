@@ -1,0 +1,23 @@
+package com.optivem.eventhub.backend.testkit.dsl.core.usecase.usecases;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.optivem.eventhub.backend.core.dtos.PlaceOrderResponse;
+import com.optivem.eventhub.backend.testkit.dsl.core.shared.ResponseVerification;
+
+/** What a successful place-order answers with: the order number, and nothing else. */
+public class PlaceOrderVerification extends ResponseVerification<PlaceOrderResponse> {
+
+    public PlaceOrderVerification(PlaceOrderResponse response) {
+        super(response);
+    }
+
+    public String orderNumber() {
+        return getResponse().getOrderNumber();
+    }
+
+    public PlaceOrderVerification hasOrderNumber() {
+        assertThat(orderNumber()).as("order number").isNotBlank();
+        return this;
+    }
+}

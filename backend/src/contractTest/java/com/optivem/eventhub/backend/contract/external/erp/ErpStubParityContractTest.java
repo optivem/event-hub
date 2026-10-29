@@ -1,0 +1,55 @@
+package com.optivem.eventhub.backend.contract.external.erp;
+
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.optivem.eventhub.backend.core.services.external.ErpGateway;
+import com.optivem.eventhub.backend.testkit.driver.adapter.external.erp.ErpStubDriver;
+import com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.erp.ErpDsl;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+
+/**
+ * The {@code Stub} side of the ERP product contract. Arranges through the real {@link ErpStubDriver},
+ * so what {@link ErpRealParityContractTest} holds against the simulator is the driver's own JSON — the
+ * artifact the parity pair exists to guard. Needs no Docker of its own — the gateway is driven
+ * directly, with no Spring context and no container, so the only reason this class sits in the
+ * Docker-requiring {@code external-contract} suite is that the stub-consumability tests it runs
+ * alongside boot the full SUT.
+ */
+class ErpStubParityContractTest extends BaseErpProductParityContractTest {
+
+    private static final WireMockServer WIRE_MOCK = new WireMockServer(options().dynamicPort());
+
+    private ErpGateway erpGateway;
+
+    @BeforeAll
+    static void startWireMock() {
+        WIRE_MOCK.start();
+    }
+
+    @AfterAll
+    static void stopWireMock() {
+        WIRE_MOCK.stop();
+    }
+
+    @BeforeEach
+    void setUp() {
+        WIRE_MOCK.resetAll();
+
+        erpGateway = new ErpGateway(WIRE_MOCK.baseUrl());
+    }
+
+    @Override
+    protected void arrangeProduct(String sku, String price) {
+        new ErpDsl(new ErpStubDriver(new WireMock(WIRE_MOCK.port())))
+            .returnsProduct().sku(sku).unitPrice(price).execute();
+    }
+
+    @Override
+    protected ErpGateway erpGateway() {
+        return erpGateway;
+    }
+}

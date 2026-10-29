@@ -1,0 +1,30 @@
+package com.optivem.eventhub.backend.core.dtos;
+
+import com.optivem.eventhub.backend.core.entities.OrderStatus;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+
+@Data
+public class BrowseOrderHistoryResponse {
+    private List<BrowseOrderHistoryItemResponse> orders;
+    private int page;
+    private int size;
+    private long totalElements;
+    private int totalPages;
+
+    @Data
+    public static class BrowseOrderHistoryItemResponse {
+        private String orderNumber;
+        private Instant orderTimestamp;
+        private String sku;
+        private String country;
+        private int quantity;
+        private BigDecimal totalPrice;
+        private OrderStatus status;
+        private String appliedCouponCode;
+        private String customer;
+    }
+}

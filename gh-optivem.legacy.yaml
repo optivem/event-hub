@@ -1,0 +1,47 @@
+project:
+    provider: github
+    url: https://github.com/orgs/optivem/projects/28
+repo-strategy: mono-repo
+sonar:
+    organization: optivem
+system:
+    architecture: multitier
+    config: docker/systems.yaml
+    db-migration-path: system/db/migrations
+    backend:
+        path: backend
+        repo: optivem/event-hub
+        lang: java
+        sonar-project: optivem_event-hub-backend
+    frontend:
+        path: frontend
+        repo: optivem/event-hub
+        lang: typescript
+        sonar-project: optivem_event-hub-frontend
+system-test:
+    path: system-test
+    repo: optivem/event-hub
+    lang: typescript
+    config: system-test/tests.legacy.yaml
+    sonar-project: optivem_event-hub-system-test
+    paths:
+        at-test: system-test/tests/latest/acceptance
+        common: system-test/src/testkit/common
+        common-domain: system-test/src/testkit/common/domain
+        ct-test: system-test/tests/latest/contract
+        dsl-core: system-test/src/testkit/dsl/core
+        dsl-port: system-test/src/testkit/dsl/port
+        external-system-driver-adapter: system-test/src/testkit/driver/adapter/external
+        external-system-driver-port: system-test/src/testkit/driver/port/external
+        system-driver-adapter: system-test/src/testkit/driver/adapter
+        system-driver-adapter-shared: system-test/src/testkit/driver/adapter/shared
+        system-driver-port: system-test/src/testkit/driver/port
+    system-driver-adapter-channels:
+        api: system-test/src/testkit/driver/adapter/api
+        ui: system-test/src/testkit/driver/adapter/ui
+system-name: EventHub
+license: mit
+deploy: docker
+channels:
+    - api
+    - ui

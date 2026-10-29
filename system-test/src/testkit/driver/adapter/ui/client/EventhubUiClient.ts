@@ -1,0 +1,92 @@
+import type { Browser, BrowserContext, Page } from '@playwright/test';
+import type { Result } from '../../../../common/result.js';
+import { success, failure } from '../../../../common/result.js';
+import type { SystemError } from '../../../port/dtos/errors/SystemError.js';
+import { TestUsers, type TestUser } from '../../shared/client/http/test-user.js';
+import { KeycloakUiLogin } from '../../shared/client/playwright/keycloak-ui-login.js';
+import { HomePage } from './pages/HomePage.js';
+import { NewOrderPage } from './pages/NewOrderPage.js';
+import { OrderHistoryPage } from './pages/OrderHistoryPage.js';
+import { OrderDetailsPage } from './pages/OrderDetailsPage.js';
+import { CouponManagementPage } from './pages/CouponManagementPage.js';
+
+const HOME_READY_SELECTOR = "a[href='/order-history']";
+
+export class EventhubUiClient {
+  private context: BrowserContext | null = null;
+  private currentPage: Page | null = null;
+  private login: KeycloakUiLogin | undefined;
+
+  /**
+   * @param keycloakBaseUrl when undefined or empty, the app is assumed to have no login screen.
+   */
+  constructor(
+    private readonly baseUrl: string,
+    private readonly browser: Browser,
+    private readonly keycloakBaseUrl?: string,
+  ) {
+    this.login = KeycloakUiLogin.forBaseUrl(keycloakBaseUrl, TestUsers.CUSTOMER);
+  }
+
+  /**
+   * Makes `user` the logged-in user. Switching discards the browser session (the next openHomePage()
+   * creates a fresh isolated context and logs in as the new user). No-op without Keycloak or when already that user.
+   */
+  async switchUser(user: TestUser): Promise<void> {
+    if (!this.login || this.login.getUser() === user) return;
+    await this.close();
+    this.login = KeycloakUiLogin.forBaseUrl(this.keycloakBaseUrl, user);
+  }
+
+  async openHomePage(): Promise<Result<HomePage, SystemError>> {
+    try {
+      if (!this.context) {
+        this.context = await this.browser.newContext({ viewport: { width: 1920, height: 1080 } });
+        this.currentPage = await this.context.newPage();
+      }
+      const page = this.requirePage();
+      const response = await page.goto(this.baseUrl);
+      if (response?.status() === 200) {
+        await this.login?.ensureLoggedIn(page, HOME_READY_SELECTOR);
+        return success(new HomePage(page));
+      }
+      return failure({ message: `Eventhub UI not available: ${response?.status()}`, fieldErrors: [] });
+    } catch (e) {
+      return failure({ message: `Eventhub UI not available: ${String(e)}`, fieldErrors: [] });
+    }
+  }
+
+  newOrderPage(): NewOrderPage {
+    return new NewOrderPage(this.requirePage());
+  }
+
+  orderHistoryPage(): OrderHistoryPage {
+    return new OrderHistoryPage(this.requirePage());
+  }
+
+  orderDetailsPage(): OrderDetailsPage {
+    return new OrderDetailsPage(this.requirePage());
+  }
+
+  couponManagementPage(): CouponManagementPage {
+    return new CouponManagementPage(this.requirePage());
+  }
+
+  async close(): Promise<void> {
+    if (this.currentPage) {
+      await this.currentPage.close();
+      this.currentPage = null;
+    }
+    if (this.context) {
+      await this.context.close();
+      this.context = null;
+    }
+  }
+
+  private requirePage(): Page {
+    if (!this.currentPage) {
+      throw new Error('EventhubUiClient: openHomePage() must be called before accessing pages');
+    }
+    return this.currentPage;
+  }
+}

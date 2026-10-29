@@ -1,0 +1,56 @@
+import { DEFAULTS } from '../defaults.js';
+import type { UseCaseContext } from '../../shared/use-case-context.js';
+import type { AppContext } from '../app-context.js';
+import type { ScenarioContext } from '../scenario-context.js';
+import { ThenPublishCouponResultStage } from '../then/then-publish-coupon.js';
+import { assertNotAwaited } from '../assert-not-awaited.js';
+
+export class WhenPublishCoupon {
+  private code: string = DEFAULTS.COUPON_CODE;
+  private discountRate: number | string = DEFAULTS.DISCOUNT_RATE;
+  private validFrom?: string;
+  private validTo?: string;
+  private usageLimit?: number | string;
+
+  constructor(
+    private readonly app: AppContext,
+    private readonly ctx: ScenarioContext,
+    private readonly useCaseContext: UseCaseContext,
+  ) {}
+
+  withCode(code: string): this {
+    this.code = code;
+    return this;
+  }
+
+  withCouponCode(code: string): this {
+    return this.withCode(code);
+  }
+
+  withDiscountRate(discountRate: number | string): this {
+    this.discountRate = discountRate;
+    return this;
+  }
+
+  withValidFrom(validFrom: string | null | undefined): this {
+    this.validFrom = validFrom ?? undefined;
+    return this;
+  }
+
+  withValidTo(validTo: string | null | undefined): this {
+    this.validTo = validTo ?? undefined;
+    return this;
+  }
+
+  withUsageLimit(usageLimit: number | string | null | undefined): this {
+    this.usageLimit = usageLimit ?? undefined;
+    return this;
+  }
+
+  then(): ThenPublishCouponResultStage;
+  then(...args: unknown[]): ThenPublishCouponResultStage {
+    assertNotAwaited(args);
+    this.ctx.markExecuted();
+    return new ThenPublishCouponResultStage(this.app, this.ctx, this.useCaseContext, this.code, this.discountRate, this.validFrom, this.validTo, this.usageLimit);
+  }
+}

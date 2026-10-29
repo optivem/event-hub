@@ -1,0 +1,48 @@
+{
+  "name": "@optivem/eventhub-system-test",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Eventhub - System Tests",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:parallel && npm run test:isolated",
+    "test:parallel": "playwright test --grep-invert @isolated",
+    "test:isolated": "playwright test --workers=1 --grep @isolated",
+    "test:architecture": "playwright test --project=architecture-test",
+    "test:acceptance": "npm run test:acceptance:parallel && npm run test:acceptance:isolated",
+    "test:acceptance:parallel": "playwright test --project=acceptance-test --grep-invert @isolated",
+    "test:acceptance:isolated": "playwright test --project=acceptance-test --workers=1 --grep @isolated",
+    "test:smoke": "playwright test --project=smoke-test",
+    "test:e2e": "playwright test --project=e2e-test",
+    "test:external-contract": "playwright test --project=external-system-contract-test --workers=1",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed"
+  },
+  "keywords": [
+    "atdd",
+    "testing",
+    "e2e",
+    "optivem"
+  ],
+  "author": "optivem",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.10.7",
+    "eslint": "^9.39.5",
+    "eslint-plugin-playwright": "^2.12.0",
+    "globals": "^17.12.0",
+    "ts-morph": "^28.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0"
+  },
+  "dependencies": {
+    "@optivem/optivem-testing": "1.1.9"
+  }
+}
