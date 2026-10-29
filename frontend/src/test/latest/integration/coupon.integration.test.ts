@@ -1,6 +1,5 @@
-// Maintainable contract spec (narrow-integration level) for coupons — same
-// interactions as the legacy coupon.integration test, driven through the shared
-// test-kit. Co-generates the canonical pact by idempotent merge.
+// Maintainable contract spec (narrow-integration level) for coupons, driven
+// through the shared test-kit. Co-generates the canonical pact by idempotent merge.
 import { describe, it } from 'vitest';
 import { integrationHarness } from '../../support';
 

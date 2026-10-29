@@ -2,7 +2,7 @@
 // "latest" contract specs. Each verb stages ONE interaction on the driver, built
 // from the shared interactions/ builders — so matcher policy (like() baseline,
 // exact on the one field the frontend branches on) lives in exactly one place and
-// legacy + latest emit identical interactions that Pact merges idempotently.
+// every spec emits identical interactions that Pact merges idempotently.
 import type { BackendStubDriver } from './driver/port/backend-stub-driver';
 import { OrderStatus } from '../../types/api.types';
 import {

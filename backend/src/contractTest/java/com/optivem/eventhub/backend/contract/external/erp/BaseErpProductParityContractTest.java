@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Shared shape for the ERP product contract: does the production {@link ErpGateway}'s parse still
  * agree with whatever is answering at {@link #erpGateway()}'s URL? {@link ErpStubParityContractTest}
- * answers that question against the hand-written WireMock stub (same question as
- * {@code legacy/ErpGatewayIntegrationTest}); {@link ErpRealParityContractTest} answers it against the real
+ * answers that question against the hand-written WireMock stub; {@link ErpRealParityContractTest} answers it against the real
  * ERP simulator. Both provision-and-pin the same exact values, so the assertions below don't need to
  * know which mode is running.
  *

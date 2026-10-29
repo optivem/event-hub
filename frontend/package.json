@@ -13,11 +13,10 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:component": "vitest run --config vitest.opt-in.config.ts src/test/legacy/component src/test/latest/component",
+    "test:component": "vitest run --config vitest.opt-in.config.ts src/test/latest/component",
     "test:unit": "vitest run src/test/unit",
     "test:pact": "vitest run --config vitest.opt-in.config.ts",
-    "test:integration": "vitest run --config vitest.opt-in.config.ts src/test/legacy/integration src/test/latest/integration",
-    "test:legacy": "vitest run --config vitest.opt-in.config.ts src/test/legacy",
+    "test:integration": "vitest run --config vitest.opt-in.config.ts src/test/latest/integration",
     "test:latest": "vitest run --config vitest.opt-in.config.ts src/test/latest"
   },
   "engines": {

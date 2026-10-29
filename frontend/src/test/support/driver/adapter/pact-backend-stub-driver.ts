@@ -4,7 +4,7 @@
 // executeTest mock-server lifecycle) so the Backend Stub DSL and the specs above
 // it never touch Pact directly. The pact is written into the canonical contracts/
 // dir, resolved from the package root via process.cwd() — so a spec's folder depth
-// (component/latest, integration/legacy, …) is irrelevant; every consumer spec
+// (component/latest, integration/latest, …) is irrelevant; every consumer spec
 // merges idempotently into the one frontend-backend.json.
 //
 // PactV3 is callback-shaped: executeTest(cb) boots the mock server, runs cb, then

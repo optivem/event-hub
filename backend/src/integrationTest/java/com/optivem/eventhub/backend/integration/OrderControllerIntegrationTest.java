@@ -36,7 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-// No ERP stub -> no DSL refactor -> no latest/legacy twin. This test stubs OrderService with Mockito,
+// No ERP stub -> no DSL refactor. This test stubs OrderService with Mockito,
 // an internal seam, not an external system.
 @WebMvcTest(OrderController.class)
 @ActiveProfiles("test")

@@ -9,8 +9,7 @@ import com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.erp.ErpDsl
 import org.junit.jupiter.api.Test;
 
 /**
- * "After" of the external-systems contract-tests refactor at the narrow-integration layer: identical
- * scenarios to the {@code legacy/} twin, but the ERP happy/404 stubs are declared through the shared
+ * "After" of the external-systems contract-tests refactor at the narrow-integration layer: the ERP happy/404 stubs are declared through the shared
  * use case DSL under {@code support/} — the same {@link ErpDsl} the component {@code latest/} tests
  * reach as {@code app.erp()}. A narrow-integration test drives one gateway, not a scenario, so it
  * uses the use case layer directly and never sees the scenario DSL above it. Every stub — including

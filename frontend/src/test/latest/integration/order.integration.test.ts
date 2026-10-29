@@ -1,5 +1,5 @@
 // Maintainable contract spec (narrow-integration level) — the same interactions
-// as the legacy order.integration test, but driven through the shared test-kit.
+// driven through the shared test-kit.
 // The SAME Frontend DSL lines as the component spec run against a gateway driver
 // instead of the UI driver: hasConfirmation is realized as a Result here, as
 // screen text there. Only the harness differs. Co-generates the canonical pact by

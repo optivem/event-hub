@@ -16,7 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-// No ERP stub -> no DSL refactor -> no latest/legacy twin. This test drives the real database
+// No ERP stub -> no DSL refactor. This test drives the real database
 // through JPA and stubs nothing at all.
 //
 // @DataJpaTest rather than @SpringBootTest: layer 2 is one adapter, so booting the whole context

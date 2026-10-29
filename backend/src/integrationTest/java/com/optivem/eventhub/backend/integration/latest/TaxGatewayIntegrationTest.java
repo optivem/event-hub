@@ -20,10 +20,8 @@ import org.junit.jupiter.api.Test;
  * any other non-200 is Tax failing to answer and yields a {@link TaxGatewayException}. Collapsing the
  * two would turn an outage into a silent "country does not exist".
  *
- * <p>The {@code legacy/} counterpart runs the same four scenarios against raw, inlined WireMock,
- * where that 404-versus-5xx distinction survives only as bare status codes; here it is named by
- * {@code returnsNoTaxRate()} versus {@code failsForCountry()}. Every gateway at this layer has a
- * twin — unlike {@code contract/external/}, where a "before" would be circular and none exists.
+ * <p>The 404-versus-5xx distinction is named by {@code returnsNoTaxRate()} versus
+ * {@code failsForCountry()}.
  */
 class TaxGatewayIntegrationTest extends BaseGatewayIntegrationTest {
 

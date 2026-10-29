@@ -16,7 +16,7 @@ import com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.tax.usecas
  * }</pre>
  *
  * <p>Rates are passed as {@code String} so the stubbed JSON is byte-identical to the raw WireMock
- * the {@code legacy/} tests inline.
+ * JSON.
  */
 public class TaxDsl {
 

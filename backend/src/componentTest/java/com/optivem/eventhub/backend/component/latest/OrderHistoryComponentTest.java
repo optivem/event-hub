@@ -4,7 +4,7 @@ import com.optivem.eventhub.backend.BaseComponentTest;
 import org.junit.jupiter.api.Test;
 
 /**
- * "After" of the component-test refactor: identical scenarios to the {@code legacy/} twin, written
+ * "After" of the component-test refactor: the scenarios written
  * on the scenario DSL ({@link com.optivem.eventhub.backend.testkit.dsl.core.ScenarioDslImpl}).
  *
  * <p>{@link #browseReturnsPlacedOrders()} says the whole story as one scenario — place, then assert

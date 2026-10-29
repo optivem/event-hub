@@ -14,8 +14,8 @@ export interface TestConfig {
     backendApiUrl: string;
   };
   /**
-   * Keycloak base URL, optional at load time (legacy suites run without it); the latest
-   * acceptance suites fail fast when it is unset.
+   * Keycloak base URL, optional at load time; the acceptance
+   * suites fail fast when it is unset.
    */
   keycloakUrl?: string;
   externalSystems: {

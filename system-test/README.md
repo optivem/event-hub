@@ -32,13 +32,6 @@ Run all latest test suites:
 gh optivem system-test run
 ```
 
-Run legacy test suites — switch the env var first, then re-run setup (legacy has its own setupCommands block):
-
-```pwsh
-$env:GH_OPTIVEM_CONFIG = "gh-optivem-monolith-typescript-legacy.yaml"
-gh optivem system-test setup
-gh optivem system-test run
-```
 
 Run only sample tests (one per suite, fast smoke):
 

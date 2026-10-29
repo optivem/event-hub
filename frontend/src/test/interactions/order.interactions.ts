@@ -1,14 +1,8 @@
 // Pact interaction builders — one home per request/response shape and its matcher policy.
 //
-// Only the latest/ suite imports these. The legacy/ suite hand-writes the same interactions
-// inline, on purpose: it is the "before" state the maintainable-contract-tests article refactors
-// away from, so extracting it here would erase what that article is teaching.
-//
-// Both suites write into the SAME pact file (same consumer + provider), and Pact merges by
-// interaction description — a merge is only idempotent when the two sides emit byte-identical
-// interactions. So any edit here must be mirrored in the legacy/ copies, or the pact file ends up
-// with two conflicting versions of one interaction. That coupling is precisely the cost these
-// builders exist to remove, and the legacy suite is the one still paying it.
+// Every spec writes into the SAME pact file (same consumer + provider), and Pact merges by
+// interaction description — a merge is only idempotent when all sides emit byte-identical
+// interactions. Keeping the builders here means each interaction is defined exactly once.
 import { MatchersV3 } from '@pact-foundation/pact';
 import type { V3Interaction } from '@pact-foundation/pact';
 import { OrderStatus } from '../../types/api.types';

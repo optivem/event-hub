@@ -24,12 +24,6 @@ import org.junit.jupiter.api.Test;
  * whole context. Here the class default is {@code stub} too, but the two tests below build their
  * gateway in an explicit mode instead — which lets the {@code real} and unknown-mode branches be
  * pinned. The {@code real} branch is what production runs on and is otherwise never exercised.
- *
- * <p>The {@code legacy/} counterpart runs the same four scenarios against raw, inlined WireMock. It
- * carries the mode contrast rather than the stub contrast: there the mode is set reflectively from a
- * {@code "real"} / {@code "bogus"} string literal, here {@link ExternalSystemMode#REAL} is typed and
- * only the unknown-mode escape hatch stays a raw string. Every gateway at this layer has a twin —
- * unlike {@code contract/external/}, where a "before" would be circular and none exists.
  */
 class ClockGatewayIntegrationTest extends BaseGatewayIntegrationTest {
 

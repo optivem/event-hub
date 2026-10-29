@@ -23,8 +23,7 @@ suites:
   - id: provider-verification
     name: Provider Verification (Pact)
     # internal/ only: the counterparty is the frontend, whose consumer stub *is* the pact, so we
-    # verify against a .pact file. Covers both the latest/ and legacy/ twins beneath it — see
-    # docs/atdd/test-taxonomy.md.
+    # verify against a .pact file. See docs/atdd/test-taxonomy.md.
     command: .\gradlew.bat contractTest --tests 'com.optivem.eventhub.backend.contract.internal.*'
     sampleTest: "verify"
     requiresDocker: true

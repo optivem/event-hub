@@ -22,7 +22,7 @@ import com.optivem.eventhub.backend.testkit.dsl.core.usecase.external.erp.usecas
  * }</pre>
  *
  * <p>Prices and discounts are passed as {@code String} so the stubbed JSON is byte-identical to the
- * raw WireMock the {@code legacy/} tests inline.
+ * hand-written raw WireMock JSON.
  */
 public class ErpDsl {
 
