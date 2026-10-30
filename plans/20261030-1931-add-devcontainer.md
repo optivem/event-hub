@@ -1,5 +1,7 @@
 # 2026-10-30 19:31:32 UTC — Add a dev container
 
+> 🤖 **Picked up by agent** — `72501e16dbea` at `2026-10-30T20:02:46Z`
+
 ## TL;DR
 
 **Why:** `event-hub` has no `.devcontainer/`, so everyone installs Java, Node, Docker and the CLIs by hand. The GCP move adds `gcloud` and `terraform` to that list.
