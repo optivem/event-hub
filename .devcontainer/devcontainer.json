@@ -1,0 +1,53 @@
+{
+  "name": "event-hub",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "2.67.0"
+    },
+    "ghcr.io/dhoeric/features/google-cloud-cli:1": {
+      "version": "590.0.1"
+    },
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.10.3"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "jdkDistro": "tem",
+      "installGradle": "false"
+    },
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "googlecloudtools.cloudcode",
+        "github.vscode-github-actions",
+        "ms-azuretools.vscode-docker",
+        "vscjava.vscode-java-pack"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "mounts": [
+    "source=event-hub-gcloud-config,target=/home/vscode/.config/gcloud,type=volume",
+    "source=event-hub-gh-config,target=/home/vscode/.config/gh,type=volume",
+    "source=event-hub-claude-config,target=/home/vscode/.claude,type=volume",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude/commands,target=/home/vscode/.claude/commands,type=bind,readonly"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "forwardPorts": [3311, 8311, 8391, 9311, 3312, 8312, 8392, 9312],
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteUser": "vscode"
+}

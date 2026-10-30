@@ -17,7 +17,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-**Step 1:** create `.devcontainer/devcontainer.json` from `academy/shop/.devcontainer/devcontainer.json`, applying the table below, and regenerate `devcontainer-lock.json` for the trimmed feature set. Then continue through Step 4's verification.
+**Step 4, run by a human or with `@devcontainers/cli` allowed:** the `.devcontainer/` files exist but have never been built. Reopen the repo in the container and run the checks in Step 4. `devcontainer-lock.json` was derived from `shop`'s lockfile, not generated, so also run `devcontainer upgrade --workspace-folder .` from PowerShell. Don't use Git Bash: it sets both `HOME` and `USERPROFILE`, which doubles the `~/.claude/commands` mount path.
 
 ## What to take from `academy/shop`
 
@@ -43,12 +43,8 @@ What we get out of this — the goals and deliverables:
 
 ## Steps
 
-- [ ] Step 1: Add `.devcontainer/devcontainer.json` and regenerate `devcontainer-lock.json`
-- [ ] Step 2: Add `.devcontainer/post-create.sh`, adapted as in the table
-- [ ] Step 3: Add `.devcontainer/README.md`, adapted as in the table, and link it from the root `README.md`
 - [ ] Step 4: Verify in a fresh container: `post-create.sh` reports no missing tools, `./gradlew build` passes in `backend/`, the frontend builds, and the local stub stack starts with smoke tests green
 
 ## Open questions
 
-- **Terraform and `gcloud` before the GCP plan lands?** Recommended: include them now; they are only used once `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md` runs, and including them avoids a second rebuild.
-- **Plan order:** Recommended: do this plan first, so the GCP provisioning can run from inside the container.
+None — all resolved before execution: `gcloud` and `terraform` are included now, and this plan runs before `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md`.
