@@ -31,39 +31,40 @@
       <div class="notice warn">Your agenda and materials are due by <strong>21 December 2026</strong>, 1 month before the event.</div>
       <section class="card">
         <h2>Your tasks</h2>
-        <ul class="tasks">
+        <p class="meta" id="task-progress" aria-live="polite">0 of 5 done</p>
+        <ul class="tasks" id="task-list">
           <li class="task">
             <span class="task-body">
               <span class="task-title">Accept the calendar invite</span>
               <span class="task-note">Sent to mara.sample@example.com</span>
             </span>
-            <button class="button secondary" type="button" data-task="calendar">Open</button>
+            <button class="button secondary" type="button" data-task="calendar">Accept</button>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Agree to the Speaker Guidelines</span>
             </span>
-            <button class="button secondary" type="button" data-task="guidelines">Open</button>
+            <button class="button secondary" type="button" data-task="guidelines">Review</button>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Join the Meetup group</span>
             </span>
-            <button class="button secondary" type="button" data-task="meetup">Open</button>
+            <button class="button secondary" type="button" data-task="meetup">Join</button>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Fill in your talk details</span>
               <span class="task-note">Title, agenda, presentation style and about you. Due 21 December 2026</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <a class="button secondary" href="speaker-agenda-materials.html">Start</a>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Share your materials</span>
               <span class="task-note">Due 21 December 2026</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <a class="button secondary" href="speaker-agenda-materials.html">Start</a>
           </li>
         </ul>
       </section>
@@ -103,44 +104,64 @@
   <p>Open the invite we sent to mara.sample@example.com and accept it, then confirm here.</p>
   <div class="actions">
     <button class="button" type="button" data-confirm>I've accepted it</button>
-    <button class="button secondary" type="button" data-close>Not yet</button>
+    <button class="text-button" type="button" data-close>Not yet</button>
   </div>
 </dialog>
 <dialog class="popup" id="guidelines">
   <h2>Agree to the Speaker Guidelines</h2>
-  <p>Please read the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a> before you write your agenda.</p>
+  <p>Please read them before you write your agenda, then come back here to agree.</p>
   <div class="actions">
-    <button class="button" type="button" data-confirm>I agree</button>
-    <button class="button secondary" type="button" data-close>Not yet</button>
+    <a class="button" href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Open Speaker Guidelines</a>
+    <button class="button secondary" type="button" data-confirm>I agree</button>
+    <button class="text-button" type="button" data-close>Not yet</button>
   </div>
 </dialog>
 <dialog class="popup" id="meetup">
   <h2>Join the Meetup group</h2>
-  <p>We add you as a co-host on Meetup, so please <a href="#">join our Meetup group</a> now.</p>
+  <p>We add you as a co-host on Meetup, so please join the group now, then come back here to confirm.</p>
   <div class="actions">
-    <button class="button" type="button" data-confirm>I've joined</button>
-    <button class="button secondary" type="button" data-close>Not yet</button>
+    <a class="button" href="#">Open Meetup group</a>
+    <button class="button secondary" type="button" data-confirm>I've joined</button>
+    <button class="text-button" type="button" data-close>Not yet</button>
   </div>
 </dialog>
 <script>
+var list = document.getElementById('task-list');
+var tasks = Array.from(list.children);
+
+function isRemembered(id) {
+  try { return sessionStorage.getItem('task-' + id) === 'done'; } catch (e) { return false; }
+}
+function remember(id, done) {
+  try {
+    if (done) { sessionStorage.setItem('task-' + id, 'done'); } else { sessionStorage.removeItem('task-' + id); }
+  } catch (e) { /* the tick just won't survive leaving the page */ }
+}
+function refresh() {
+  var open = tasks.filter(function (task) { return !task.classList.contains('done'); });
+  var done = tasks.filter(function (task) { return task.classList.contains('done'); });
+  open.concat(done).forEach(function (task) { list.appendChild(task); });
+  document.getElementById('task-progress').textContent = done.length + ' of ' + tasks.length + ' done';
+}
 function markDone(id) {
   var button = document.querySelector('[data-task="' + id + '"]');
-  var badge = document.createElement('span');
-  badge.className = 'status ok';
-  badge.textContent = 'Done';
-  button.closest('.task').classList.add('done');
-  button.replaceWith(badge);
-}
-function remember(id) {
-  try { sessionStorage.setItem('task-' + id, 'done'); } catch (e) { /* the tick just won't survive leaving the page */ }
-}
-function wasDone(id) {
-  try { return sessionStorage.getItem('task-' + id) === 'done'; } catch (e) { return false; }
+  var task = button.closest('.task');
+  var result = document.createElement('span');
+  result.className = 'task-result';
+  result.innerHTML = '<span class="status ok">Done</span><button class="text-button" type="button">Undo</button>';
+  result.querySelector('button').addEventListener('click', function () {
+    result.replaceWith(button);
+    task.classList.remove('done');
+    remember(id, false);
+    refresh();
+  });
+  button.replaceWith(result);
+  task.classList.add('done');
 }
 document.querySelectorAll('[data-task]').forEach(function (button) {
   var id = button.dataset.task;
-  if (wasDone(id)) { markDone(id); return; }
   button.addEventListener('click', function () { document.getElementById(id).showModal(); });
+  if (isRemembered(id)) { markDone(id); }
 });
 document.querySelectorAll('dialog [data-close]').forEach(function (button) {
   button.addEventListener('click', function () { button.closest('dialog').close(); });
@@ -149,10 +170,12 @@ document.querySelectorAll('dialog [data-confirm]').forEach(function (button) {
   button.addEventListener('click', function () {
     var dialog = button.closest('dialog');
     dialog.close();
-    remember(dialog.id);
+    remember(dialog.id, true);
     markDone(dialog.id);
+    refresh();
   });
 });
+refresh();
 </script>
 </body>
 </html>
