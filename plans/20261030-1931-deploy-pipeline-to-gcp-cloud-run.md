@@ -24,7 +24,7 @@ What we get out of this — the goals and deliverables:
 
 ## Steps
 
-- [ ] Step 1: Port the infrastructure from `academy/shop`: `terraform/`, `setup-gcp.sh`, `teardown-gcp.sh`, Artifact Registry cleanup policy, and the shared `<system>-db` + `<system>-keycloak-admin-password` secrets
+- [ ] Step 1: Port the infrastructure from `academy/shop`: `terraform/`, `setup-gcp.sh`, `teardown-gcp.sh`, Artifact Registry cleanup policy, and the shared `<system>-db` + `<system>-keycloak-admin-password` secrets. Once the project exists, `setup-gcp.sh` also runs `gcloud auth application-default set-quota-project` for it, so Terraform's application-default credentials stop warning about a missing quota project
 - [ ] Step 2: Provision GCP and Neon with `./setup-gcp.sh`, with one database per stack: `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak`
 - [ ] Step 3: Add cloud-only images: `docker/keycloak/Dockerfile.cloud` + `cloud-realm.jq` (the realm import must list every stack's frontend URL up front, because `--import-realm` skips a realm that already exists) and a Flyway Dockerfile under `db/` (only `db/migrations` exists today)
 - [ ] Step 4: Add a reusable deploy workflow, adapted from `multitier-java-acceptance-stage-cloud.yml` in `academy/shop`: copy images to Artifact Registry, deploy Keycloak, external systems, migrations job, backend and frontend, then wait for endpoints
