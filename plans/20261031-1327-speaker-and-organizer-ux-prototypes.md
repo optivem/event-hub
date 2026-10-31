@@ -20,11 +20,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 4. `organizer-home.html` now holds events and potential speakers, and `organizer-speakers.html` is gone (links go to `organizer-home.html#potential-speakers`). Step 4 rewrites "Next in the flow" links and navigation so each prototype reads naturally from login, and removes the role switcher and every link between the two prototypes. Stay on `main`.
+Run Step 5. Each prototype now reads from login with no role switcher and no links to the other side. Step 5 removes the remaining coordinator wording from screens and mock emails, and anything that only existed because of the split, such as the "Covering for ..." banner and the handoff wording on `organizer-reschedule`. Stay on `main`.
 
 ## Steps
 
-- [ ] Step 4: Rewrite the flow so each prototype reads naturally from login: update "Next in the flow" links and navigation, and remove the role switcher.
 - [ ] Step 5: Remove all coordinator wording from screens and mock emails, and drop anything that only existed because of the split, such as handoffs between coordinator and other organizers and the "Covering for ..." banner on `coordinator-home`.
 - [ ] Step 6: Replace the "All screens" `index.html` with a short landing page linking to the two prototypes.
 - [ ] Step 7: Update `docs/speaker-organizer-user-flow.html` to the two roles: merge the coordinator and other organizers lanes, drop the "Covers" note, and reword the gap table.

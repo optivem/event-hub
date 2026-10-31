@@ -9,19 +9,16 @@
 <body>
 <div class="proto-bar">
   <span>Prototype: nothing is saved</span>
-  <a href="../index.html">All screens</a>
+  <a href="index.html">Back to login</a>
 </div>
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="organizer-home.html">event-hub</a>
-    <nav class="nav" aria-label="Coordinator">
-      <a href="organizer-home.html">Events</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-home.html">Home</a>
       <a href="organizer-materials-status.html">Materials</a>
-    </nav>
-    <nav class="roles" aria-label="View as role">
-      <a href="../speaker/speaker-home.html">Speaker</a>
-      <a href="organizer-home.html" aria-current="true">Coordinator</a>
-      <a href="organizer-home.html#potential-speakers">Organizers</a>
+      <a href="organizer-publish.html">Publish</a>
+      <a href="organizer-reschedule.html">Reschedule</a>
     </nav>
   </div>
 </header>
@@ -70,7 +67,7 @@
         </div>
         <div class="actions">
           <a class="button" href="organizer-approve.html">Passes</a>
-          <a class="button secondary" href="../speaker/speaker-update-materials.html">Send back to speaker</a>
+          <a class="button secondary" href="#what-next">Send back to speaker</a>
         </div>
       </section>
       <section class="card">
@@ -101,7 +98,7 @@
       </section>
     </aside>
   </div>
-  <p class="proto-next">Next in the flow: <a href="../speaker/speaker-update-materials.html">if sent back, the speaker updates within 1 week</a></p>
+  <p class="proto-next" id="what-next">Next in the flow: if it passes, <a href="organizer-approve.html">approve</a>. If you send it back, the speaker sees &ldquo;Update your agenda or materials&rdquo; and has 1 week, then you review again on this screen.</p>
 </main>
 </body>
 </html>

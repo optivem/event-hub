@@ -47,7 +47,7 @@ a { color: var(--accent); }
 }
 .proto-bar a { color: #fff; }
 
-/* Header: brand, role switcher, navigation */
+/* Header: brand, navigation */
 .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
 .topbar-inner {
   display: flex;
@@ -59,23 +59,6 @@ a { color: var(--accent); }
   padding: 10px 16px;
 }
 .brand { font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
-
-.roles {
-  display: flex;
-  margin-left: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.roles a {
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-decoration: none;
-  border-left: 1px solid var(--line);
-}
-.roles a:first-child { border-left: 0; }
-.roles a[aria-current="true"] { color: var(--accent-ink); background: var(--accent); }
 
 .nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; }
 .nav a { padding: 4px 0; color: var(--muted); text-decoration: none; }
@@ -95,7 +78,6 @@ a { color: var(--accent); }
 @media (min-width: 768px) {
   .columns { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
   .nav { width: auto; order: 1; }
-  .roles { order: 2; }
 }
 
 .card {
@@ -222,7 +204,7 @@ table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
 th, td { padding: 8px 10px; text-align: left; vertical-align: top; border-top: 1px solid var(--line); }
 th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
 
-/* Prototype only: the link that carries the journey across to the next role */
+/* Prototype only: what happens next, including what the other side sees */
 .proto-next {
   padding: 10px 12px;
   margin-top: 16px;
@@ -231,15 +213,14 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
   border-radius: var(--radius);
   background: var(--surface);
 }
+.proto-next:target { border-style: solid; background: var(--info-bg); }
 
 /* Phones: comfortable tap targets, and tables become labelled rows */
 .check input { flex: none; width: 20px; height: 20px; margin-top: 2px; }
 .check { min-height: 28px; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
 @media (max-width: 767px) {
-  .brand, .nav a, .roles a, .proto-bar a { display: inline-flex; align-items: center; min-height: 44px; }
-  .roles { margin-left: 0; width: 100%; display: flex; }
-  .roles a { flex: 1; justify-content: center; }
+  .brand, .nav a, .proto-bar a { display: inline-flex; align-items: center; min-height: 44px; }
   .actions .button { flex: 1 1 100%; }
   .table-wrap { overflow-x: visible; }
   .table-wrap table, .table-wrap tbody, .table-wrap tr, .table-wrap td { display: block; }
