@@ -17,7 +17,18 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-**A human runs this:** run **Dev Containers: Rebuild Container**, then do the checks in Step 5, including that `~/.config/gcloud/application_default_credentials.json` still exists. `gh --version` after the rebuild also feeds Step 6.
+**A human runs this:** run **Dev Containers: Rebuild Container**, then run these in the container terminal:
+
+```bash
+gh --version
+gh auth status
+gcloud auth list
+ls ~/.config/gcloud/application_default_credentials.json
+gh optivem --help
+claude --version
+```
+
+Also confirm Claude Code starts without asking to log in. The results close Step 5, and `gh --version` feeds Step 6.
 
 ## What to take from `academy/shop`
 
