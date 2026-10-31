@@ -202,7 +202,6 @@ fieldset.field legend { padding: 0; margin-bottom: 4px; font-weight: 600; }
 .popup .actions { margin-bottom: 0; }
 
 .field input[readonly] { color: var(--muted); background: transparent; border-style: dashed; }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .title-preview { margin: 6px 0 0; font-size: 0.875rem; color: var(--muted); }
 .title-full { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .title-count { display: block; }
