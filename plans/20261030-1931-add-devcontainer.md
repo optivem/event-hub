@@ -17,7 +17,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Only deferred items remain, see `## Steps`. Both need a human: the login check needs a rebuild from the host, and the `gh` decision needs the cause of the version mismatch.
+**A human runs this:** retry `gcloud auth application-default login --no-launch-browser`, ticking every box on the Google consent page, then run **Dev Containers: Rebuild Container** and do the checks in Step 5. `gh --version` after the rebuild also feeds Step 6.
 
 ## What to take from `academy/shop`
 
@@ -43,7 +43,7 @@ Only deferred items remain, see `## Steps`. Both need a human: the login check n
 
 ## Steps
 
-- [ ] Step 5: Confirm `gh`, `gcloud` and Claude Code logins survive a rebuild, and that `gh extension install optivem/gh-optivem` works after login — ⏳ Deferred: needs interactive logins and a rebuild from the host, neither possible from inside the container
+- [ ] Step 5: Rebuild the container, then confirm the `gh` and `gcloud` logins and Claude Code login survive, and that `post-create.sh` reinstalls `gh optivem` — ⏳ Deferred: needs a rebuild from the host. Done before the rebuild: `gh auth login`, `gcloud auth login`, `gh extension install optivem/gh-optivem`. Still missing: `gcloud auth application-default login` failed with a scope error, so no application-default credentials exist; retry with every consent box ticked, before the rebuild
 - [ ] Step 6: Make `gh` match its pin — ⏳ Deferred: `devcontainer.json` and the README say 2.67.0 but the container has 2.103.3. `/var/log/dpkg.log` shows 2.67.0 installed, then upgraded 11 seconds later; the cause is unknown. Find it, then either fix the pin or drop it, and verify with a rebuild
 
 ## Open questions
