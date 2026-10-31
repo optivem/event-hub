@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>event-hub: speaker &amp; organizer user flow</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px 28px;font:15px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2933;background:#fff}
+h1{font-size:26px;margin:0 0 6px}
+h2{font-size:19px;margin:30px 0 10px}
+p{margin:0 0 10px;max-width:900px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:14px 0;padding:0;list-style:none;font-size:14px}
+.legend li{display:flex;align-items:center;gap:7px}
+.k{width:30px;height:18px;border:1.6px solid #52606d;background:#fff;border-radius:5px;flex:none}
+.k.dec{width:18px;height:18px;transform:rotate(45deg) scale(.8);border-radius:0;background:#e3f0fb;border-color:#2b6cb0}
+.k.mail{background:#fdf0cc;border-color:#b7791f;border-radius:1px;border-width:2px}
+.k.end{background:#fbe3e1;border-color:#c0392b;border-radius:9px}
+.k.ok{background:#dff3e4;border-color:#2f855a;border-radius:9px}
+.k.exc{background:#efe8fa;border-color:#6b46c1;border-style:dashed}
+.k.un{border-style:dotted;border-width:2.4px}
+.flow{overflow-x:auto;border:1px solid #cbd2d9}
+.flow svg{display:block;width:2800px;height:auto;font-family:inherit}
+table{border-collapse:collapse;width:100%;max-width:1200px;font-size:14px}
+th,td{border:1px solid #cbd2d9;padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#f0f3f6}
+.gaps td:first-child{font-weight:700;white-space:nowrap}
+.ph0{fill:#fff}.ph1{fill:#f7f9fb}
+.pht{font-size:19px;font-weight:700;text-anchor:middle;fill:#1f2933}
+.phs{font-size:14px;text-anchor:middle;fill:#52606d}
+.lane{fill:none;stroke:#9aa5b1;stroke-width:1.5}
+.lanel{fill:#e4e9ee;stroke:#9aa5b1;stroke-width:1.5}
+.lp{font-size:13px;font-style:italic;text-anchor:middle;fill:#3e4c59}
+.lt{font-size:17px;font-weight:700;text-anchor:middle;fill:#1f2933}
+.tl{stroke:#7b8794;stroke-width:2}
+.e{fill:none;stroke:#52606d;stroke-width:1.8}
+.ex{stroke:#c0392b}
+.ev{stroke:#6b46c1;stroke-dasharray:7 5}
+.eo{stroke:#52606d;stroke-dasharray:3 4}
+.jn{fill:#52606d}
+.n text{font-size:14px;text-anchor:middle;fill:#1f2933}
+.n rect,.n polygon{stroke-width:1.8}
+.step rect{fill:#fff;stroke:#52606d}
+.dec polygon{fill:#e3f0fb;stroke:#2b6cb0}
+.mail rect{fill:#fdf0cc;stroke:#b7791f;stroke-width:2.6}
+.env{fill:#fff;stroke:#b7791f;stroke-width:1.4}
+.end rect{fill:#fbe3e1;stroke:#c0392b}
+.ok rect{fill:#dff3e4;stroke:#2f855a}
+.exc rect{fill:#efe8fa;stroke:#6b46c1;stroke-dasharray:7 5}
+.n.un rect{stroke-dasharray:2 4;stroke-width:2.4}
+.tf rect{fill:#334e68}.tf text{fill:#fff;font-size:12.5px;font-weight:700;text-anchor:middle}
+.tg rect{fill:#fff;stroke:#7b8794}.tg text{fill:#1f2933;font-size:12.5px;font-weight:700;text-anchor:middle}
+.lb{fill:#fff;fill-opacity:.92}
+.el{font-size:13px;text-anchor:middle;fill:#3e4c59}
+@page{size:A3 landscape;margin:8mm}
+@media print{
+ body{padding:0;font-size:11pt}
+ .flow{overflow:visible;border:0}
+ .flow svg{width:100%}
+ h2.brk{break-before:page}
+ tr{break-inside:avoid}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<h1>event-hub: speaker &amp; organizer user flow</h1>
+<p>The planned journey for a Tech Excellence meetup, from filtering potential speakers to the post-event thank-you. It designs the future app, so today's emails appear as the in-app steps that replace them. Internal working view: not for speakers. The people named in the lanes are made up.</p>
+<ul class="legend">
+<li><span class="k "></span>Step</li><li><span class="k dec"></span>Decision</li><li><span class="k mail"></span>Email (invitation and reminders only)</li><li><span class="k end"></span>Exit</li><li><span class="k ok"></span>Finished</li><li><span class="k exc"></span>Exception path</li><li><span class="k un"></span>Unconfirmed by the written procedure</li>
+<li><b>FIRST</b>, <b>SECOND</b>, <b>THIRD</b>: replaces that email</li>
+<li><b>G1&ndash;G16</b>: see gaps below</li>
+</ul>
+<div class="flow">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2800 1140" role="img" aria-labelledby="flow-title">
+<title id="flow-title">Speaker and organizer user flow across eight phases, in three swimlanes. The sections after the diagram list the mapping of emails to in-app steps and the gaps.</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+<rect class="ph0" x="120" y="0" width="380" height="1130"/>
+<text class="pht" x="310.0" y="28">Filtering</text>
+<text class="phs" x="310.0" y="52">any time</text>
+<rect class="ph1" x="500" y="0" width="560" height="1130"/>
+<text class="pht" x="780.0" y="28">Date reservation</text>
+<text class="phs" x="780.0" y="52">open-ended, 1 week to reply</text>
+<rect class="ph0" x="1060" y="0" width="230" height="1130"/>
+<text class="pht" x="1175.0" y="28">Agenda &amp; materials</text>
+<text class="phs" x="1175.0" y="52">from date confirmed</text>
+<rect class="ph1" x="1290" y="0" width="440" height="1130"/>
+<text class="pht" x="1510.0" y="28">Reminders</text>
+<text class="phs" x="1510.0" y="52">1 month, 3 weeks, 2 weeks before</text>
+<rect class="ph0" x="1730" y="0" width="290" height="1130"/>
+<text class="pht" x="1875.0" y="28">Review</text>
+<text class="phs" x="1875.0" y="52">about 2 weeks before</text>
+<rect class="ph1" x="2020" y="0" width="310" height="1130"/>
+<text class="pht" x="2175.0" y="28">Publish &amp; announce</text>
+<text class="phs" x="2175.0" y="52">about 2 weeks before</text>
+<rect class="ph0" x="2330" y="0" width="210" height="1130"/>
+<text class="pht" x="2435.0" y="28">Day of event</text>
+<text class="phs" x="2435.0" y="52">event day, 17:00</text>
+<rect class="ph1" x="2540" y="0" width="260" height="1130"/>
+<text class="pht" x="2670.0" y="28">After the event</text>
+<text class="phs" x="2670.0" y="52">after the event</text>
+<rect class="lane" x="0" y="80" width="2800" height="360"/>
+<rect class="lanel" x="0" y="80" width="110" height="360"/>
+<text class="lt" x="55" y="240.0"><tspan x="55" dy="0">Speaker</tspan></text>
+<text class="lp" x="55" y="278.0"><tspan x="55" dy="0">Mara Sample</tspan></text>
+<rect class="lane" x="0" y="440" width="2800" height="360"/>
+<rect class="lanel" x="0" y="440" width="110" height="360"/>
+<text class="lt" x="55" y="590.0"><tspan x="55" dy="0">Speaker</tspan><tspan x="55" dy="22">coordinator</tspan></text>
+<text class="lp" x="55" y="638.0"><tspan x="55" dy="0">Nina Example</tspan></text>
+<rect class="lane" x="0" y="800" width="2800" height="330"/>
+<rect class="lanel" x="0" y="800" width="110" height="330"/>
+<text class="lt" x="55" y="935.0"><tspan x="55" dy="0">Other</tspan><tspan x="55" dy="22">organizers</tspan></text>
+<text class="lp" x="55" y="983.0"><tspan x="55" dy="0">Omar Demo</tspan><tspan x="55" dy="18">Lena Mock</tspan></text>
+<line class="tl" x1="120" y1="68" x2="2790" y2="68" marker-end="url(#a)"/>
+<polyline class="e" points="295,860 335,860" marker-end="url(#a)"/>
+<polyline class="e" points="400,292 400,818" marker-end="url(#a)"/>
+<polyline class="e ex" points="400,902 400,995" marker-end="url(#a)"/>
+<polyline class="e" points="465,860 590,860 590,652" marker-end="url(#a)"/>
+<polyline class="e" points="590,588 590,530" marker-end="url(#a)"/>
+<polyline class="e" points="675,500 705,500" marker-end="url(#a)"/>
+<polyline class="e" points="770,458 770,292" marker-end="url(#a)"/>
+<polyline class="e" points="770,542 770,612" marker-end="url(#a)"/>
+<polyline class="e" points="770,668 770,703" marker-end="url(#a)"/>
+<polyline class="e" points="835,745 850,745 850,292" marker-end="url(#a)"/>
+<polyline class="e ex" points="770,787 770,855" marker-end="url(#a)"/>
+<polyline class="e ex" points="770,905 770,1085 210,1085 210,892" marker-end="url(#a)"/>
+<polyline class="e" points="855,260 915,260" marker-end="url(#a)"/>
+<polyline class="e" points="980,302 980,468" marker-end="url(#a)"/>
+<polyline class="e" points="905,500 885,500 885,260"/>
+<circle class="jn" cx="885" cy="260" r="4"/>
+<polyline class="e ex" points="980,532 980,615" marker-end="url(#a)"/>
+<polyline class="e" points="1045,260 1075,260 1075,500 1090,500" marker-end="url(#a)"/>
+<polyline class="e" points="1175,458 1175,308" marker-end="url(#a)"/>
+<polyline class="e" points="1270,240 1360,240 1360,444" marker-end="url(#a)"/>
+<polyline class="e" points="1438,500 1740,500" marker-end="url(#a)"/>
+<polyline class="e" points="1360,556 1360,595" marker-end="url(#a)"/>
+<polyline class="e" points="1435,625 1440,625" marker-end="url(#a)"/>
+<polyline class="e" points="1500,583 1500,500"/>
+<circle class="jn" cx="1500" cy="500" r="4"/>
+<polyline class="e" points="1500,667 1500,715" marker-end="url(#a)"/>
+<polyline class="e" points="1575,745 1600,745" marker-end="url(#a)"/>
+<polyline class="e" points="1660,703 1660,500"/>
+<circle class="jn" cx="1660" cy="500" r="4"/>
+<polyline class="e ex" points="1660,787 1660,855" marker-end="url(#a)"/>
+<polyline class="e" points="1890,500 1895,500" marker-end="url(#a)"/>
+<polyline class="e" points="1955,460 1955,292" marker-end="url(#a)"/>
+<polyline class="e" points="1890,260 1815,260 1815,458" marker-end="url(#a)"/>
+<polyline class="e" points="2015,500 2025,500" marker-end="url(#a)"/>
+<polyline class="e" points="2110,450 2110,292" marker-end="url(#a)"/>
+<polyline class="e ex" points="2110,228 2110,162" marker-end="url(#a)"/>
+<polyline class="e ex" points="2195,130 2206,130" marker-end="url(#a)"/>
+<polyline class="e" points="2110,550 2110,848" marker-end="url(#a)"/>
+<polyline class="e" points="2195,880 2435,880 2435,532" marker-end="url(#a)"/>
+<polyline class="e" points="2435,468 2435,408" marker-end="url(#a)"/>
+<polyline class="e" points="2435,352 2435,282" marker-end="url(#a)"/>
+<polyline class="e" points="2515,240 2580,240" marker-end="url(#a)"/>
+<polyline class="e" points="2660,268 2660,472" marker-end="url(#a)"/>
+<polyline class="e" points="2660,528 2660,584" marker-end="url(#a)"/>
+<polyline class="e" points="2660,656 2660,723" marker-end="url(#a)"/>
+<polyline class="e eo" points="2745,620 2770,620 2770,130 2740,130" marker-end="url(#a)"/>
+<polyline class="e ev" points="1090,880 1067,880 1067,515 1055,515" marker-end="url(#a)"/>
+<polyline class="e ev" points="1450,838 1450,800" marker-end="url(#a)"/>
+<g class="n step">
+<rect x="315.0" y="228.0" width="170" height="64" rx="10"/>
+<text><tspan x="400" y="248.0">Past speaker proposes</tspan><tspan x="400" y="265.0">a talk on the intake</tspan><tspan x="400" y="282.0">form</tspan></text>
+</g>
+<g class="tg"><rect x="463.8" y="218.0" width="27.2" height="20" rx="4"/><text x="477.40000000000003" y="232.5">G1</text></g>
+<g class="n step">
+<rect x="125.0" y="828.0" width="170" height="64" rx="10"/>
+<text><tspan x="210" y="848.0">Asks potential</tspan><tspan x="210" y="865.0">speaker: topics?</tspan><tspan x="210" y="882.0">anything practical?</tspan></text>
+</g>
+<g class="n dec">
+<polygon points="400,818.0 465.0,860 400,902.0 335.0,860"/>
+<text><tspan x="400" y="856.5">Technical</tspan><tspan x="400" y="873.5">topic?</tspan></text>
+</g>
+<g class="n end">
+<rect x="325.0" y="995.0" width="150" height="50" rx="25.0"/>
+<text><tspan x="400" y="1025.0">Not invited</tspan></text>
+</g>
+<g class="n step">
+<rect x="505.0" y="588.0" width="170" height="64" rx="10"/>
+<text><tspan x="590" y="616.5">Proposes a date and</tspan><tspan x="590" y="633.5">invites the speaker</tspan></text>
+</g>
+<g class="tf"><rect x="631.0" y="578.0" width="50.0" height="20" rx="4"/><text x="656.0" y="592.5">FIRST</text></g>
+<g class="n mail">
+<rect x="505.0" y="470.0" width="170" height="60" rx="3"/>
+<text><tspan x="599" y="496.5">Invitation email with</tspan><tspan x="599" y="513.5">sign-up link</tspan></text>
+<path class="env" d="M512.0 494h17v12h-17zM512.0 494l8.5 7l8.5-7"/>
+</g>
+<g class="n dec">
+<polygon points="770,458.0 835.0,500 770,542.0 705.0,500"/>
+<text><tspan x="770" y="496.5">Reply within</tspan><tspan x="770" y="513.5">1 week?</tspan></text>
+</g>
+<g class="n step">
+<rect x="685.0" y="228.0" width="170" height="64" rx="10"/>
+<text><tspan x="770" y="256.5">Creates account from</tspan><tspan x="770" y="273.5">the link</tspan></text>
+</g>
+<g class="tg"><rect x="833.8" y="218.0" width="27.2" height="20" rx="4"/><text x="847.4" y="232.5">G2</text></g>
+<g class="n mail">
+<rect x="700.0" y="612.0" width="140" height="56" rx="3"/>
+<text><tspan x="779" y="645.0">Reminder email</tspan></text>
+<path class="env" d="M707.0 634h17v12h-17zM707.0 634l8.5 7l8.5-7"/>
+</g>
+<g class="tg"><rect x="818.8" y="602.0" width="27.2" height="20" rx="4"/><text x="832.4" y="616.5">G4</text></g>
+<g class="n dec">
+<polygon points="770,703.0 835.0,745 770,787.0 705.0,745"/>
+<text><tspan x="770" y="741.5">Reply</tspan><tspan x="770" y="758.5">now?</tspan></text>
+</g>
+<g class="n end">
+<rect x="695.0" y="855.0" width="150" height="50" rx="25.0"/>
+<text><tspan x="770" y="876.5">Path ends for this</tspan><tspan x="770" y="893.5">speaker</tspan></text>
+</g>
+<g class="tg"><rect x="823.8" y="845.0" width="27.2" height="20" rx="4"/><text x="837.4" y="859.5">G3</text></g>
+<g class="n dec">
+<polygon points="980,218.0 1045.0,260 980,302.0 915.0,260"/>
+<text><tspan x="980" y="256.5">Date</tspan><tspan x="980" y="273.5">works?</tspan></text>
+</g>
+<g class="n step">
+<rect x="905.0" y="468.0" width="150" height="64" rx="10"/>
+<text><tspan x="980" y="496.5">Proposes another</tspan><tspan x="980" y="513.5">date</tspan></text>
+</g>
+<g class="tg"><rect x="1033.8" y="458.0" width="27.2" height="20" rx="4"/><text x="1047.3999999999999" y="472.5">G5</text></g>
+<g class="n end">
+<rect x="905.0" y="615.0" width="150" height="50" rx="25.0"/>
+<text><tspan x="980" y="636.5">No date fits: try</tspan><tspan x="980" y="653.5">again later</tspan></text>
+</g>
+<g class="n step">
+<rect x="1090.0" y="458.0" width="170" height="84" rx="10"/>
+<text><tspan x="1175" y="479.5">Confirms date, sends</tspan><tspan x="1175" y="496.5">calendar invite, opens</tspan><tspan x="1175" y="513.5">agenda &amp; materials</tspan><tspan x="1175" y="530.5">step</tspan></text>
+</g>
+<g class="tf"><rect x="1208.4" y="448.0" width="57.599999999999994" height="20" rx="4"/><text x="1237.2" y="462.5">SECOND</text></g>
+<g class="n step">
+<rect x="1080.0" y="172.0" width="190" height="136" rx="10"/>
+<text><tspan x="1175" y="194.0">Accepts calendar invite.</tspan><tspan x="1175" y="211.0">Agrees to Meetup</tspan><tspan x="1175" y="228.0">Guidelines. Fills in</tspan><tspan x="1175" y="245.0">agenda. Shares draft</tspan><tspan x="1175" y="262.0">slides and repository.</tspan><tspan x="1175" y="279.0">Due 1 month before</tspan><tspan x="1175" y="296.0">event.</tspan></text>
+</g>
+<g class="tg"><rect x="1248.8" y="162.0" width="27.2" height="20" rx="4"/><text x="1262.3999999999999" y="176.5">G6</text></g>
+<g class="n dec">
+<polygon points="1360,444.0 1438.0,500 1360,556.0 1282.0,500"/>
+<text><tspan x="1360" y="488.0">1 month:</tspan><tspan x="1360" y="505.0">agenda and</tspan><tspan x="1360" y="522.0">materials in?</tspan></text>
+</g>
+<g class="tg"><rect x="1378" y="446.0" width="27.2" height="20" rx="4"/><text x="1391.6" y="460.5">G8</text></g>
+<g class="n mail">
+<rect x="1285.0" y="595.0" width="150" height="60" rx="3"/>
+<text><tspan x="1369" y="621.5">Reminder email to</tspan><tspan x="1369" y="638.5">speaker</tspan></text>
+<path class="env" d="M1292.0 619h17v12h-17zM1292.0 619l8.5 7l8.5-7"/>
+</g>
+<g class="n dec">
+<polygon points="1500,583.0 1560.0,625 1500,667.0 1440.0,625"/>
+<text><tspan x="1500" y="621.5">3 weeks:</tspan><tspan x="1500" y="638.5">both in?</tspan></text>
+</g>
+<g class="n mail">
+<rect x="1425.0" y="715.0" width="150" height="60" rx="3"/>
+<text><tspan x="1509" y="733.0">Final reminder</tspan><tspan x="1509" y="750.0">email, coordinator</tspan><tspan x="1509" y="767.0">copied</tspan></text>
+<path class="env" d="M1432.0 739h17v12h-17zM1432.0 739l8.5 7l8.5-7"/>
+</g>
+<g class="n dec">
+<polygon points="1660,703.0 1720.0,745 1660,787.0 1600.0,745"/>
+<text><tspan x="1660" y="741.5">2 weeks:</tspan><tspan x="1660" y="758.5">both in?</tspan></text>
+</g>
+<g class="n end">
+<rect x="1585.0" y="855.0" width="150" height="50" rx="25.0"/>
+<text><tspan x="1660" y="885.0">Event cancelled</tspan></text>
+</g>
+<g class="tg"><rect x="1706.2" y="845.0" width="34.8" height="20" rx="4"/><text x="1723.6000000000001" y="859.5">G10</text></g>
+<g class="n step">
+<rect x="1740.0" y="458.0" width="150" height="84" rx="10"/>
+<text><tspan x="1815" y="479.5">Reviews against</tspan><tspan x="1815" y="496.5">guidelines,</tspan><tspan x="1815" y="513.5">shortens title if</tspan><tspan x="1815" y="530.5">too long</tspan></text>
+</g>
+<g class="n dec">
+<polygon points="1955,460.0 2015.0,500 1955,540.0 1895.0,500"/>
+<text><tspan x="1955" y="505.0">Passes?</tspan></text>
+</g>
+<g class="n step">
+<rect x="1890.0" y="228.0" width="130" height="64" rx="10"/>
+<text><tspan x="1955" y="256.5">Updates agenda</tspan><tspan x="1955" y="273.5">or materials</tspan></text>
+</g>
+<g class="tg"><rect x="1991.2" y="218.0" width="34.8" height="20" rx="4"/><text x="2008.6000000000001" y="232.5">G12</text></g>
+<g class="n step">
+<rect x="2025.0" y="450.0" width="170" height="100" rx="10"/>
+<text><tspan x="2110" y="479.5">Approves and shares</tspan><tspan x="2110" y="496.5">event details:</tspan><tspan x="2110" y="513.5">StreamYard link, 17:00</tspan><tspan x="2110" y="530.5">start, Meetup group</tspan></text>
+</g>
+<g class="tf"><rect x="2151.0" y="440.0" width="50.0" height="20" rx="4"/><text x="2176.0" y="454.5">THIRD</text></g>
+<g class="n step">
+<rect x="2035.0" y="228.0" width="150" height="64" rx="10"/>
+<text><tspan x="2110" y="248.0">Sees details, joins</tspan><tspan x="2110" y="265.0">Meetup group, likes</tspan><tspan x="2110" y="282.0">and shares</tspan></text>
+</g>
+<g class="tg"><rect x="2163.8" y="218.0" width="27.2" height="20" rx="4"/><text x="2177.4" y="232.5">G6</text></g>
+<g class="n step">
+<rect x="2025.0" y="848.0" width="170" height="64" rx="10"/>
+<text><tspan x="2110" y="868.0">Ticks publish</tspan><tspan x="2110" y="885.0">checklist: Meetup,</tspan><tspan x="2110" y="902.0">LinkedIn, Twitter</tspan></text>
+</g>
+<g class="tg"><rect x="2166.2" y="838.0" width="34.8" height="20" rx="4"/><text x="2183.6" y="852.5">G14</text></g>
+<g class="n step">
+<rect x="2025.0" y="98.0" width="170" height="64" rx="10"/>
+<text><tspan x="2110" y="118.0">Can&#x27;t make it (e.g.</tspan><tspan x="2110" y="135.0">illness): tells</tspan><tspan x="2110" y="152.0">organizers in the app</tspan></text>
+</g>
+<g class="tg"><rect x="2166.2" y="88.0" width="34.8" height="20" rx="4"/><text x="2183.6" y="102.5">G15</text></g>
+<g class="n end">
+<rect x="2206.0" y="95.0" width="124" height="70" rx="35.0"/>
+<text><tspan x="2268" y="118.0">Cancelled, new</tspan><tspan x="2268" y="135.0">speaker</tspan><tspan x="2268" y="152.0">arranged</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2355.0" y="468.0" width="160" height="64" rx="10"/>
+<text><tspan x="2435" y="496.5">Adds speaker as</tspan><tspan x="2435" y="513.5">Meetup co-host</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2355.0" y="352.0" width="160" height="56" rx="10"/>
+<text><tspan x="2435" y="376.5">Joins StreamYard at</tspan><tspan x="2435" y="393.5">17:00</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2355.0" y="198.0" width="160" height="84" rx="10"/>
+<text><tspan x="2435" y="228.0">Presents for 60 min,</tspan><tspan x="2435" y="245.0">then 30 min Q&amp;A from</tspan><tspan x="2435" y="262.0">YouTube chat</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2580.0" y="212.0" width="160" height="56" rx="10"/>
+<text><tspan x="2660" y="245.0">Shares repository</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2580.0" y="472.0" width="160" height="56" rx="10"/>
+<text><tspan x="2660" y="496.5">Sends in-app</tspan><tspan x="2660" y="513.5">thank-you</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2575.0" y="584.0" width="170" height="72" rx="10"/>
+<text><tspan x="2660" y="608.0">Prompts speaker to</tspan><tspan x="2660" y="625.0">reply to any YouTube</tspan><tspan x="2660" y="642.0">comments</tspan></text>
+</g>
+<g class="n step un">
+<rect x="2580.0" y="102.0" width="160" height="56" rx="10"/>
+<text><tspan x="2660" y="126.5">Replies to YouTube</tspan><tspan x="2660" y="143.5">comments</tspan></text>
+</g>
+<g class="n ok un">
+<rect x="2605.0" y="723.0" width="110" height="44" rx="22.0"/>
+<text><tspan x="2660" y="750.0">Done</tspan></text>
+</g>
+<g class="n exc">
+<rect x="1090.0" y="848.0" width="170" height="64" rx="10"/>
+<text><tspan x="1175" y="868.0">An organizer asks to</tspan><tspan x="1175" y="885.0">reschedule after</tspan><tspan x="1175" y="902.0">confirmation</tspan></text>
+</g>
+<g class="tg"><rect x="1238.8" y="838.0" width="27.2" height="20" rx="4"/><text x="1252.3999999999999" y="852.5">G9</text></g>
+<g class="n exc">
+<rect x="1315.0" y="838.0" width="270" height="84" rx="10"/>
+<text><tspan x="1450" y="859.5">Another organizer covers any</tspan><tspan x="1450" y="876.5">coordinator step while they are</tspan><tspan x="1450" y="893.5">away. Status is shared, so no Reply</tspan><tspan x="1450" y="910.5">All.</tspan></text>
+</g>
+<rect class="lb" x="343.5" y="948" width="113.0" height="20"/><text class="el" x="400" y="963">No: soft skills</text>
+<rect class="lb" x="465.0" y="805" width="190.0" height="20"/><text class="el" x="560" y="820">Yes: practical talks first</text>
+<rect class="lb" x="755.5" y="390" width="29.0" height="20"/><text class="el" x="770" y="405">Yes</text>
+<rect class="lb" x="759.0" y="567" width="22.0" height="20"/><text class="el" x="770" y="582">No</text>
+<rect class="lb" x="835.5" y="550" width="29.0" height="20"/><text class="el" x="850" y="565">Yes</text>
+<rect class="lb" x="759.0" y="815" width="22.0" height="20"/><text class="el" x="770" y="830">No</text>
+<rect class="lb" x="434.0" y="1075" width="92.0" height="20"/><text class="el" x="480" y="1090">Next speaker</text>
+<rect class="lb" x="916.5" y="375" width="127.0" height="20"/><text class="el" x="980" y="390">No: offers months</text>
+<rect class="lb" x="934.0" y="570" width="92.0" height="20"/><text class="el" x="980" y="585">No slot left</text>
+<rect class="lb" x="1047.5" y="235" width="29.0" height="20"/><text class="el" x="1062" y="250">Yes</text>
+<rect class="lb" x="1425.5" y="475" width="29.0" height="20"/><text class="el" x="1440" y="490">Yes</text>
+<rect class="lb" x="1349.0" y="550" width="22.0" height="20"/><text class="el" x="1360" y="565">No</text>
+<rect class="lb" x="1485.5" y="535" width="29.0" height="20"/><text class="el" x="1500" y="550">Yes</text>
+<rect class="lb" x="1489.0" y="671" width="22.0" height="20"/><text class="el" x="1500" y="686">No</text>
+<rect class="lb" x="1645.5" y="600" width="29.0" height="20"/><text class="el" x="1660" y="615">Yes</text>
+<rect class="lb" x="1649.0" y="802" width="22.0" height="20"/><text class="el" x="1660" y="817">No</text>
+<rect class="lb" x="1944.0" y="375" width="22.0" height="20"/><text class="el" x="1955" y="390">No</text>
+<rect class="lb" x="2008.5" y="472" width="29.0" height="20"/><text class="el" x="2023" y="487">Yes</text>
+<rect class="lb" x="2078.0" y="700" width="64.0" height="20"/><text class="el" x="2110" y="715">Next day</text>
+<rect class="lb" x="1425.0" y="815" width="50.0" height="20"/><text class="el" x="1450" y="830">Covers</text>
+</svg>
+</div>
+<h2 class="brk">Today's emails in event-hub</h2>
+<table>
+<thead><tr><th>Today</th><th>What it achieves</th><th>In event-hub</th></tr></thead>
+<tbody>
+<tr><td>FIRST EMAIL</td><td>Request: is the speaker free on this date?</td><td>Invitation email with a link (email stays). The date answer is an in-app step.</td></tr><tr><td>Reminder after 1 week</td><td>Chase a missing reply</td><td>Reminder email</td></tr><tr><td>SECOND EMAIL</td><td>Confirmation, instructions and due date</td><td>In-app agenda &amp; materials step, plus the calendar invite</td></tr><tr><td>Reminder at 1 month</td><td>Chase agenda and materials</td><td>Automatic reminder email to the speaker</td></tr><tr><td>Final reminder at 3 weeks</td><td>Deadline, with cancellation warning</td><td>Automatic reminder email, coordinator copied</td></tr><tr><td>THIRD EMAIL</td><td>Confirmation and day-of instructions</td><td>In-app event details after approval</td></tr><tr><td>Co-host and thank-you notes</td><td>Confirmation</td><td>In-app status and in-app thank-you</td></tr><tr><td>YouTube comment note</td><td>Request to reply to comments</td><td>In-app prompt</td></tr>
+</tbody>
+</table>
+<h2>Gaps in the procedure</h2>
+<p>Each gap shows what the diagram does for now. To change the procedure, raise it in #organizers.</p>
+<table class="gaps">
+<thead><tr><th>Ref</th><th>Topic</th><th>Gap and current treatment</th></tr></thead>
+<tbody>
+<tr><td>G1</td><td>Speaker-initiated proposals</td><td>The procedure doesn't cover them. <b>Drawn:</b> a second way into Filtering, decided by the other organizers.</td></tr><tr><td>G2</td><td>Returning speakers</td><td>The design covers a new speaker's account. <b>Assumed:</b> a returning speaker gets the same invitation and signs in.</td></tr><tr><td>G3</td><td>No reply to the invitation</td><td>&ldquo;Ignore them&rdquo; ends the path but says nothing about the slot. <b>Drawn:</b> a loop back to Filtering for the next speaker.</td></tr><tr><td>G4</td><td>Reminder after 1 week</td><td>The in-app design lists automatic reminders at 1 month and 3 weeks only. <b>Assumed:</b> this one is also an automatic email.</td></tr><tr><td>G5</td><td>Speaker can't make the date</td><td>The template has a single &ldquo;last slot&rdquo; email and marks &ldquo;tell us which months&rdquo; as ignore, but in practice dates went back and forth. <b>Drawn:</b> the loop.</td></tr><tr><td>G6</td><td>Checks with no follow-up</td><td>Accepting the calendar invite and joining the Meetup group are requested but never checked. <b>Drawn:</b> speaker tasks only.</td></tr><tr><td>G7</td><td>Disagreeing with the guidelines</td><td>Speakers proceed &ldquo;if you agree&rdquo;, but nothing says what happens otherwise. <b>Not drawn.</b></td></tr><tr><td>G8</td><td>What the checks look for</td><td>&ldquo;Timing&rdquo; checks materials only, while reminders chase agenda and materials. One template calls materials required, another optional. <b>Drawn:</b> both are checked.</td></tr><tr><td>G9</td><td>Due date after a reschedule</td><td>When an event moved 1 week earlier, the due date stayed, so it fell about 3 weeks before the event. <b>Drawn:</b> no reset. A reschedule should probably reset it.</td></tr><tr><td>G10</td><td>Cancellation</td><td>The final reminder warns of cancellation, but &ldquo;Timing&rdquo; has no cancellation step. <b>Drawn:</b> no agenda or materials by 2 weeks before cancels the event.</td></tr><tr><td>G11</td><td>Conflicting final deadline</td><td>A leftover draft sets a last deadline that publishes 1 week before the event, not 2. <b>Drawn:</b> 2 weeks.</td></tr><tr><td>G12</td><td>Review doesn't pass</td><td>No source says what happens. <b>Drawn:</b> the speaker updates and it is reviewed again, with no limit or deadline.</td></tr><tr><td>G13</td><td>Publish order</td><td>&ldquo;Timing&rdquo; publishes before the THIRD EMAIL, and the template says Meetup is already live. In practice it went out first and everything was announced the next day. <b>Drawn:</b> the practice.</td></tr><tr><td>G14</td><td>Publishing owner</td><td>A leftover note gives LinkedIn and Twitter to one organizer. <b>Drawn:</b> under Other organizers, with no separate lane.</td></tr><tr><td>G15</td><td>Speaker drops out after the announcement</td><td>The template says the event is cancelled and another speaker arranged, but no step covers it. <b>Drawn:</b> as an end point. Who finds the replacement is open.</td></tr><tr><td>G16</td><td>Day-of and post-event steps</td><td>These come only from leftover drafts and one sample, so they are drawn with dotted borders as unconfirmed. When the co-host is added is also unclear.</td></tr>
+</tbody>
+</table>
+</body>
+</html>
