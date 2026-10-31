@@ -1,0 +1,361 @@
+name: _deploy-cloud-run
+
+# Deploys one stack to Cloud Run: copies the tested images into Artifact Registry without
+# rebuilding them, builds the cloud-only images, then deploys Keycloak, external systems,
+# migrations, backend and frontend, and waits for the endpoints.
+#
+# Callers own the trigger and concurrency (github.workflow resolves to the caller, so a group here
+# would collide with the caller's and deadlock). Keycloak is shared: callers that deploy two
+# stacks in one run chain them with `needs`, so they don't race on it.
+#
+# Two checkouts on purpose: source-ref for the migrations and external systems, so a stack runs
+# what its images were tested with, and the workflow's own commit for Keycloak (see
+# build-cloud-images).
+
+on:
+  workflow_call:
+    inputs:
+      stack:
+        description: 'Stack: acceptance-real, acceptance-stub, qa or prod'
+        required: true
+        type: string
+      image-urls:
+        description: 'JSON array of the frontend and backend GHCR images, each by digest or tag'
+        required: true
+        type: string
+      source-ref:
+        description: 'Git ref the images were built from: commit SHA or RC tag'
+        required: true
+        type: string
+      realm:
+        description: 'Keycloak realm the stack logs in to'
+        required: false
+        type: string
+        default: shop
+      environment:
+        description: 'GitHub environment gating the deploy; empty for none'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      GHCR_TOKEN:
+        description: 'Token that can pull from GHCR'
+        required: true
+    outputs:
+      frontend-url:
+        description: 'Frontend base URL'
+        value: ${{ jobs.deploy-stack.outputs.frontend-url }}
+      backend-url:
+        description: 'Backend base URL'
+        value: ${{ jobs.deploy-stack.outputs.backend-url }}
+      external-systems-url:
+        description: 'External systems base URL, without the /erp, /clock or /tax path'
+        value: ${{ jobs.deploy-stack.outputs.external-systems-url }}
+      keycloak-url:
+        description: 'Keycloak base URL'
+        value: ${{ jobs.deploy-stack.outputs.keycloak-url }}
+      frontend-image:
+        description: 'Deployed frontend image, by digest'
+        value: ${{ jobs.promote-images.outputs.frontend-image }}
+      backend-image:
+        description: 'Deployed backend image, by digest'
+        value: ${{ jobs.promote-images.outputs.backend-image }}
+
+permissions: {}
+
+env:
+  # Prefix for Cloud Run services, secrets and databases; set by setup-gcp.sh from the repo name
+  SYSTEM: ${{ vars.SYSTEM_NAME }}
+  STACK: ${{ inputs.stack }}
+  REALM: ${{ inputs.realm }}
+  EXTERNAL_SYSTEMS: ${{ inputs.stack == 'acceptance-stub' && 'stubs' || 'simulators' }}
+
+jobs:
+  # === Copy Tested Images + Build Cloud-only Images into Artifact Registry ===
+  promote-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Only here: later jobs need this one, and a protected environment would otherwise ask once per job.
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      project-number: ${{ steps.registry.outputs.project-number }}
+      frontend-image: ${{ steps.copy.outputs.frontend }}
+      backend-image: ${{ steps.copy.outputs.backend }}
+      db-migrate-image: ${{ steps.shared.outputs.db-migrate }}
+      keycloak-image: ${{ steps.shared.outputs.keycloak }}
+      external-systems-image: ${{ steps.shared.outputs.external-systems }}
+    steps:
+      - name: Check Stack Is Supported
+        run: |
+          case "$STACK" in
+            acceptance-real|acceptance-stub|qa|prod) ;;
+            *) echo "::error::Unknown stack '$STACK'."; exit 1 ;;
+          esac
+
+      # The workflow's own commit, for the local actions and Keycloak (see build-cloud-images).
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Checkout Source Under Deployment
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source-ref }}
+          path: source
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Log in to GHCR
+        uses: optivem/actions/docker-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Resolve Registry
+        id: registry
+        env:
+          PROJECT: ${{ vars.GCP_PROJECT_ID }}
+          REGION: ${{ vars.GCP_REGION }}
+          WIF_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+        run: |
+          # The deployer SA has no resourcemanager.projects.get; the provider
+          # name is projects/<number>/locations/global/..., so read it from there.
+          PROJECT_NUMBER=$(cut -d/ -f2 <<< "$WIF_PROVIDER")
+          [[ "$PROJECT_NUMBER" =~ ^[0-9]+$ ]] || { echo "::error::Cannot parse project number from GCP_WORKLOAD_IDENTITY_PROVIDER"; exit 1; }
+          # The production- prefix is what keeps prod images through the registry cleanup (terraform/main.tf)
+          prefix="$STACK"
+          [[ "$STACK" != prod ]] || prefix=production
+          {
+            echo "registry=${REGION}-docker.pkg.dev/${PROJECT}/app-images"
+            echo "tag=${prefix}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            echo "project-number=${PROJECT_NUMBER}"
+          } >> "$GITHUB_OUTPUT"
+          gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      # Manifest copy by digest keeps what was tested; tags can move, so the source digest is pinned first.
+      - name: Copy Tested Images (GHCR to Artifact Registry)
+        id: copy
+        env:
+          REGISTRY: ${{ steps.registry.outputs.registry }}
+          TAG: ${{ steps.registry.outputs.tag }}
+          IMAGE_URLS: ${{ inputs.image-urls }}
+        run: |
+          set -euo pipefail
+          digest_of() { docker buildx imagetools inspect "$1" --format '{{json .Manifest}}' | jq -r .digest; }
+          jq -e 'length == 2 and any(test("/frontend[:@]")) and any(test("/backend[:@]"))' <<< "$IMAGE_URLS" > /dev/null \
+            || { echo "::error::image-urls must list the frontend and backend images."; exit 1; }
+          while read -r url; do
+            base="${url%@*}"; base="${base%:*}"
+            name="${base##*/}"
+            digest="$(digest_of "$url")"
+            docker buildx imagetools create -t "${REGISTRY}/${name}:${TAG}" "${base}@${digest}"
+            copied="$(digest_of "${REGISTRY}/${name}:${TAG}")"
+            if [[ "$copied" != "$digest" ]]; then
+              echo "::error::${name}: Artifact Registry has ${copied}, tested was ${digest}."
+              exit 1
+            fi
+            echo "${name}=${REGISTRY}/${name}@${digest}" >> "$GITHUB_OUTPUT"
+          done < <(jq -r '.[]' <<< "$IMAGE_URLS")
+
+      - name: Build and Push Cloud-only Images
+        id: shared
+        uses: ./.github/actions/build-cloud-images
+        with:
+          registry: ${{ steps.registry.outputs.registry }}
+          system: ${{ vars.SYSTEM_NAME }}
+          region: ${{ vars.GCP_REGION }}
+          project-number: ${{ steps.registry.outputs.project-number }}
+          external-systems: ${{ env.EXTERNAL_SYSTEMS }}
+          source-path: source
+
+      - name: Keep Cloud-only Images Through Registry Cleanup
+        if: inputs.stack == 'prod'
+        env:
+          REGISTRY: ${{ steps.registry.outputs.registry }}
+          TAG: ${{ steps.registry.outputs.tag }}
+          MIGRATE_IMAGE: ${{ steps.shared.outputs.db-migrate }}
+          KEYCLOAK_IMAGE: ${{ steps.shared.outputs.keycloak }}
+          EXT_IMAGE: ${{ steps.shared.outputs.external-systems }}
+        run: |
+          set -euo pipefail
+          for image in "$MIGRATE_IMAGE" "$KEYCLOAK_IMAGE" "$EXT_IMAGE"; do
+            name="${image##*/}"
+            docker buildx imagetools create -t "${REGISTRY}/${name%%:*}:${TAG}" "$image"
+          done
+
+  # === Deploy: Keycloak (shared by all stacks) ===
+  deploy-keycloak:
+    needs: promote-images
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Deploy Keycloak to Cloud Run
+        uses: ./.github/actions/deploy-keycloak-cloud
+        with:
+          image: ${{ needs.promote-images.outputs.keycloak-image }}
+          system: ${{ vars.SYSTEM_NAME }}
+          project: ${{ vars.GCP_PROJECT_ID }}
+          project-number: ${{ needs.promote-images.outputs.project-number }}
+          region: ${{ vars.GCP_REGION }}
+          realm: ${{ inputs.realm }}
+
+  # === Deploy: Stack ===
+  deploy-stack:
+    needs: [promote-images, deploy-keycloak]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      frontend-url: ${{ steps.stack.outputs.FRONTEND_URL }}
+      backend-url: ${{ steps.stack.outputs.BACKEND_URL }}
+      external-systems-url: ${{ steps.stack.outputs.EXT_URL }}
+      keycloak-url: ${{ steps.stack.outputs.KEYCLOAK_URL }}
+    env:
+      REGION: ${{ vars.GCP_REGION }}
+      PROJECT: ${{ vars.GCP_PROJECT_ID }}
+      PROJECT_NUMBER: ${{ needs.promote-images.outputs.project-number }}
+      BACKEND_IMAGE: ${{ needs.promote-images.outputs.backend-image }}
+      FRONTEND_IMAGE: ${{ needs.promote-images.outputs.frontend-image }}
+      MIGRATE_IMAGE: ${{ needs.promote-images.outputs.db-migrate-image }}
+      EXT_IMAGE: ${{ needs.promote-images.outputs.external-systems-image }}
+      EXT_SERVICE: ${{ inputs.stack == 'acceptance-stub' && 'stubs' || 'sim' }}
+      EXT_PORT: ${{ inputs.stack == 'acceptance-stub' && '8080' || '9000' }}
+      EXTERNAL_SYSTEM_MODE: ${{ inputs.stack == 'acceptance-stub' && 'stub' || 'real' }}
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Resolve Stack Settings
+        id: stack
+        run: |
+          set -euo pipefail
+          url() { echo "https://$1-${PROJECT_NUMBER}.${REGION}.run.app"; }
+          p="${SYSTEM}-${STACK}"
+          {
+            echo "DB_NAME=${SYSTEM//-/_}_${STACK//-/_}"
+            echo "SA=runtime@${PROJECT}.iam.gserviceaccount.com"
+            echo "EXT_NAME=${p}-${EXT_SERVICE}"
+            echo "MIGRATE_JOB=${p}-migrate"
+            echo "BACKEND_NAME=${p}-backend"
+            echo "FRONTEND_NAME=${p}-frontend"
+            echo "EXT_URL=$(url "${p}-${EXT_SERVICE}")"
+            echo "BACKEND_URL=$(url "${p}-backend")"
+            echo "FRONTEND_URL=$(url "${p}-frontend")"
+            echo "KEYCLOAK_URL=$(url "${SYSTEM}-keycloak")"
+          } | tee -a "$GITHUB_OUTPUT" >> "$GITHUB_ENV"
+
+      - name: Deploy External Systems (${{ env.EXTERNAL_SYSTEMS }})
+        run: |
+          set -euo pipefail
+          gcloud run deploy "$EXT_NAME" \
+            --image "$EXT_IMAGE" --region "$REGION" --project "$PROJECT" \
+            --service-account "$SA" --port "$EXT_PORT" --memory 1Gi \
+            --max-instances 2 --allow-unauthenticated
+
+      - name: Read DB Credentials
+        run: |
+          set -euo pipefail
+          db="$(gcloud secrets versions access latest --secret="${SYSTEM}-db")"
+          password="$(jq -r .password <<< "$db")"
+          echo "::add-mask::${password}"
+          {
+            echo "DB_HOST=$(jq -r .host <<< "$db")"
+            echo "DB_PORT=$(jq -r .port <<< "$db")"
+            echo "DB_USER=$(jq -r .user <<< "$db")"
+            echo "DB_PASSWORD=${password}"
+          } >> "$GITHUB_ENV"
+
+      # Flyway reads its settings from FLYWAY_* env vars (avoids comma-splitting of --args).
+      - name: Run DB Migrations
+        run: |
+          set -euo pipefail
+          env_file="${RUNNER_TEMP}/migrate-env.json"
+          jq -n \
+            --arg url "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require" \
+            --arg user "$DB_USER" --arg pass "$DB_PASSWORD" \
+            '{FLYWAY_URL:$url, FLYWAY_USER:$user, FLYWAY_PASSWORD:$pass}' > "$env_file"
+          gcloud run jobs deploy "$MIGRATE_JOB" \
+            --image "$MIGRATE_IMAGE" --region "$REGION" --project "$PROJECT" \
+            --service-account "$SA" --args migrate --max-retries 0 --task-timeout 600 \
+            --env-vars-file "$env_file"
+          rm -f "$env_file"
+          gcloud run jobs execute "$MIGRATE_JOB" --region "$REGION" --project "$PROJECT" --wait
+
+      - name: Deploy Backend
+        run: |
+          set -euo pipefail
+          env_file="${RUNNER_TEMP}/backend-env.json"
+          jq -n \
+            --arg host "$DB_HOST" --arg port "$DB_PORT" --arg name "$DB_NAME" \
+            --arg user "$DB_USER" --arg pass "$DB_PASSWORD" \
+            --arg ext "$EXT_URL" --arg mode "$EXTERNAL_SYSTEM_MODE" \
+            --arg origin "$FRONTEND_URL" --arg issuer "${KEYCLOAK_URL}/realms/${REALM}" \
+            '{POSTGRES_DB_HOST:$host, POSTGRES_DB_PORT:$port, POSTGRES_DB_NAME:$name,
+              POSTGRES_DB_USER:$user, POSTGRES_DB_PASSWORD:$pass,
+              ERP_API_URL:($ext + "/erp"), CLOCK_API_URL:($ext + "/clock"), TAX_API_URL:($ext + "/tax"),
+              EXTERNAL_SYSTEM_MODE:$mode, ALLOWED_ORIGINS:$origin,
+              AUTH_ISSUER_URI:$issuer,
+              AUTH_JWK_SET_URI:($issuer + "/protocol/openid-connect/certs"),
+              AUTH_AUDIENCE:"shop-backend"}' > "$env_file"
+          gcloud run deploy "$BACKEND_NAME" \
+            --image "$BACKEND_IMAGE" --region "$REGION" --project "$PROJECT" \
+            --service-account "$SA" --port 8081 --memory 1Gi --cpu 1 --cpu-boost \
+            --max-instances 2 --allow-unauthenticated \
+            --env-vars-file "$env_file"
+          rm -f "$env_file"
+
+      - name: Deploy Frontend
+        run: |
+          set -euo pipefail
+          gcloud run deploy "$FRONTEND_NAME" \
+            --image "$FRONTEND_IMAGE" --region "$REGION" --project "$PROJECT" \
+            --service-account "$SA" --port 3000 \
+            --max-instances 2 --allow-unauthenticated \
+            --set-env-vars "BACKEND_API_URL=${BACKEND_URL},KEYCLOAK_URL=${KEYCLOAK_URL},KEYCLOAK_REALM=${REALM},KEYCLOAK_CLIENT_ID=shop-frontend"
+
+      - name: Wait for Systems
+        uses: optivem/actions/wait-for-endpoints@v1
+        with:
+          endpoints: |
+            [
+              { "name": "Eventhub UI", "url": "${{ env.FRONTEND_URL }}/" },
+              { "name": "Eventhub API", "url": "${{ env.BACKEND_URL }}/health" },
+              { "name": "ERP", "url": "${{ env.EXT_URL }}/erp/health" },
+              { "name": "Clock", "url": "${{ env.EXT_URL }}/clock/health" }
+            ]
+          max-attempts: '60'
+          wait-seconds: '10'
+          timeout-seconds: '900'
