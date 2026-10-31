@@ -24,7 +24,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Finish Step 2 of `## Steps`: `docs/prototype/styles.css` and the sample `speaker-home.html` are built and checked at phone and desktop widths, so agree the look with the user, then run Step 3. The gap recommendations and Step 5 of `plans/20261031-1011-speaker-organizer-user-flow.md` are still open, so build on the page as it stands and adjust screens if they change.
+Run Steps 3 and 4 of `## Steps`: copy the page shell from `docs/prototype/speaker-home.html` and use the components in `docs/prototype/styles.css`, whose look is agreed. The gap recommendations and Step 5 of `plans/20261031-1011-speaker-organizer-user-flow.md` are still open, so build on the page as it stands and adjust screens if they change.
 
 ## Screen list
 
@@ -95,7 +95,6 @@ Files are flat in `docs/prototype/`, prefixed by role. "G" refs are the gaps in 
 
 ## Steps
 
-- [ ] Step 2: Build the shared responsive stylesheet and page layout (navigation, role switcher, status and task components) with one sample screen, check it at phone and desktop widths, and agree the look with the user.
 - [ ] Step 3: Build the speaker screens and mock emails, with links between them.
 - [ ] Step 4: Build the speaker coordinator and other organizers screens, with links between them.
 - [ ] Step 5: Add an index page listing every screen by role and phase, as the prototype's starting point.
