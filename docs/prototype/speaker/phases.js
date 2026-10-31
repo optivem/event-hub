@@ -1,14 +1,14 @@
 /* Wizard tabs for the speaker's event. Each phase opens in turn and locks once submitted.
-   "reached": 1 reservation, 2 agenda, 3 materials, 4 in review, 5 backstage, 6 event over.
+   "reached": 1 reservation, 2 agenda, 3 materials, 4 in review, 5 event day, 6 event over.
    Event Materials is the exception: submitted materials can change until the event is over.
    It travels in the tab links, so the prototype needs no saved state. The sample starts with Event Reservation done. */
 (function () {
   var PHASES = [
-    { name: 'Status', href: 'speaker-home.html', opensAt: 0 },
+    { name: 'Overview', href: 'speaker-home.html', opensAt: 0 },
     { name: 'Event Reservation', href: 'speaker-reservation.html', opensAt: 1 },
-    { name: 'Event Agenda', href: 'speaker-agenda.html', opensAt: 2 },
-    { name: 'Event Materials', href: 'speaker-materials.html', opensAt: 3 },
-    { name: 'Event Backstage', href: 'speaker-event-details.html', opensAt: 5 }
+    { name: 'Event Agenda', href: 'speaker-agenda.html', opensAt: 2, due: '10 December 2026' },
+    { name: 'Event Materials', href: 'speaker-materials.html', opensAt: 3, due: '21 December 2026' },
+    { name: 'Event Day', href: 'speaker-event-details.html', opensAt: 5 }
   ];
   var bar = document.getElementById('phase-tabs');
   var active = Number(bar.dataset.phase);
@@ -45,16 +45,28 @@
       var inReview = phase.opensAt === 3 && reached === 4;
       var row = document.createElement('li');
       row.className = 'task' + (isDone(phase) && !inReview ? ' done' : '');
+      var body = document.createElement('span');
+      body.className = 'task-body';
       var title = document.createElement('span');
-      title.className = 'task-body task-title';
+      title.className = 'task-title';
       title.textContent = phase.name;
-      var badge = document.createElement('span');
-      var state = inReview ? ['In review', 'info'] : isDone(phase) ? ['Done', 'ok'] :
-        isOpen(phase) ? ['Open', 'warn'] : ['Not started', ''];
-      badge.className = 'status ' + state[1];
-      badge.textContent = state[0];
-      row.appendChild(title);
-      row.appendChild(badge);
+      body.appendChild(title);
+      var isCurrent = isOpen(phase) && !isDone(phase);
+      var noteText = inReview ? 'In review' : isCurrent && phase.due ? 'Due ' + phase.due : '';
+      if (noteText) {
+        var note = document.createElement('span');
+        note.className = 'task-note';
+        note.textContent = noteText;
+        body.appendChild(note);
+      }
+      if (isDone(phase) && !inReview) {
+        var tick = document.createElement('span');
+        tick.className = 'status ok';
+        tick.textContent = '\u2713';
+        tick.setAttribute('aria-label', 'Done');
+        row.appendChild(tick);
+      }
+      row.insertBefore(body, row.firstChild);
       list.appendChild(row);
     });
     document.getElementById('status-progress').textContent =
