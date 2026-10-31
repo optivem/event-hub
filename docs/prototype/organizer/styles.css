@@ -107,6 +107,9 @@ a { color: var(--accent); }
 }
 .columns .card:last-child { margin-bottom: 0; }
 
+/* Narrow column for login and set-password screens */
+.narrow { max-width: 420px; margin: 0 auto; }
+
 /* Status badge: always a word as well as a colour */
 .status {
   display: inline-block;

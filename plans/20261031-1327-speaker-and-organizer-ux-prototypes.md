@@ -20,11 +20,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 2. Screens now live in `docs/prototype/speaker/` and `docs/prototype/organizer/`, with the four mock emails, the "All screens" index and a `styles.css` still at the `docs/prototype/` root. Step 2 adds the login screens, turns `speaker-sign-up` into a set-password screen and moves the emails into the speaker prototype. Stay on `main`.
+Run Step 3. Both prototypes now start at a login `index.html`, and all four mock emails live in `docs/prototype/speaker/`. Step 3 merges events and potential speakers into `organizer-home.html`, which absorbs `organizer-speakers.html`. Stay on `main`.
 
 ## Steps
 
-- [ ] Step 2: Add an email and password login screen to each prototype as its entry point, and make it each prototype's `index.html`. Speakers can't create their own accounts, so the speaker login has no sign-up link: the organizer creates the account by sending the invitation (`organizer-propose-date`, with a note saying so). Rework `speaker-sign-up` into a "Set your password" screen, reached only from the invitation email, which then continues to the date question. Returning speakers log in as normal. Link `speaker-propose-talk` from the speaker's home so past speakers reach it after login. Move all four mock emails into the speaker prototype, and show a "speaker receives this email" note at the matching organizer steps.
 - [ ] Step 3: Add a post-login home for the organizer that brings together the merged screens: events (from `coordinator-home`) and potential speakers (from `organizers-speakers`).
 - [ ] Step 4: Rewrite the flow so each prototype reads naturally from login: update "Next in the flow" links and navigation, and remove the role switcher.
 - [ ] Step 5: Remove all coordinator wording from screens and mock emails, and drop anything that only existed because of the split, such as handoffs between coordinator and other organizers and the "Covering for ..." banner on `coordinator-home`.
