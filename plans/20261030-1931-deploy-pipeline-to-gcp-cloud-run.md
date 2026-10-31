@@ -1,9 +1,11 @@
 # 2026-10-30 19:31:32 UTC — Deploy the pipeline to GCP Cloud Run
 
+> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-10-31T13:26:24Z`
+
 ## TL;DR
 
 **Why:** The acceptance, QA and prod stages only simulate deployment: `deploy-docker-compose` starts the system on a throwaway GitHub runner at `localhost`, so nothing is ever really deployed and "production" disappears when the job ends.
-**End result:** The acceptance, QA and prod stages of `event-hub` deploy the tested images to GCP Cloud Run with Neon Postgres, the system tests run against the deployed URLs, and the system costs ~$0 when idle. This follows the setup proven in `academy/shop`.
+**End result:** The acceptance, QA and prod stages of `event-hub` deploy the tested images to GCP Cloud Run with Neon Postgres, the system tests run against the deployed URLs, and the system costs ~$0 when idle. This follows the setup proven in `optivem/shop`.
 
 ## Outcomes
 
@@ -20,14 +22,14 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-**Design first: resolve the Open questions with `/refine-plan`.** After that, Step 1 is: copy `terraform/`, `setup-gcp.sh` and `teardown-gcp.sh` from `academy/shop` into this repo, adapt them to `event-hub`, then stop and hand the user the exact provisioning command. Do not copy `teardown-everything.sh`: it deletes every other GCP project too.
+Step 1: copy `terraform/`, `setup-gcp.sh` and `teardown-gcp.sh` from `optivem/shop` (public; not checked out here) into this repo, adapt them to `event-hub`, and add `neonctl` to the dev container. Do not copy `teardown-everything.sh`: it deletes every other GCP project too. Then do Steps 3 and 4, and hand the user the Step 2 command.
 
 ## Steps
 
-- [ ] Step 1: Port the infrastructure from `academy/shop`: `terraform/`, `setup-gcp.sh`, `teardown-gcp.sh`, Artifact Registry cleanup policy, and the shared `<system>-db` + `<system>-keycloak-admin-password` secrets. Once the project exists, `setup-gcp.sh` also runs `gcloud auth application-default set-quota-project` for it, so Terraform's application-default credentials stop warning about a missing quota project
+- [ ] Step 1: Port the infrastructure from `optivem/shop`: `terraform/`, `setup-gcp.sh`, `teardown-gcp.sh`, Artifact Registry cleanup policy, and the shared `<system>-db` + `<system>-keycloak-admin-password` secrets. Once the project exists, `setup-gcp.sh` also runs `gcloud auth application-default set-quota-project` for it, so Terraform's application-default credentials stop warning about a missing quota project
 - [ ] Step 2: Provision GCP and Neon with `./setup-gcp.sh`, with one database per stack: `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak`
 - [ ] Step 3: Add cloud-only images: `docker/keycloak/Dockerfile.cloud` + `cloud-realm.jq` (the realm import must list every stack's frontend URL up front, because `--import-realm` skips a realm that already exists) and a Flyway Dockerfile under `db/` (only `db/migrations` exists today)
-- [ ] Step 4: Add a reusable deploy workflow, adapted from `multitier-java-acceptance-stage-cloud.yml` in `academy/shop`: copy images to Artifact Registry, deploy Keycloak, external systems, migrations job, backend and frontend, then wait for endpoints
+- [ ] Step 4: Add a reusable deploy workflow, adapted from `_deploy-stage-cloud.yml`, `_acceptance-stage-cloud.yml` and `multitier-java-acceptance-stage-cloud.yml` in `optivem/shop`: copy images to Artifact Registry, deploy Keycloak, external systems, migrations job, backend and frontend, then wait for endpoints
 - [ ] Step 5: Switch `acceptance-stage.yml` to it: replace both `deploy-docker-compose` steps and the `localhost` endpoints, and point `docker/systems.yaml` and the test URLs at the deployed stacks; get one green manual run
 - [ ] Step 6: Switch `qa-stage.yml` to it; get one green run including `qa-signoff.yml`
 - [ ] Step 7: Add a prod realm without the password-grant test client and test users, and make sure no test suite runs against prod except login-free smoke tests
@@ -35,12 +37,15 @@ What we get out of this — the goals and deliverables:
 - [ ] Step 9: Remove what is now unused: `docker-compose.pipeline.*.yml`, Docker Hub logins and `DOCKERHUB_*` checks that only served them; set `deploy` in `gh-optivem.yaml` to the matching value
 - [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch
 
-## Open questions
+## Decisions
 
-- **Replace or add stages?** Recommended: change the existing stage workflows in place, because this repo has one system and you asked for the pipeline itself to go to the cloud. `academy/shop` keeps separate `*-cloud.yml` siblings only because it has six variants.
-- **Hourly acceptance cron?** `acceptance-stage.yml` runs hourly, while `academy/shop` turned its cloud cron off to keep costs down. Recommended: keep the cron, since the run gate skips when nothing changed, and revisit if cost shows up. Each real run still deploys, wakes the stacks and uses Neon compute.
-- **Same GCP project and Neon project as shop?** Recommended: separate ones (`event-hub-*`), which is what the Terraform already does by deriving names from the repo, so teardown stays isolated.
-- **External systems in prod?** Today's prod compose uses the simulators. Recommended: keep simulators in QA and prod until real ERP, Clock and Tax endpoints exist.
-- **Keycloak?** Recommended: one shared instance with a separate prod realm, the same as the `academy/shop` decision.
-- **Who runs `./setup-gcp.sh`?** Recommended: you, because it creates billable resources under your account. It needs `gcloud`, `neonctl` and a billing account.
-- **Timing against shop:** `academy/shop` is still mid-way through its shared Keycloak, secrets and reusable-workflow work (`plans/20261030-1822-template-cloud-deploy-all-variants.md`, Steps 2–4). Recommended: start now and copy the current shape, taking that plan's decisions rather than waiting for it; expect some rework in Step 4.
+Open questions: none — all resolved before execution.
+
+- **Stages:** change the existing stage workflows in place; no `*-cloud.yml` siblings.
+- **Acceptance schedule:** daily cron instead of hourly (`0 3 * * *`), changed in Step 5.
+- **GCP and Neon projects:** separate `event-hub-*` projects, not shop's.
+- **External systems:** simulators stay in QA and prod until real ERP, Clock and Tax endpoints exist.
+- **Keycloak:** one shared instance with a separate prod realm.
+- **`./setup-gcp.sh`:** the user runs it, because it creates billable resources. It needs `gcloud` (logged in), `neonctl` and a billing account.
+- **Timing:** start now, copying the current `optivem/shop` shape. Its reusable `_deploy-stage-cloud.yml` and `_acceptance-stage-cloud.yml` are the source for Step 4.
+- **Run order:** Steps 1, 3 and 4 run before provisioning, because they do not change the running pipeline. Step 2 then blocks on the user.
