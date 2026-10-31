@@ -37,19 +37,19 @@
               <span class="task-title">Accept the calendar invite</span>
               <span class="task-note">Sent to mara.sample@example.com</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <button class="button secondary" type="button" data-task="calendar">Open</button>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Agree to the Speaker Guidelines</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <button class="button secondary" type="button" data-task="guidelines">Open</button>
           </li>
           <li class="task">
             <span class="task-body">
               <span class="task-title">Join the Meetup group</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <button class="button secondary" type="button" data-task="meetup">Open</button>
           </li>
           <li class="task">
             <span class="task-body">
@@ -98,5 +98,61 @@
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-agenda-materials.html">hand in your agenda and materials</a>. Not in by the due date, <a href="email-reminder-1-month.html">reminder email</a></p>
 </main>
+<dialog class="popup" id="calendar">
+  <h2>Accept the calendar invite</h2>
+  <p>Open the invite we sent to mara.sample@example.com and accept it, then confirm here.</p>
+  <div class="actions">
+    <button class="button" type="button" data-confirm>I've accepted it</button>
+    <button class="button secondary" type="button" data-close>Not yet</button>
+  </div>
+</dialog>
+<dialog class="popup" id="guidelines">
+  <h2>Agree to the Speaker Guidelines</h2>
+  <p>Please read the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a> before you write your agenda.</p>
+  <div class="actions">
+    <button class="button" type="button" data-confirm>I agree</button>
+    <button class="button secondary" type="button" data-close>Not yet</button>
+  </div>
+</dialog>
+<dialog class="popup" id="meetup">
+  <h2>Join the Meetup group</h2>
+  <p>We add you as a co-host on Meetup, so please <a href="#">join our Meetup group</a> now.</p>
+  <div class="actions">
+    <button class="button" type="button" data-confirm>I've joined</button>
+    <button class="button secondary" type="button" data-close>Not yet</button>
+  </div>
+</dialog>
+<script>
+function markDone(id) {
+  var button = document.querySelector('[data-task="' + id + '"]');
+  var badge = document.createElement('span');
+  badge.className = 'status ok';
+  badge.textContent = 'Done';
+  button.closest('.task').classList.add('done');
+  button.replaceWith(badge);
+}
+function remember(id) {
+  try { sessionStorage.setItem('task-' + id, 'done'); } catch (e) { /* the tick just won't survive leaving the page */ }
+}
+function wasDone(id) {
+  try { return sessionStorage.getItem('task-' + id) === 'done'; } catch (e) { return false; }
+}
+document.querySelectorAll('[data-task]').forEach(function (button) {
+  var id = button.dataset.task;
+  if (wasDone(id)) { markDone(id); return; }
+  button.addEventListener('click', function () { document.getElementById(id).showModal(); });
+});
+document.querySelectorAll('dialog [data-close]').forEach(function (button) {
+  button.addEventListener('click', function () { button.closest('dialog').close(); });
+});
+document.querySelectorAll('dialog [data-confirm]').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var dialog = button.closest('dialog');
+    dialog.close();
+    remember(dialog.id);
+    markDone(dialog.id);
+  });
+});
+</script>
 </body>
 </html>
