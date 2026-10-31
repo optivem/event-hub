@@ -52,6 +52,20 @@ th{background:#f0f3f6}
 .tg rect{fill:#fff;stroke:#7b8794}.tg text{fill:#1f2933;font-size:12.5px;font-weight:700;text-anchor:middle}
 .lb{fill:#fff;fill-opacity:.92}
 .el{font-size:13px;text-anchor:middle;fill:#3e4c59}
+.swipe{display:none}
+@media screen and (max-width:700px){
+ body{padding:16px}
+ h1{font-size:22px}
+ .swipe{display:block;font-size:14px;font-weight:600}
+ .flow{margin:0 -16px;border-width:1px 0;-webkit-overflow-scrolling:touch}
+ table,thead,tbody,tr,th,td{display:block}
+ thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ tr{margin-bottom:12px;padding:10px 12px;border:1px solid #cbd2d9;border-radius:6px}
+ td{border:0;padding:3px 0}
+ td:first-child{font-weight:700}
+ table:not(.gaps) td:nth-child(2)::before{content:"What it achieves: ";font-weight:600}
+ table:not(.gaps) td:nth-child(3)::before{content:"In event-hub: ";font-weight:600}
+}
 @page{size:A3 landscape;margin:8mm}
 @media print{
  body{padding:0;font-size:11pt}
@@ -71,6 +85,7 @@ th{background:#f0f3f6}
 <li><b>FIRST</b>, <b>SECOND</b>, <b>THIRD</b>: replaces that email</li>
 <li><b>G1&ndash;G18</b>: see gaps below</li>
 </ul>
+<p class="swipe">Swipe sideways to follow the diagram.</p>
 <div class="flow">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2800 1140" role="img" aria-labelledby="flow-title">
 <title id="flow-title">Speaker and organizer user flow across eight phases, in two swimlanes. The sections after the diagram list the mapping of emails to in-app steps and the gaps.</title>
