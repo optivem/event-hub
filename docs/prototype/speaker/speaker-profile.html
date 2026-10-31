@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My account | event-hub prototype</title>
+<title>My Profile | event-hub prototype</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,10 +16,10 @@
     <a class="brand" href="speaker-home.html">event-hub</a>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
     <details class="account">
-      <summary aria-label="Account menu: Mara Sample"><span class="avatar" aria-hidden="true">MS</span></summary>
+      <summary aria-label="Account menu: Mara Sample"><img class="avatar" src="mara-sample-photo.svg" alt=""></summary>
       <ul class="account-menu">
-        <li><a href="speaker-events.html">Events</a></li>
-        <li><a href="speaker-account.html">My account</a></li>
+        <li><a href="speaker-events.html">My Events</a></li>
+        <li><a href="speaker-profile.html">My Profile</a></li>
         <li><a href="index.html">Log out</a></li>
       </ul>
     </details>
@@ -27,13 +27,22 @@
 </header>
 <main class="page">
   <div class="page-head">
-    <h1>My account</h1>
-    <p class="meta">Mara Sample &middot; Used for all your talks at Tech Excellence</p>
+    <h1>My Profile</h1>
+    <p class="meta">Mara Sample &middot; Used for your talks at Tech Excellence. Events with a submitted agenda keep the copy saved then.</p>
   </div>
   <div>
     <div>
       <section class="card">
         <h2>About you</h2>
+        <div class="field">
+          <label for="photo">Photo
+            <span class="hint">Required. A professional headshot, shown with your talk.</span>
+          </label>
+          <div class="photo-field">
+            <img class="photo-preview" id="photo-preview" src="mara-sample-photo.svg" alt="Your current photo">
+            <input id="photo" type="file" accept="image/*">
+          </div>
+        </div>
         <div class="field">
           <label for="speaker-name">Name
             <span class="hint">From your invitation. Use Need help if it needs changing.</span>
@@ -54,7 +63,7 @@
         </div>
         <div class="field">
           <label for="linkedin">LinkedIn
-            <span class="hint">Required. We use your LinkedIn photo, so please check it's a professional headshot. Use Need help if you'd prefer another photo.</span>
+            <span class="hint">Required</span>
           </label>
           <input id="linkedin" type="url" required data-saved="https://www.linkedin.com/in/mara-sample">
         </div>
@@ -82,11 +91,21 @@
 </main>
 <script>
 var accountParams = new URLSearchParams(location.search);
+var photoPreview = document.getElementById('photo-preview');
+document.getElementById('photo').addEventListener('change', function (event) {
+  var file = event.target.files[0];
+  if (!file) { return; }
+  var url = URL.createObjectURL(file);
+  photoPreview.src = url;
+  photoPreview.hidden = false;
+  document.querySelector('.topbar .avatar').src = url;
+});
 if (accountParams.has('onboarding')) {
   var head = document.querySelector('.page-head');
   head.querySelector('h1').textContent = 'Welcome to Tech Excellence';
   head.querySelector('.meta').textContent = 'Tell us about you first. You only do this once, and we use it for all your events.';
   document.querySelector('.account').hidden = true;
+  photoPreview.hidden = true;
   var save = document.getElementById('account-save');
   save.textContent = 'Save and continue';
   save.href = 'speaker-date.html';

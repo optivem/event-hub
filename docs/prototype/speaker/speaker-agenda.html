@@ -16,10 +16,10 @@
     <a class="brand" href="speaker-home.html">event-hub</a>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
     <details class="account">
-      <summary aria-label="Account menu: Mara Sample"><span class="avatar" aria-hidden="true">MS</span></summary>
+      <summary aria-label="Account menu: Mara Sample"><img class="avatar" src="mara-sample-photo.svg" alt=""></summary>
       <ul class="account-menu">
-        <li><a href="speaker-events.html">Events</a></li>
-        <li><a href="speaker-account.html">My account</a></li>
+        <li><a href="speaker-events.html">My Events</a></li>
+        <li><a href="speaker-profile.html">My Profile</a></li>
         <li><a href="index.html">Log out</a></li>
       </ul>
     </details>
@@ -56,7 +56,8 @@
       </section>
       <section class="card">
         <h2>About you</h2>
-        <p class="meta">Shown with your talk. It's the same for all your events.</p>
+        <p class="meta" id="about-note">Shown with your talk. Submitting saves a copy for this event, so later changes to your profile won't affect it.</p>
+        <img class="photo-preview" src="mara-sample-photo.svg" alt="Your photo">
         <dl class="facts">
           <dt>Name</dt>
           <dd>Mara Sample</dd>
@@ -67,13 +68,12 @@
           <dt>Links</dt>
           <dd>LinkedIn, GitHub</dd>
         </dl>
-        <a class="button secondary edit-about" id="edit-about" href="speaker-account.html">Edit</a>
+        <a class="button secondary edit-about" id="edit-about" href="speaker-profile.html">Edit</a>
       </section>
     </div>
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-materials.html">share your materials</a></p>
 </main>
-<script src="phases.js"></script>
 <script>
 var titleInput = document.getElementById('talk-title');
 var speakerName = titleInput.dataset.speaker;
@@ -86,11 +86,17 @@ function showTitle() {
     (over ? ': ' + (fullTitle.length - titleLimit) + ' too many' : '');
   document.getElementById('title-preview').classList.toggle('over', over);
 }
-document.getElementById('edit-about').href = 'speaker-account.html?back=' +
+document.getElementById('edit-about').href = 'speaker-profile.html?back=' +
   encodeURIComponent(location.pathname.split('/').pop() + location.search);
 titleInput.addEventListener('input', showTitle);
 showTitle();
-document.addEventListener('phase-locked', showTitle);
+document.addEventListener('phase-locked', function () {
+  showTitle();
+  document.getElementById('edit-about').hidden = true;
+  document.getElementById('about-note').textContent =
+    'The copy saved for this event when you submitted. Changes to your profile no longer affect it.';
+});
 </script>
+<script src="phases.js"></script>
 </body>
 </html>
