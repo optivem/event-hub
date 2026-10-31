@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About you | event-hub prototype</title>
+<title>My account | event-hub prototype</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,19 +16,27 @@
     <a class="brand" href="speaker-home.html">event-hub</a>
     <nav class="nav" aria-label="Speaker">
       <a href="speaker-home.html">Your event</a>
-      <a href="speaker-about-you.html" aria-current="page">About you</a>
     </nav>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
+    <details class="account">
+      <summary aria-label="Account menu: Mara Sample"><span class="avatar" aria-hidden="true">MS</span></summary>
+      <ul class="account-menu">
+        <li><a href="speaker-events.html">Events</a></li>
+        <li><a href="speaker-account.html">My account</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
   </div>
 </header>
 <main class="page">
   <div class="page-head">
-    <h1>About you</h1>
+    <h1>My account</h1>
     <p class="meta">Mara Sample &middot; Used for all your talks at Tech Excellence</p>
   </div>
   <div>
     <div>
       <section class="card">
+        <h2>About you</h2>
         <div class="field">
           <label for="speaker-name">Name
             <span class="hint">From your invitation. Use Need help if it needs changing.</span>
@@ -69,11 +77,24 @@
           <label for="website">Website or blog <span class="hint">Optional</span></label>
           <input id="website" type="url">
         </div>
-        <div class="actions"><a class="button" href="speaker-home.html">Save</a></div>
+        <div class="actions"><a class="button" id="account-save" href="speaker-home.html">Save</a></div>
       </section>
     </div>
   </div>
-  <p class="proto-next">Next in the flow: <a href="speaker-home.html">back to your event</a></p>
+  <p class="proto-next" id="account-next">Next in the flow: <a href="speaker-home.html">back to your event</a></p>
 </main>
+<script>
+if (new URLSearchParams(location.search).has('onboarding')) {
+  var head = document.querySelector('.page-head');
+  head.querySelector('h1').textContent = 'Welcome to Tech Excellence';
+  head.querySelector('.meta').textContent = 'Tell us about you first. You only do this once, and we use it for all your events.';
+  document.querySelector('.topbar .nav').hidden = true;
+  document.querySelector('.account').hidden = true;
+  var save = document.getElementById('account-save');
+  save.textContent = 'Save and continue';
+  save.href = 'speaker-date.html';
+  document.getElementById('account-next').innerHTML = 'Next in the flow: <a href="speaker-date.html">does this date work for you?</a>';
+}
+</script>
 </body>
 </html>

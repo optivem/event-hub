@@ -63,6 +63,36 @@ a { color: var(--accent); }
 
 .nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; order: 1; }
 .help-link { margin-left: auto; }
+
+/* Account: the speaker's photo opens a small menu. Initials stand in for the LinkedIn photo. */
+.account { position: relative; }
+.account summary { display: flex; align-items: center; min-height: 44px; list-style: none; cursor: pointer; }
+.account summary::-webkit-details-marker { display: none; }
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 50%;
+}
+.account-menu {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  min-width: 160px;
+  padding: 4px 0;
+  margin: 4px 0 0;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.account-menu a { display: flex; align-items: center; min-height: 44px; padding: 4px 14px; text-decoration: none; }
 .nav a { padding: 4px 0; color: var(--muted); text-decoration: none; }
 .nav a[aria-current="page"] {
   color: var(--ink);
@@ -81,6 +111,7 @@ a { color: var(--accent); }
   .columns { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
   .nav { width: auto; }
   .help-link { order: 2; }
+  .account { order: 3; }
 }
 
 .card {
