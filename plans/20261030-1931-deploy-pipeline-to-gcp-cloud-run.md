@@ -22,19 +22,18 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Finish Step 3 (cloud Keycloak and Flyway images), then Step 4 (reusable deploy workflow), then hand the user the Step 2 command: `neonctl login` and `./setup-gcp.sh`.
+Step 4 (reusable deploy workflow), then hand the user the Step 2 command: `neonctl login` and `./setup-gcp.sh`.
 
 ## Steps
 
 - [ ] Step 2: Provision GCP and Neon with `./setup-gcp.sh`, with one database per stack: `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak`
-- [ ] Step 3: Add cloud-only images: `docker/keycloak/Dockerfile.cloud` + `cloud-realm.jq` (the realm import must list every stack's frontend URL up front, because `--import-realm` skips a realm that already exists) and a Flyway Dockerfile under `db/` (only `db/migrations` exists today)
 - [ ] Step 4: Add a reusable deploy workflow, adapted from `_deploy-stage-cloud.yml`, `_acceptance-stage-cloud.yml` and `multitier-java-acceptance-stage-cloud.yml` in `optivem/shop`: copy images to Artifact Registry, deploy Keycloak, external systems, migrations job, backend and frontend, then wait for endpoints
 - [ ] Step 5: Switch `acceptance-stage.yml` to it: replace both `deploy-docker-compose` steps and the `localhost` endpoints, and point `docker/systems.yaml` and the test URLs at the deployed stacks; get one green manual run
 - [ ] Step 6: Switch `qa-stage.yml` to it; get one green run including `qa-signoff.yml`
-- [ ] Step 7: Add a prod realm without the password-grant test client and test users, and make sure no test suite runs against prod except login-free smoke tests
+- [ ] Step 7: Add a `shop-prod` realm as a new import file without the password-grant test client and test users, and remove the prod URL from the `shop` realm (an existing realm is not re-imported, so this needs `event_hub_keycloak` recreated), and make sure no test suite runs against prod except login-free smoke tests
 - [ ] Step 8: Switch `prod-stage.yml` to it. The agent stops here without dispatching and hands the user the exact command, because a prod run publishes a real tag and a public GitHub Release
 - [ ] Step 9: Remove what is now unused: `docker-compose.pipeline.*.yml`, Docker Hub logins and `DOCKERHUB_*` checks that only served them; set `deploy` in `gh-optivem.yaml` to the matching value
-- [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch
+- [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
 
 ## Decisions
 
