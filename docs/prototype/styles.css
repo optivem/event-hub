@@ -195,6 +195,8 @@ a { color: var(--accent); }
 
 /* Forms */
 .field { margin-bottom: 14px; }
+fieldset.field { border: 0; margin-inline: 0; padding: 0; }
+fieldset.field legend { padding: 0; margin-bottom: 4px; font-weight: 600; }
 .field label { display: block; margin-bottom: 4px; font-weight: 600; }
 .field .hint { display: block; font-size: 0.875rem; font-weight: 400; color: var(--muted); }
 .field input,

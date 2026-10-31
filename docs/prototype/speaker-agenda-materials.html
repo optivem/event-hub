@@ -39,17 +39,59 @@
         <label class="check"><input type="checkbox" checked> <span>I've accepted the calendar invite sent to mara.sample@example.com</span></label>
       </section>
       <section class="card">
-        <h2>Meetup Guidelines</h2>
-        <p>Please read the <a href="#">Meetup Guidelines</a> before you write your agenda.</p>
-        <label class="check"><input type="checkbox"> <span>I agree to the Meetup Guidelines</span></label>
+        <h2>Speaker Guidelines</h2>
+        <p>Please read the <a href="speaker-guidelines.html">Speaker Guidelines</a> before you write your agenda.</p>
+        <label class="check"><input type="checkbox"> <span>I agree to the Speaker Guidelines</span></label>
       </section>
       <section class="card">
-        <h2>Your agenda</h2>
+        <h2>Meetup group</h2>
+        <p>We add you as a co-host on Meetup, so please <a href="#">join our Meetup group</a> now.</p>
+        <label class="check"><input type="checkbox"> <span>I've joined the Meetup group</span></label>
+      </section>
+      <section class="card">
+        <h2>Your talk</h2>
+        <div class="field">
+          <label for="talk-title">Title
+            <span class="hint">Title plus your name: 80 characters at most.</span>
+          </label>
+          <input id="talk-title" type="text" value="Testing Legacy Code Without Fear">
+        </div>
         <div class="field">
           <label for="agenda">Agenda
-            <span class="hint">The main points of your talk, in order.</span>
+            <span class="hint">What the talk is about, and a short list of what people will learn.</span>
           </label>
           <textarea id="agenda" rows="6"></textarea>
+        </div>
+        <fieldset class="field">
+          <legend>Presentation style</legend>
+          <label class="check"><input type="checkbox"> <span>Slides</span></label>
+          <label class="check"><input type="checkbox"> <span>Code demo</span></label>
+          <label class="check"><input type="checkbox"> <span>Live coding</span></label>
+        </fieldset>
+      </section>
+      <section class="card">
+        <h2>About you</h2>
+        <div class="field">
+          <label for="role">Role and company</label>
+          <input id="role" type="text">
+        </div>
+        <div class="field">
+          <label for="bio">Short bio</label>
+          <textarea id="bio" rows="4"></textarea>
+        </div>
+        <div class="field">
+          <label for="linkedin">LinkedIn
+            <span class="hint">We use your LinkedIn photo, so please check it's a professional headshot. Tell your coordinator if you'd prefer another photo.</span>
+          </label>
+          <input id="linkedin" type="url">
+        </div>
+        <div class="field">
+          <label for="twitter">Twitter <span class="hint">Optional</span></label>
+          <input id="twitter" type="url">
+        </div>
+        <div class="field">
+          <label for="github">GitHub <span class="hint">Optional</span></label>
+          <input id="github" type="url">
         </div>
       </section>
       <section class="card">
@@ -59,8 +101,14 @@
           <input id="slides" type="url">
         </div>
         <div class="field">
-          <label for="repository">Link to repository</label>
+          <label for="repository">Link to repository
+            <span class="hint">For live coding, show the start and end states, for example as two branches.</span>
+          </label>
           <input id="repository" type="url">
+        </div>
+        <div class="field">
+          <label for="other">Link to other materials <span class="hint">Optional. For example, a Miro board.</span></label>
+          <input id="other" type="url">
         </div>
         <div class="actions"><a class="button" href="speaker-home-waiting.html">Submit agenda and materials</a></div>
       </section>
