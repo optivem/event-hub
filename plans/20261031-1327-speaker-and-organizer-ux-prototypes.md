@@ -20,9 +20,8 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 9. The prototypes, the user flow doc and the manual test plan are done. Step 9 replaces the leftover shop content in `docs/use-cases.md` and `docs/use-case-narrative.md`: the actors become Speaker and Organizer, the use cases come from `docs/prototype/`, and account creation is an Organizer use case. Stay on `main`.
+Run Step 10. The prototypes and all the docs are done. Step 10 clicks through both prototypes from login, `docs/prototype/speaker/index.html` and `docs/prototype/organizer/index.html`, including the exit and exception paths, and checks for dead links. `plans/20261031-1137-manual-test-html-prototype.md` lists the paths. Stay on `main`.
 
 ## Steps
 
-- [ ] Step 9: Replace the leftover shop use cases in `docs/use-cases.md` (Customer, Eventhub Owner, orders, coupons) with Speaker and Organizer as actors and the use cases from the two prototypes. `docs/use-case-narrative.md` follows the same actors. Account creation is an Organizer use case; keep `registrationAllowed: false` in mind when the real realm is set up.
 - [ ] Step 10: Click through both prototypes from login, including the exit and exception paths, and check for dead links.
