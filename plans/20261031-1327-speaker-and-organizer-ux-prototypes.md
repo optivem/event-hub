@@ -20,11 +20,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 5. Each prototype now reads from login with no role switcher and no links to the other side. Step 5 removes the remaining coordinator wording from screens and mock emails, and anything that only existed because of the split, such as the "Covering for ..." banner and the handoff wording on `organizer-reschedule`. Stay on `main`.
+Run Step 6. Coordinator wording and the split-only leftovers are gone from both prototypes. Step 6 replaces the "All screens" `docs/prototype/index.html` with a short landing page linking to the two prototypes. Stay on `main`.
 
 ## Steps
 
-- [ ] Step 5: Remove all coordinator wording from screens and mock emails, and drop anything that only existed because of the split, such as handoffs between coordinator and other organizers and the "Covering for ..." banner on `coordinator-home`.
 - [ ] Step 6: Replace the "All screens" `index.html` with a short landing page linking to the two prototypes.
 - [ ] Step 7: Update `docs/speaker-organizer-user-flow.html` to the two roles: merge the coordinator and other organizers lanes, drop the "Covers" note, and reword the gap table.
 - [ ] Step 8: Update `plans/20261031-1137-manual-test-html-prototype.md` to the new journeys and file names, and drop its role switcher step and its "covering" banner decision.
