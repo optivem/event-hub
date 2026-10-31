@@ -22,20 +22,17 @@ What we get out of this — the goals and deliverables:
 ```bash
 gh --version
 gh auth status
-gcloud auth list
-ls ~/.config/gcloud/application_default_credentials.json
 gh optivem --help
-claude --version
 ```
 
-Also confirm Claude Code starts without asking to log in. The results close Step 5, and `gh --version` feeds Step 6.
+If all three work, Step 6 is done and this plan can be deleted.
 
 ## What to take from `academy/shop`
 
 | Item in `shop` | `event-hub` | Reason |
 |---|---|---|
 | Base image `devcontainers/base:ubuntu-24.04` | Keep | Same setup |
-| `gh` 2.67.0 | Keep | `gh optivem` and all GitHub work |
+| `gh` 2.67.0 | Keep, **drop the pin** | `gh optivem` and all GitHub work; the `terraform` feature's dependency on `github-cli:1` overrides any pin |
 | `docker-in-docker` | Keep | Local compose stacks |
 | Node 22 | Keep | Frontend and system tests |
 | Java 21 (Temurin, no Gradle) | Keep | Backend; the repo ships `gradlew` |
@@ -54,8 +51,7 @@ Also confirm Claude Code starts without asking to log in. The results close Step
 
 ## Steps
 
-- [ ] Step 5: Rebuild the container, then confirm the `gh` and `gcloud` logins and Claude Code login survive, and that `post-create.sh` reinstalls `gh optivem` — ⏳ Deferred: needs a rebuild from the host. Done before the rebuild: `gh auth login`, `gcloud auth login`, `gcloud auth application-default login`, `gh extension install optivem/gh-optivem`
-- [ ] Step 6: Make `gh` match its pin — ⏳ Deferred: `devcontainer.json` and the README say 2.67.0 but the container has 2.103.3. `/var/log/dpkg.log` shows 2.67.0 installed, then upgraded 11 seconds later; the cause is unknown. Find it, then either fix the pin or drop it, and verify with a rebuild
+- [ ] Step 6: Verify the `gh` pin removal with a rebuild — ⏳ Deferred: needs a rebuild from the host. The pin never held: the `terraform` feature depends on `github-cli:1`, which most likely installs `gh` a second time at the latest version. The pin is now removed from `devcontainer.json` and the README
 
 ## Open questions
 

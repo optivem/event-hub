@@ -2,9 +2,7 @@
   "name": "event-hub",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {
-      "version": "2.67.0"
-    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/dhoeric/features/google-cloud-cli:1": {
       "version": "590.0.1"
     },

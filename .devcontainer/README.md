@@ -67,7 +67,6 @@ Versions are pinned in [devcontainer.json](devcontainer.json). Update in one pla
 
 | Tool      | Version |
 |-----------|---------|
-| gh        | 2.67.0  |
 | gcloud    | 590.0.1 |
 | terraform | 1.10.3  |
 | node      | 22      |
