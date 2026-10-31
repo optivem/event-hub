@@ -49,6 +49,8 @@ a { color: var(--accent); }
 .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
 .presenter-photo { width: 72px; height: 72px; object-fit: cover; border-radius: 50%; }
 .help-link { margin-left: auto; }
+.cancel-link { margin: 24px 0 0; font-size: 0.875rem; }
+.cancel-link a { color: var(--muted); }
 .brand-logo { width: 28px; height: 28px; object-fit: contain; }
 
 .nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; }

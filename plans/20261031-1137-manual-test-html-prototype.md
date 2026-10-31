@@ -33,7 +33,7 @@ None. All are decided, and the screen changes are already made.
   - No reply to the invitation. Speaker: `email-invitation`, `email-reminder-reply`. Organizer: `organizer-invitation-status`, back to `organizer-home#potential-speakers`.
   - Missed deadline. Speaker: `speaker-home`, `email-reminder-agenda`, `email-reminder-1-month`, `email-reminder-3-weeks`. Organizer: `organizer-materials-status`, `organizer-cancel-event`.
   - Review doesn't pass. Speaker: `speaker-home-waiting`, `speaker-update-materials`, back to `speaker-home-waiting`. Organizer: `organizer-review`, "Send back to speaker", then `organizer-cancel-event` for a missed update.
-  - Speaker drops out. Speaker: `speaker-event-details`, `speaker-help`. Organizer: `organizer-home`, `organizer-speaker-dropped`, then `organizer-home#potential-speakers`.
+  - Speaker drops out. Speaker: `speaker-home`, `speaker-cancel`. Organizer: `organizer-home`, `organizer-speaker-dropped`, then `organizer-home#potential-speakers`.
   - Reschedule. Organizer: `organizer-reschedule`, `organizer-confirm-date`.
   - Past speaker proposes a talk. Speaker: `speaker-after-event`, `speaker-propose-talk`. Organizer: the proposal appears in `organizer-home#potential-speakers`.
 - [ ] Step 4: Phone and desktop. Repeat one journey at phone width, using the browser's device toolbar or a real phone, and check that text, tables and buttons are readable and easy to tap.

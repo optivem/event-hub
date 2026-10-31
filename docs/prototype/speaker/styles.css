@@ -52,6 +52,8 @@ a { color: var(--accent); }
 
 .nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; order: 1; }
 .help-link { margin-left: auto; }
+.cancel-link { margin: 24px 0 0; font-size: 0.875rem; }
+.cancel-link a { color: var(--muted); }
 
 /* Account: the speaker's photo opens a small menu. A drawn sample stands in for the photo they upload in Profile. */
 .account { position: relative; }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancel my talk | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
+    <details class="account">
+      <summary aria-label="Account menu: Mara Sample"><img class="avatar" src="mara-sample-photo.svg" alt=""></summary>
+      <ul class="account-menu">
+        <li><a href="speaker-profile.html">Profile</a></li>
+        <li><a href="speaker-events.html">Events</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="narrow">
+    <div class="page-head">
+      <h1>Cancel my talk</h1>
+      <p class="meta">Testing Legacy Code Without Fear &middot; Thursday 21 January 2027, 17:00&ndash;19:00</p>
+    </div>
+    <div id="cancel-form">
+      <div class="notice warn">Cancelling can't be undone. The organizers will look for a new speaker.</div>
+      <section class="card">
+        <div class="field">
+          <label for="reason">Why can't you give your talk?</label>
+          <textarea id="reason" rows="3"></textarea>
+        </div>
+        <div class="actions">
+          <a class="button danger" href="speaker-cancel.html?done">Cancel my talk</a>
+          <a class="button secondary" href="speaker-home.html">Keep my talk</a>
+        </div>
+      </section>
+    </div>
+    <div class="notice" id="cancel-done" hidden>Your talk is cancelled and the organizers have been told. Thanks for letting us know.</div>
+    <p class="proto-next">Next in the flow: <a href="../organizer/organizer-speaker-dropped.html">the organizers find a new speaker</a>, and this path ends here for the speaker.</p>
+  </div>
+</main>
+<script>
+if (new URLSearchParams(location.search).has('done')) {
+  document.getElementById('cancel-form').hidden = true;
+  document.getElementById('cancel-done').hidden = false;
+}
+</script>
+</body>
+</html>
