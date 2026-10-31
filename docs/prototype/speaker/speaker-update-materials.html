@@ -15,20 +15,19 @@
   <div class="topbar-inner">
     <a class="brand" href="speaker-home.html">event-hub</a>
     <nav class="nav" aria-label="Speaker">
-      <a href="speaker-home.html">Your event</a>
-      <a href="speaker-agenda-materials.html" aria-current="page">Agenda &amp; materials</a>
-      <a href="speaker-event-details.html">Event details</a>
+      <a href="speaker-home.html" aria-current="page">Your event</a>
       <a href="speaker-about-you.html">About you</a>
     </nav>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
   </div>
 </header>
 <main class="page">
+  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="3" data-reached="3"></nav>
   <div class="page-head">
     <h1>Update your agenda or materials</h1>
     <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status warn">Changes needed</span></p>
   </div>
-  <div class="columns">
+  <div>
     <div>
       <div class="notice warn">Please send your updates by <strong>14 January 2027</strong>, within 1 week. Without them, the event will be cancelled.</div>
       <section class="card">
@@ -59,21 +58,9 @@ Writing the first test</textarea>
         <div class="actions"><a class="button" href="speaker-home-waiting.html">Submit updates</a></div>
       </section>
     </div>
-    <aside>
-      <section class="card">
-        <h2>Where things stand</h2>
-        <ol class="phases">
-          <li class="done">Date reservation</li>
-          <li class="done">Agenda &amp; materials</li>
-          <li class="current">Review</li>
-          <li>Publish &amp; announce</li>
-          <li>Day of event</li>
-          <li>After the event</li>
-        </ol>
-      </section>
-    </aside>
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-home-waiting.html">an organizer reviews your updates</a></p>
 </main>
+<script src="phases.js"></script>
 </body>
 </html>

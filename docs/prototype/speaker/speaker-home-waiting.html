@@ -16,83 +16,29 @@
     <a class="brand" href="speaker-home.html">event-hub</a>
     <nav class="nav" aria-label="Speaker">
       <a href="speaker-home.html" aria-current="page">Your event</a>
-      <a href="speaker-agenda-materials.html">Agenda &amp; materials</a>
-      <a href="speaker-event-details.html">Event details</a>
       <a href="speaker-about-you.html">About you</a>
     </nav>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
   </div>
 </header>
 <main class="page">
+  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="0" data-reached="4"></nav>
   <div class="page-head">
     <h1>Testing Legacy Code Without Fear</h1>
     <p class="meta">Tech Excellence meetup &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status info">Waiting for review</span></p>
   </div>
-  <div class="columns">
+  <div>
     <div>
       <div class="notice">Thanks, your agenda and materials are in. Nina Example will review them by <strong>7 January 2027</strong>.</div>
       <section class="card">
-        <h2>Your tasks</h2>
-        <ul class="tasks">
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">I've accepted the calendar invite</span>
-              <span class="task-note">Sent to mara.sample@example.com</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">I've read and agree to the Speaker Guidelines</span>
-              <span class="task-note">Agreed on 2 December 2026 at 09:42</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">I'm in the Meetup group</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">Fill in your talk details</span>
-              <span class="task-note">Title and agenda. Due 21 December 2026</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">Fill in about you</span>
-              <span class="task-note">Role, bio and links, used for all your talks. Due 21 December 2026</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-          <li class="task done">
-            <span class="task-body">
-              <span class="task-title">Share your materials</span>
-              <span class="task-note">Due 21 December 2026</span>
-            </span>
-            <span class="status ok">Done</span>
-          </li>
-        </ul>
+        <h2>Your progress</h2>
+        <p class="meta" id="status-progress" aria-live="polite"></p>
+        <ul class="tasks" id="status-phases"></ul>
       </section>
     </div>
-    <aside>
-      <section class="card">
-        <h2>Where things stand</h2>
-        <ol class="phases">
-          <li class="done">Date reservation</li>
-          <li class="done">Agenda &amp; materials</li>
-          <li class="current">Review</li>
-          <li>Publish &amp; announce</li>
-          <li>Day of event</li>
-          <li>After the event</li>
-        </ol>
-      </section>
-    </aside>
   </div>
   <p class="proto-next">Next in the flow: an organizer reviews your agenda and materials. If it needs changes, <a href="speaker-update-materials.html">update your materials</a>. If it passes, <a href="speaker-event-details.html">see the event details</a>.</p>
 </main>
+<script src="phases.js"></script>
 </body>
 </html>

@@ -25,14 +25,14 @@ None. All are decided, and the screen changes are already made.
 
 ## Steps
 
-- [ ] Step 1: Speaker journey, in `docs/prototype/speaker/`. Start at login, `index.html`, then go through `email-invitation`, `speaker-set-password`, `speaker-date`, `speaker-home`, `speaker-about-you`, `speaker-help`, `speaker-agenda-materials`, `speaker-home-waiting`, `speaker-event-details`, `speaker-day-of` and `speaker-after-event`.
+- [ ] Step 1: Speaker journey, in `docs/prototype/speaker/`. Start at login, `index.html`, then go through `email-invitation`, `speaker-set-password`, `speaker-date`, `speaker-home`, `speaker-about-you`, `speaker-help`, `speaker-reservation`, `speaker-agenda`, `speaker-materials`, `speaker-home-waiting`, `speaker-event-details`, `speaker-day-of` and `speaker-after-event`.
 - [ ] Step 2: Organizer journey, in `docs/prototype/organizer/`. Start at login, `index.html`, then go through `organizer-home`, `organizer-speaker-detail`, `organizer-propose-date`, `organizer-invitation-status`, `organizer-confirm-date`, `organizer-materials-status`, `organizer-review`, `organizer-approve`, `organizer-publish`, `organizer-day-of` and `organizer-after-event`.
 - [ ] Step 3: Exit and exception paths. Each prototype stands alone, so start each side from its own login.
   - Date doesn't work. Speaker: `speaker-date`, `speaker-date-closed`. Organizer: `organizer-home`, `organizer-other-date`, then `organizer-invitation-status` or "No slot left".
   - No reply to the invitation. Speaker: `email-invitation`, `email-reminder-reply`. Organizer: `organizer-invitation-status`, back to `organizer-home#potential-speakers`.
   - Missed deadline. Speaker: `speaker-home`, `email-reminder-1-month`, `email-reminder-3-weeks`. Organizer: `organizer-materials-status`, `organizer-cancel-event`.
   - Review doesn't pass. Speaker: `speaker-home-waiting`, `speaker-update-materials`, back to `speaker-home-waiting`. Organizer: `organizer-review`, "Send back to speaker", then `organizer-cancel-event` for a missed update.
-  - Speaker drops out. Speaker: `speaker-event-details`, `speaker-cant-make-it`. Organizer: `organizer-home`, `organizer-speaker-dropped`, then `organizer-home#potential-speakers`.
+  - Speaker drops out. Speaker: `speaker-event-details`, `speaker-help`. Organizer: `organizer-home`, `organizer-speaker-dropped`, then `organizer-home#potential-speakers`.
   - Reschedule. Organizer: `organizer-reschedule`, `organizer-confirm-date`.
   - Past speaker proposes a talk. Speaker: `speaker-after-event`, `speaker-propose-talk`. Organizer: the proposal appears in `organizer-home#potential-speakers`.
 - [ ] Step 4: Phone and desktop. Repeat one journey at phone width, using the browser's device toolbar or a real phone, and check that text, tables and buttons are readable and easy to tap.

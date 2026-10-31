@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Reservation | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">Back to login</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html">event-hub</a>
+    <nav class="nav" aria-label="Speaker">
+      <a href="speaker-home.html" aria-current="page">Your event</a>
+      <a href="speaker-about-you.html">About you</a>
+    </nav>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
+  </div>
+</header>
+<main class="page">
+  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="1"></nav>
+  <div class="page-head">
+    <h1>Event Reservation</h1>
+    <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status ok">Date confirmed</span></p>
+  </div>
+      <section class="card">
+        <h2>Your date</h2>
+        <dl class="facts">
+          <dt>Date and time</dt>
+          <dd>Thursday 21 January 2027, 17:00</dd>
+          <dt>Event</dt>
+          <dd>Tech Excellence meetup, online</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Your organizer</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Nina Example</dd>
+          <dt>Email</dt>
+          <dd>nina.example@example.com</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Your tasks</h2>
+        <p class="meta" id="task-progress" aria-live="polite">0 of 3 done</p>
+        <ul class="tasks" id="task-list">
+          <li class="task">
+            <label class="check task-check">
+              <input type="checkbox" data-task="calendar">
+              <span class="task-body">
+                <span class="task-title">I've accepted the calendar invite</span>
+                <span class="task-note">Sent to mara.sample@example.com</span>
+              </span>
+            </label>
+          </li>
+          <li class="task">
+            <label class="check task-check">
+              <input type="checkbox" data-task="guidelines">
+              <span class="task-body">
+                <span class="task-title">I've read and agree to the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a></span>
+                <span class="task-note">Please read them before you write your agenda</span>
+                <span class="task-note" id="guidelines-stamp" aria-live="polite" hidden></span>
+              </span>
+            </label>
+          </li>
+          <li class="task">
+            <label class="check task-check">
+              <input type="checkbox" data-task="meetup">
+              <span class="task-body">
+                <span class="task-title">I'm in the <a href="https://www.meetup.com/techexcellence/" target="_blank" rel="noopener">Meetup group</a></span>
+                <span class="task-note">We add you as a co-host on Meetup, so you need to be a member</span>
+              </span>
+            </label>
+          </li>
+        </ul>
+        <div class="actions"><a class="button" href="speaker-agenda.html" data-submit="final">Submit</a></div>
+      </section>
+  <p class="proto-next">Next in the flow: <a href="speaker-agenda.html">write your agenda</a></p>
+</main>
+<script>
+var list = document.getElementById('task-list');
+var tasks = Array.from(list.querySelectorAll('.task'));
+var guidelinesStamp = document.getElementById('guidelines-stamp');
+
+function isRemembered(id) {
+  try { return sessionStorage.getItem('task-' + id) === 'done'; } catch (e) { return false; }
+}
+function remember(id, done) {
+  try {
+    if (done) { sessionStorage.setItem('task-' + id, 'done'); } else { sessionStorage.removeItem('task-' + id); }
+  } catch (e) { /* the tick just won't survive leaving the page */ }
+}
+function refresh() {
+  var done = tasks.filter(function (task) { return task.classList.contains('done'); });
+  document.getElementById('task-progress').textContent = done.length + ' of ' + tasks.length + ' done';
+}
+function showGuidelinesStamp() {
+  var saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem('guidelines-stamp')); } catch (e) { /* no stamp to show */ }
+  guidelinesStamp.hidden = !saved;
+  if (!saved) { return; }
+  var at = new Date(saved.at);
+  guidelinesStamp.textContent = (saved.agreed ? 'Agreed on ' : 'Agreement withdrawn on ') +
+    at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' at ' +
+    at.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+function saveGuidelinesStamp(agreed) {
+  try {
+    sessionStorage.setItem('guidelines-stamp', JSON.stringify({ agreed: agreed, at: new Date().toISOString() }));
+  } catch (e) { /* the stamp just won't survive leaving the page */ }
+  showGuidelinesStamp();
+}
+function setDone(box, done) {
+  box.checked = done;
+  box.closest('.task').classList.toggle('done', done);
+}
+document.querySelectorAll('[data-task]').forEach(function (box) {
+  var id = box.dataset.task;
+  setDone(box, isRemembered(id));
+  box.addEventListener('change', function () {
+    setDone(box, box.checked);
+    remember(id, box.checked);
+    if (id === 'guidelines') { saveGuidelinesStamp(box.checked); }
+    refresh();
+    box.focus();
+  });
+});
+showGuidelinesStamp();
+refresh();
+</script>
+
+<script src="phases.js"></script>
+</body>
+</html>

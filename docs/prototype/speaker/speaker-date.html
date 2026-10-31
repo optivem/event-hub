@@ -16,16 +16,18 @@
     <a class="brand" href="speaker-date.html">event-hub</a>
     <nav class="nav" aria-label="Speaker">
       <a href="speaker-date.html" aria-current="page">Your event</a>
+      <a href="speaker-about-you.html">About you</a>
     </nav>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
   </div>
 </header>
 <main class="page">
+  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="1" data-reached="1"></nav>
   <div class="page-head">
     <h1>Does this date work for you?</h1>
     <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status info">Waiting for your answer</span></p>
   </div>
-  <div class="columns">
+  <div>
     <div>
       <section class="card">
         <h2>Proposed date</h2>
@@ -35,7 +37,7 @@
           <dt>Event</dt>
           <dd>Tech Excellence meetup, online</dd>
         </dl>
-        <div class="actions"><a class="button" href="#what-next">Accept this date</a></div>
+        <div class="actions"><a class="button" href="speaker-reservation.html">Accept this date</a></div>
       </section>
       <section class="card">
         <h2>Can't make it?</h2>
@@ -47,22 +49,19 @@
         </div>
         <div class="actions"><a class="button secondary" href="#what-next">Offer other months</a></div>
       </section>
-    </div>
-    <aside>
       <section class="card">
-        <h2>Where things stand</h2>
-        <ol class="phases">
-          <li class="current">Date reservation</li>
-          <li>Agenda &amp; materials</li>
-          <li>Review</li>
-          <li>Publish &amp; announce</li>
-          <li>Day of event</li>
-          <li>After the event</li>
-        </ol>
+        <h2>Your organizer</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Nina Example</dd>
+          <dt>Email</dt>
+          <dd>nina.example@example.com</dd>
+        </dl>
       </section>
-    </aside>
+    </div>
   </div>
-  <p class="proto-next" id="what-next">Next in the flow: if you accept, an organizer confirms the date and sends a calendar invite, then <a href="speaker-home.html">your tasks open</a>. If you offer other months, an organizer looks for another date: you answer a new date on this screen, or <a href="speaker-date-closed.html">no date fits</a>.</p>
+  <p class="proto-next" id="what-next">Next in the flow: if you accept, an organizer confirms the date and sends a calendar invite, then <a href="speaker-reservation.html">your tasks open</a>. If you offer other months, an organizer looks for another date: you answer a new date on this screen, or <a href="speaker-date-closed.html">no date fits</a>.</p>
 </main>
+<script src="phases.js"></script>
 </body>
 </html>

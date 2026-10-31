@@ -20,6 +20,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -127,28 +128,54 @@ a { color: var(--accent); }
 .task-note { display: block; font-size: 0.875rem; color: var(--muted); }
 .task.done .task-title { font-weight: 400; color: var(--muted); }
 
-/* Progress through the phases */
-.phases { list-style: none; margin: 0; padding: 0; }
-.phases li { position: relative; padding: 0 0 12px 22px; color: var(--muted); }
-.phases li:last-child { padding-bottom: 0; }
-.phases li::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 7px;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--line);
-  border-radius: 50%;
+/* Wizard: one tab per phase, down the side from tablet up, ticked once submitted */
+.phase-tabs {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--surface);
 }
-.phases li.done::before { background: var(--ok); border-color: var(--ok); }
-.phases li.current { color: var(--ink); font-weight: 600; }
-.phases li.current::before { background: var(--accent); border-color: var(--accent); }
+.phase-tabs a, .phase-tabs span {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+.phase-tabs a { color: var(--muted); }
+.phase-tabs span { color: #7b8794; cursor: not-allowed; }
+.phase-tabs a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+@media (min-width: 768px) {
+  .page:has(> .phase-tabs) {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: start;
+  }
+  .page > .phase-tabs { grid-row: 1 / span 20; }
+  .page:has(> .phase-tabs) > :not(.phase-tabs) { grid-column: 2; }
+}
+
+/* Confirmation before a phase is submitted */
+.confirm {
+  max-width: 420px;
+  padding: 20px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.confirm::backdrop { background: rgba(31, 41, 51, 0.5); }
 
 .facts { margin: 0; }
+.help-note { margin: 12px 0 0; }
 .facts dt { font-size: 0.8rem; color: var(--muted); }
-.facts dd { margin: 0 0 10px; }
+.facts dd { margin: 0 0 10px; overflow-wrap: anywhere; }
 .facts dd:last-child { margin-bottom: 0; }
 
 /* Notice: a message that needs attention on a screen */
