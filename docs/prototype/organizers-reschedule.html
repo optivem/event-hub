@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reschedule | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizers-speakers.html">event-hub</a>
+    <nav class="nav" aria-label="Organizers">
+      <a href="organizers-speakers.html">Potential speakers</a>
+      <a href="organizers-publish.html">Publish</a>
+      <a href="organizers-reschedule.html" aria-current="page">Reschedule</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html">Coordinator</a>
+      <a href="organizers-speakers.html" aria-current="true">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Reschedule</h1>
+    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear</p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Ask to reschedule</h2>
+        <dl class="facts">
+          <dt>Current date</dt>
+          <dd>Thursday 21 January 2027, 17:00</dd>
+        </dl>
+        <div class="field">
+          <label for="date">New date</label>
+          <select id="date">
+            <option selected>Choose a date</option>
+            <option>Thursday 28 January 2027</option>
+            <option>Thursday 25 February 2027</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="why">Why</label>
+          <textarea id="why" rows="3"></textarea>
+        </div>
+        <div class="actions">
+          <a class="button" href="coordinator-confirm-date.html">Ask to reschedule</a>
+        </div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>What changes</h2>
+        <p>The date goes back to the coordinator to confirm. The due date moves to 1 month before the new date.</p>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="coordinator-confirm-date.html">the coordinator confirms the new date</a></p>
+</main>
+</body>
+</html>

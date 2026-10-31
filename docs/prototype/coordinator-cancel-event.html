@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancel event | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html">Events</a>
+      <a href="coordinator-materials-status.html">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Cancel event</h1>
+    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear</p>
+  </div>
+  <div class="columns">
+    <div>
+      <div class="notice bad">Cancelling can't be undone.</div>
+      <section class="card">
+        <h2>Why it's cancelled</h2>
+        <div class="field">
+          <label for="reason">Reason</label>
+          <select id="reason">
+            <option selected>Agenda or materials not in by 7 January 2027</option>
+            <option>Update not in within 1 week of review</option>
+          </select>
+        </div>
+        <div class="actions">
+          <a class="button danger" href="coordinator-home.html">Cancel event</a>
+          <a class="button secondary" href="coordinator-materials-status.html">Keep event</a>
+        </div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Speaker</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Mara Sample</dd>
+          <dt>Email</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+      </section>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

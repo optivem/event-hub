@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can't make it | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html">event-hub</a>
+    <nav class="nav" aria-label="Speaker">
+      <a href="speaker-home.html">Your event</a>
+      <a href="speaker-agenda-materials.html">Agenda &amp; materials</a>
+      <a href="speaker-event-details.html" aria-current="page">Event details</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html" aria-current="true">Speaker</a>
+      <a href="coordinator-home.html">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Can't make it?</h1>
+    <p class="meta">Testing Legacy Code Without Fear &middot; Thursday 21 January 2027, 17:00</p>
+  </div>
+  <div class="columns">
+    <section class="card">
+      <h2>Tell the organizers</h2>
+      <p>We're sorry to hear that. We'll cancel this event and arrange a new speaker.</p>
+      <div class="field">
+        <label for="reason">What happened?</label>
+        <textarea id="reason" rows="4"></textarea>
+      </div>
+      <div class="actions">
+        <a class="button danger" href="coordinator-speaker-dropped.html">Tell the organizers</a>
+        <a class="button secondary" href="speaker-event-details.html">Go back</a>
+      </div>
+    </section>
+    <aside>
+      <section class="card">
+        <h2>Your coordinator</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Nina Example</dd>
+          <dt>Email</dt>
+          <dd>nina.example@example.com</dd>
+        </dl>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="coordinator-speaker-dropped.html">coordinator cancels and arranges a new speaker</a></p>
+</main>
+</body>
+</html>

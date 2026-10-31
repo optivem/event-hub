@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invitation status | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html">Events</a>
+      <a href="coordinator-materials-status.html">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Invitation status</h1>
+    <p class="meta">Mara Sample &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status warn">Waiting for reply</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Reply countdown</h2>
+        <ul class="tasks">
+          <li class="task done">
+            <span class="task-body">
+              <span class="task-title">Invitation sent</span>
+              <span class="task-note">2 November 2026</span>
+            </span>
+            <span class="status ok">Done</span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Reminder sent</span>
+              <span class="task-note">9 November 2026, no reply after 1 week</span>
+            </span>
+            <a class="button secondary" href="email-reminder-reply.html">View email</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Last day to reply</span>
+              <span class="task-note">16 November 2026</span>
+            </span>
+            <span class="status warn">7 days left</span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">No reply: slot returns</span>
+              <span class="task-note">The path ends for this speaker and the date goes to the next one</span>
+            </span>
+            <a class="button secondary" href="organizers-speakers.html">Next speaker</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Speaker</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Mara Sample</dd>
+          <dt>Email</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="current">Date reservation</li>
+          <li>Agenda &amp; materials</li>
+          <li>Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="speaker-sign-up.html">the speaker replies from the link</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html">Events</a>
+      <a href="coordinator-materials-status.html">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Review</h1>
+    <p class="meta">Mara Sample &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status info">In review</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Agenda and materials</h2>
+        <dl class="facts">
+          <dt>Agenda</dt>
+          <dd>Why legacy code feels risky. Writing the first test. Breaking dependencies safely. Live example.</dd>
+          <dt>Draft slides</dt>
+          <dd><a href="#">testing-legacy-code-draft</a></dd>
+          <dt>Repository</dt>
+          <dd><a href="#">legacy-code-sample</a></dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Review</h2>
+        <p>Check against the <a href="#">Meetup Guidelines</a>.</p>
+        <div class="field">
+          <label for="title">Title <span class="hint">Shorten it if it's too long</span></label>
+          <input id="title" type="text" value="Testing Legacy Code Without Fear">
+        </div>
+        <div class="field">
+          <label for="feedback">What to update <span class="hint">Only if you send it back</span></label>
+          <textarea id="feedback" rows="3"></textarea>
+        </div>
+        <div class="actions">
+          <a class="button" href="coordinator-approve.html">Passes</a>
+          <a class="button secondary" href="speaker-update-materials.html">Send back to speaker</a>
+        </div>
+      </section>
+      <section class="card">
+        <h2>If you send it back</h2>
+        <p>The speaker has 1 week to update, then you review again. A missed update <a href="coordinator-cancel-event.html">cancels the event</a>.</p>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Speaker</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Mara Sample</dd>
+          <dt>Email</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="done">Agenda &amp; materials</li>
+          <li class="current">Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="speaker-update-materials.html">if sent back, the speaker updates within 1 week</a></p>
+</main>
+</body>
+</html>

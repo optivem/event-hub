@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Events | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html" aria-current="page">Events</a>
+      <a href="coordinator-materials-status.html">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Events</h1>
+    <p class="meta">Shared status of every speaker and event</p>
+  </div>
+  <div class="columns">
+    <div>
+      <div class="notice">Covering for Nina Example</div>
+      <section class="card">
+        <h2>Speakers and events</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Speaker</th><th>Talk</th><th>Event</th><th>Status</th><th>Screen</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mara Sample</td>
+                <td>Testing Legacy Code Without Fear</td>
+                <td>21 January 2027</td>
+                <td><span class="status info">Agenda &amp; materials</span></td>
+                <td><a class="button secondary" href="coordinator-materials-status.html">Open</a></td>
+              </tr>
+              <tr>
+                <td>Theo Placeholder</td>
+                <td>Contract Tests in Practice</td>
+                <td>18 February 2027</td>
+                <td><span class="status warn">Waiting for reply</span></td>
+                <td>Sample row</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Other steps for this event</h2>
+        <ul class="tasks">
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Speaker accepted the date</span>
+              <span class="task-note">Confirm it and open agenda &amp; materials</span>
+            </span>
+            <a class="button secondary" href="coordinator-confirm-date.html">Open</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Speaker offered other months</span>
+              <span class="task-note">Propose another date</span>
+            </span>
+            <a class="button secondary" href="coordinator-other-date.html">Open</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">An organizer asked to reschedule</span>
+              <span class="task-note">Back through date confirmation</span>
+            </span>
+            <a class="button secondary" href="organizers-reschedule.html">Open</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Speaker can't make it</span>
+              <span class="task-note">Cancel and arrange a new speaker</span>
+            </span>
+            <a class="button secondary" href="coordinator-speaker-dropped.html">Open</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Deadline missed</span>
+              <span class="task-note">Cancel the event</span>
+            </span>
+            <a class="button secondary" href="coordinator-cancel-event.html">Open</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Testing Legacy Code Without Fear</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="current">Agenda &amp; materials</li>
+          <li>Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda &amp; materials | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html">event-hub</a>
+    <nav class="nav" aria-label="Speaker">
+      <a href="speaker-home.html">Your event</a>
+      <a href="speaker-agenda-materials.html" aria-current="page">Agenda &amp; materials</a>
+      <a href="speaker-event-details.html">Event details</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html" aria-current="true">Speaker</a>
+      <a href="coordinator-home.html">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Agenda &amp; materials</h1>
+    <p class="meta">Testing Legacy Code Without Fear &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status ok">Date confirmed</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <div class="notice warn">Your agenda and materials are due by <strong>21 December 2026</strong>, 1 month before the event.</div>
+      <section class="card">
+        <h2>Calendar invite</h2>
+        <label class="check"><input type="checkbox" checked> <span>I've accepted the calendar invite sent to mara.sample@example.com</span></label>
+      </section>
+      <section class="card">
+        <h2>Meetup Guidelines</h2>
+        <p>Please read the <a href="#">Meetup Guidelines</a> before you write your agenda.</p>
+        <label class="check"><input type="checkbox"> <span>I agree to the Meetup Guidelines</span></label>
+      </section>
+      <section class="card">
+        <h2>Your agenda</h2>
+        <div class="field">
+          <label for="agenda">Agenda
+            <span class="hint">The main points of your talk, in order.</span>
+          </label>
+          <textarea id="agenda" rows="6"></textarea>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Your materials</h2>
+        <div class="field">
+          <label for="slides">Link to draft slides</label>
+          <input id="slides" type="url">
+        </div>
+        <div class="field">
+          <label for="repository">Link to repository</label>
+          <input id="repository" type="url">
+        </div>
+        <div class="actions"><a class="button" href="speaker-home-waiting.html">Submit agenda and materials</a></div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="current">Agenda &amp; materials</li>
+          <li>Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+      <section class="card">
+        <h2>Your coordinator</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Nina Example</dd>
+          <dt>Email</dt>
+          <dd>nina.example@example.com</dd>
+        </dl>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="coordinator-materials-status.html">coordinator checks agenda and materials</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Update your materials | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html">event-hub</a>
+    <nav class="nav" aria-label="Speaker">
+      <a href="speaker-home.html">Your event</a>
+      <a href="speaker-agenda-materials.html" aria-current="page">Agenda &amp; materials</a>
+      <a href="speaker-event-details.html">Event details</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html" aria-current="true">Speaker</a>
+      <a href="coordinator-home.html">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Update your agenda or materials</h1>
+    <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status warn">Changes needed</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <div class="notice warn">Please send your updates by <strong>14 January 2027</strong>, within 1 week. Without them, the event will be cancelled.</div>
+      <section class="card">
+        <h2>What to change</h2>
+        <p>Your agenda needs more detail on the second half of the talk. Please also make the repository public.</p>
+        <p class="meta">Nina Example</p>
+      </section>
+      <section class="card">
+        <h2>Your updates</h2>
+        <div class="field">
+          <label for="agenda">Agenda</label>
+          <textarea id="agenda" rows="6">Why legacy code feels risky
+Finding the seams
+Writing the first test</textarea>
+        </div>
+        <div class="field">
+          <label for="slides">Link to draft slides</label>
+          <input id="slides" type="url" value="https://slides.example.com/legacy">
+        </div>
+        <div class="field">
+          <label for="repository">Link to repository</label>
+          <input id="repository" type="url" value="https://code.example.com/mara/legacy">
+        </div>
+        <div class="actions"><a class="button" href="coordinator-review.html">Submit updates</a></div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="done">Agenda &amp; materials</li>
+          <li class="current">Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+      <section class="card">
+        <h2>Your coordinator</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Nina Example</dd>
+          <dt>Email</dt>
+          <dd>nina.example@example.com</dd>
+        </dl>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="coordinator-review.html">coordinator reviews the updates</a></p>
+</main>
+</body>
+</html>

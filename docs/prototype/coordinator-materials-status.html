@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Materials | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html">Events</a>
+      <a href="coordinator-materials-status.html" aria-current="page">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Materials</h1>
+    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear &middot; <span class="status warn">Materials missing</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Handed in</h2>
+        <ul class="tasks">
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Agenda</span>
+              <span class="task-note">Due 21 December 2026</span>
+            </span>
+            <span class="status ok">In</span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Draft slides</span>
+              <span class="task-note">Due 21 December 2026</span>
+            </span>
+            <span class="status bad">Not in</span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Repository</span>
+              <span class="task-note">Due 21 December 2026</span>
+            </span>
+            <span class="status bad">Not in</span>
+          </li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Checks</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Check</th><th>Date</th><th>Result</th><th>Email</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 month</td>
+                <td>21 December 2026</td>
+                <td><span class="status warn">Reminder sent</span></td>
+                <td><a href="email-reminder-1-month.html">View</a></td>
+              </tr>
+              <tr>
+                <td>3 weeks</td>
+                <td>31 December 2026</td>
+                <td><span class="status warn">Final reminder sent</span></td>
+                <td><a href="email-reminder-3-weeks.html">View</a></td>
+              </tr>
+              <tr>
+                <td>2 weeks</td>
+                <td>7 January 2027</td>
+                <td><span class="status">Coming up</span></td>
+                <td>None</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h2>What happens next</h2>
+        <ul class="tasks">
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Agenda and materials in</span>
+              <span class="task-note">Review starts, by 7 January 2027 at the latest</span>
+            </span>
+            <a class="button" href="coordinator-review.html">Start review</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Still missing on 7 January 2027</span>
+              <span class="task-note">The event is cancelled</span>
+            </span>
+            <a class="button danger" href="coordinator-cancel-event.html">Cancel event</a>
+          </li>
+        </ul>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Speaker</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Mara Sample</dd>
+          <dt>Email</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="current">Agenda &amp; materials</li>
+          <li>Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="speaker-agenda-materials.html">the speaker hands in agenda and materials</a></p>
+</main>
+</body>
+</html>

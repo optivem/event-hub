@@ -24,7 +24,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Steps 3 and 4 of `## Steps`: copy the page shell from `docs/prototype/speaker-home.html` and use the components in `docs/prototype/styles.css`, whose look is agreed. The gap recommendations and Step 5 of `plans/20261031-1011-speaker-organizer-user-flow.md` are still open, so build on the page as it stands and adjust screens if they change.
+Run Step 6 of `## Steps`: open `docs/prototype/index.html` with the user and click through every path against `docs/speaker-organizer-user-flow.html`, correcting the screens. The gap recommendations and Step 5 of `plans/20261031-1011-speaker-organizer-user-flow.md` are still open, so build on the page as it stands and adjust screens if they change.
 
 ## Screen list
 
@@ -49,6 +49,7 @@ Files are flat in `docs/prototype/`, prefixed by role. "G" refs are the gaps in 
 | `speaker-date-closed.html` | No date fits: try again later |
 | `speaker-home.html` ★ | Status and task list for the speaker's event |
 | `speaker-agenda-materials.html` | Accept calendar invite, agree to guidelines, fill in agenda, share draft slides and repository (SECOND, G6) |
+| `speaker-home-waiting.html` ★ | Agenda and materials handed in, waiting for review |
 | `speaker-update-materials.html` | Review didn't pass: update within 1 week (G12) |
 | `speaker-event-details.html` | StreamYard link, 17:00 start, Meetup group, like and share tasks (THIRD, G6) |
 | `speaker-cant-make-it.html` | Can't make it: tell organizers (G15) |
@@ -83,7 +84,7 @@ Files are flat in `docs/prototype/`, prefixed by role. "G" refs are the gaps in 
 
 **Covered without a screen of their own**
 
-- Waiting for review is a status on `speaker-home`.
+- Waiting for review was first planned as a status on `speaker-home`, but screens are fixed, so it became the `speaker-home-waiting` screen in the Speaker table.
 - Another organizer covering a coordinator step uses the same coordinator screens, with a "covering" banner.
 - Automatic reminder checks are shown as statuses on `coordinator-invitation-status` and `coordinator-materials-status`.
 
@@ -95,7 +96,4 @@ Files are flat in `docs/prototype/`, prefixed by role. "G" refs are the gaps in 
 
 ## Steps
 
-- [ ] Step 3: Build the speaker screens and mock emails, with links between them.
-- [ ] Step 4: Build the speaker coordinator and other organizers screens, with links between them.
-- [ ] Step 5: Add an index page listing every screen by role and phase, as the prototype's starting point.
 - [ ] Step 6: Click through every path with the user against the user flow, and correct the screens.

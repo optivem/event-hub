@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propose a date | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">All screens</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="coordinator-home.html">event-hub</a>
+    <nav class="nav" aria-label="Coordinator">
+      <a href="coordinator-home.html">Events</a>
+      <a href="coordinator-materials-status.html">Materials</a>
+    </nav>
+    <nav class="roles" aria-label="View as role">
+      <a href="speaker-home.html">Speaker</a>
+      <a href="coordinator-home.html" aria-current="true">Coordinator</a>
+      <a href="organizers-speakers.html">Organizers</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Propose a date</h1>
+    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear</p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Invite the speaker</h2>
+        <div class="field">
+          <label for="date">Date</label>
+          <select id="date">
+            <option selected>Thursday 21 January 2027</option>
+            <option>Thursday 25 February 2027</option>
+          </select>
+        </div>
+        <dl class="facts">
+          <dt>Start</dt>
+          <dd>17:00</dd>
+          <dt>Send to</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+        <div class="actions">
+          <a class="button" href="coordinator-invitation-status.html">Send invitation</a>
+          <a class="button secondary" href="organizers-speaker-detail.html">Back</a>
+        </div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>After you send</h2>
+        <p>The speaker gets an email with a sign-up link and has 1 week to reply.</p>
+        <p>A reminder goes out if they don't reply. After 1 more week, the slot goes back to potential speakers.</p>
+      </section>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="current">Date reservation</li>
+          <li>Agenda &amp; materials</li>
+          <li>Review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="email-invitation.html">the invitation email the speaker receives</a></p>
+</main>
+</body>
+</html>
