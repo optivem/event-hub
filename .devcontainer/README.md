@@ -1,6 +1,6 @@
 # Dev Container
 
-Reproducible development environment with `gcloud`, `gh`, `terraform`, Docker, Node 22, Java 21, and Claude Code pre-installed, plus what the system tests need (`gh optivem`, Chromium OS libraries). Works identically on Windows, macOS, and Linux.
+Reproducible development environment with `gcloud`, `gh`, `terraform`, `neonctl`, Docker, Node 22, Java 21, and Claude Code pre-installed, plus what the system tests need (`gh optivem`, Chromium OS libraries). Works identically on Windows, macOS, and Linux.
 
 ## Prerequisites
 
@@ -42,13 +42,12 @@ See [system-test/README.md](../system-test/README.md) for running the tests.
 
 ## Deploy to Google Cloud Run
 
-`gcloud` and `terraform` are included ahead of the GCP move. The provisioning scripts arrive with `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md`; until then there is nothing to deploy from here.
-
 Run these inside the container terminal:
 
 ```bash
 gh auth login
 gcloud auth login --no-launch-browser
+neonctl login
 ./setup-gcp.sh
 gh workflow run acceptance-stage.yml
 ```
@@ -56,19 +55,21 @@ gh workflow run acceptance-stage.yml
 What each step does:
 - `gh auth login` — authenticates GitHub CLI (opens browser)
 - `gcloud auth login --no-launch-browser` — authenticates Google Cloud CLI (prints a link to open in the host browser)
-- `./setup-gcp.sh` — creates GCP project, enables APIs, configures Workload Identity Federation, sets GitHub repo variables/secrets
+- `neonctl login` — authenticates the Neon CLI. If the browser flow doesn't work in the container, `export NEON_API_KEY=<key>` instead. The login is not kept across rebuilds
+- `./setup-gcp.sh` — creates the GCP and Neon projects, enables APIs, configures Workload Identity Federation, sets GitHub repo variables
 - `gh workflow run …` — triggers the acceptance-stage workflow against the newly provisioned cloud infra
 
 To tear everything down later: `./teardown-gcp.sh`
 
 ## Pinned tool versions
 
-Versions are pinned in [devcontainer.json](devcontainer.json). Update in one place; every dev gets the same env.
+Versions are pinned in [devcontainer.json](devcontainer.json), except `neonctl`, which is pinned by `NEONCTL_VERSION` in [terraform/neon.sh](../terraform/neon.sh). Update in one place; every dev gets the same env.
 
 | Tool      | Version |
 |-----------|---------|
 | gcloud    | 590.0.1 |
 | terraform | 1.10.3  |
+| neonctl   | 8.13.2  |
 | node      | 22      |
 | java      | 21      |
 | claude    | latest  |

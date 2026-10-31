@@ -25,6 +25,10 @@
 - [Project Registration](docs/project-registration.md)
 - [Dev Container](.devcontainer/README.md)
 
+## GCP deployment
+
+`./setup-gcp.sh` provisions the GCP and Neon projects and `./teardown-gcp.sh` removes them. See [terraform/README.md](terraform/README.md).
+
 ## License
 
 MIT License

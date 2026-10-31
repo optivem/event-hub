@@ -1,0 +1,6 @@
+# Example Terraform variables
+# Copy this to terraform.tfvars and update values before running ./setup-gcp.sh
+
+# region = "us-central1"
+# github_repo = "optivem/event-hub"
+# billing_account_id = "XXXXXX-XXXXXX-XXXXXX"
