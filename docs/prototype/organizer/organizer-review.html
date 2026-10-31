@@ -60,6 +60,10 @@
         <div class="field">
           <label for="title">Title <span class="hint">Title plus speaker name: 80 characters at most. Shorten it if it's longer.</span></label>
           <input id="title" type="text" value="Testing Legacy Code Without Fear">
+          <p class="title-preview" id="title-preview">
+            <span class="title-full" id="title-full">Testing Legacy Code Without Fear (Mara Sample)</span>
+            <span class="title-count" id="title-count" aria-live="polite">46 of 80 characters</span>
+          </p>
         </div>
         <div class="field">
           <label for="feedback">What to update <span class="hint">Only if you send it back</span></label>
@@ -100,5 +104,20 @@
   </div>
   <p class="proto-next" id="what-next">Next in the flow: if it passes, <a href="organizer-approve.html">approve</a>. If you send it back, the speaker sees &ldquo;Update your agenda or materials&rdquo; and has 1 week, then you review again on this screen.</p>
 </main>
+<script>
+var titleInput = document.getElementById('title');
+var speakerName = 'Mara Sample';
+var titleLimit = 80;
+function showTitle() {
+  var fullTitle = titleInput.value.trim() + ' (' + speakerName + ')';
+  var over = fullTitle.length > titleLimit;
+  document.getElementById('title-full').textContent = fullTitle;
+  document.getElementById('title-count').textContent = fullTitle.length + ' of ' + titleLimit + ' characters' +
+    (over ? ': ' + (fullTitle.length - titleLimit) + ' too many' : '');
+  document.getElementById('title-preview').classList.toggle('over', over);
+}
+titleInput.addEventListener('input', showTitle);
+showTitle();
+</script>
 </body>
 </html>
