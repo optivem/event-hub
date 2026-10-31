@@ -34,7 +34,7 @@ jobs:
           version-files: |
             [
               {"path": "VERSION",            "value": "v"},
-              {"path": "backend/VERSION",    "value": "v"},
+              {"path": "backend/VERSION",    "value": "backend-v"},
               {"path": "frontend/VERSION",  "value": "v"}
             ]
 

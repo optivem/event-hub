@@ -30,10 +30,20 @@ jobs:
             DOCKERHUB_USERNAME
             DOCKERHUB_TOKEN
             WORKFLOW_TOKEN
+            GCP_PROJECT_ID
+            GCP_REGION
+            GCP_WORKLOAD_IDENTITY_PROVIDER
+            GCP_SERVICE_ACCOUNT
+            SYSTEM_NAME
         env:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ vars.GCP_REGION }}
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          SYSTEM_NAME: ${{ vars.SYSTEM_NAME }}
 
       - name: Checkout Repository
         if: inputs.version == ''
@@ -105,11 +115,29 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/frontend
             ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/backend
 
-  run:
+  # === Deploy: Persistent Production Stack ===
+  deploy:
     needs: check
     if: needs.check.result == 'success'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_deploy-cloud-run.yml
+    with:
+      stack: prod
+      image-urls: ${{ needs.check.outputs.image-urls }}
+      source-ref: ${{ needs.check.outputs.version }}
+      realm: shop-prod
+      environment: production
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+  # === Publish the Release ===
+  # Only after a successful deploy, so a failed deploy publishes no tag or release.
+  run:
+    needs: [check, deploy]
+    if: needs.check.result == 'success' && needs.deploy.result == 'success'
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       contents: write
       packages: write
@@ -121,45 +149,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ needs.check.outputs.version }}
-
-      - name: Log in to Docker Hub
-        uses: optivem/actions/docker-login@v1
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Log in to GHCR
-        uses: optivem/actions/docker-login@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Simulate Deployment (Production Environment)
-        id: deploy
-        uses: optivem/actions/deploy-docker-compose@v1
-        with:
-          environment: production
-          version: ${{ needs.check.outputs.version }}
-          image-urls: ${{ needs.check.outputs.image-urls }}
-          service-names: |
-            frontend
-            backend
-          compose-file: docker-compose.pipeline.real.yml
-          working-directory: docker
-
-      - name: Wait for Systems (Simulate Deployment (Production Environment))
-        uses: optivem/actions/wait-for-endpoints@v1
-        with:
-          endpoints: |
-            [
-              { "name": "Eventhub UI", "url": "http://localhost:3311/" },
-              { "name": "Eventhub API", "url": "http://localhost:8311/health" },
-              { "name": "ERP", "url": "http://localhost:9311/erp/health" },
-              { "name": "Clock", "url": "http://localhost:9311/clock/health" }
-            ]
-          compose-file: docker-compose.pipeline.real.yml
-          working-directory: docker
 
       - name: Generate Release Version
         id: promote
@@ -193,11 +182,35 @@ jobs:
                "file": "frontend/VERSION"}
             ]
 
+      # The system tag is already out, so a component whose version wasn't bumped must not stop the
+      # release: it keeps its earlier tags, and the system release identifies this build.
+      - name: Drop Components Already Released at Another Commit
+        id: new-component-versions
+        shell: bash
+        env:
+          VERSIONS: ${{ steps.read-component-versions.outputs.versions }}
+        run: |
+          set -euo pipefail
+          head="$(git rev-parse HEAD)"
+          kept='[]'
+          while IFS= read -r entry; do
+            version="$(jq -r .version <<< "$entry")"
+            tag="v${version}"
+            [[ "$(jq -r .key <<< "$entry")" != */backend:* ]] || tag="backend-v${version}"
+            existing="$(git ls-remote --tags origin "refs/tags/${tag}" | cut -f1)"
+            if [[ -n "$existing" && "$existing" != "$head" ]]; then
+              echo "::warning::${tag} already exists at ${existing}; leaving it and its image tag as they are."
+            else
+              kept="$(jq -c --argjson entry "$entry" '. + [$entry]' <<< "$kept")"
+            fi
+          done < <(jq -c '.[]' <<< "$VERSIONS")
+          echo "versions=${kept}" >> "$GITHUB_OUTPUT"
+
       - name: Compose Component Tags
         id: compose-component-tags
         uses: optivem/actions/compose-tags@v1
         with:
-          versions: ${{ steps.read-component-versions.outputs.versions }}
+          versions: ${{ steps.new-component-versions.outputs.versions }}
 
       - name: Tag Docker Images with Component Release Versions
         uses: optivem/actions/tag-docker-images@v1
@@ -209,7 +222,7 @@ jobs:
         id: component-tag-versions
         shell: bash
         env:
-          VERSIONS: ${{ steps.read-component-versions.outputs.versions }}
+          VERSIONS: ${{ steps.new-component-versions.outputs.versions }}
         run: |
           backend=$(echo "$VERSIONS" | jq -r '.[] | select(.key | contains("backend")) | .version')
           frontend=$(echo "$VERSIONS" | jq -r '.[] | select(.key | contains("frontend")) | .version')
@@ -217,12 +230,14 @@ jobs:
           echo "frontend=$frontend" >> "$GITHUB_OUTPUT"
 
       - name: Publish Backend Component Release Tag
+        if: steps.component-tag-versions.outputs.backend != ''
         uses: optivem/actions/publish-tag@v1
         with:
           tag: backend-v${{ steps.component-tag-versions.outputs.backend }}
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Publish Frontend Component Release Tag
+        if: steps.component-tag-versions.outputs.frontend != ''
         uses: optivem/actions/publish-tag@v1
         with:
           tag: v${{ steps.component-tag-versions.outputs.frontend }}
@@ -243,6 +258,11 @@ jobs:
           title: ${{ steps.release-notes.outputs.title }}
           notes-file: ${{ steps.release-notes.outputs.notes-file }}
 
+      - name: Show Production URL
+        env:
+          FRONTEND_URL: ${{ needs.deploy.outputs.frontend-url }}
+        run: echo "Production is at ${FRONTEND_URL}" >> "$GITHUB_STEP_SUMMARY"
+
   bump-patch-version:
     needs: run
     if: ${{ !failure() && !cancelled() && needs.run.result == 'success' }}
@@ -252,7 +272,7 @@ jobs:
     secrets: inherit
 
   summary:
-    needs: [check, run]
+    needs: [check, deploy, run]
     if: always()
     runs-on: ubuntu-latest
     permissions:
@@ -262,7 +282,10 @@ jobs:
       uses: optivem/actions/render-system-stage-summary@v1
       with:
         stage-name: 'Production Stage'
-        stage-result: ${{ (needs.check.result == 'failure' || needs.run.result == 'failure') && 'failure' || (needs.check.result == 'cancelled' || needs.run.result == 'cancelled') && 'cancelled' || needs.run.result }}
+        stage-result: >-
+          ${{ (needs.check.result == 'failure' || needs.deploy.result == 'failure' || needs.run.result == 'failure') && 'failure'
+              || (needs.check.result == 'cancelled' || needs.deploy.result == 'cancelled' || needs.run.result == 'cancelled') && 'cancelled'
+              || needs.run.result }}
         environment: production
         success-version: ${{ needs.run.outputs.version }}
         success-artifact-ids: ${{ needs.run.outputs.image-urls }}
