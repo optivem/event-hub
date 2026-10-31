@@ -1,7 +1,5 @@
 # 2026-10-30 19:31:32 UTC — Add a dev container
 
-> 🤖 **Picked up by agent** — `72501e16dbea` at `2026-10-30T20:02:46Z`
-
 ## TL;DR
 
 **Why:** `event-hub` has no `.devcontainer/`, so everyone installs Java, Node, Docker and the CLIs by hand. The GCP move adds `gcloud` and `terraform` to that list.
@@ -19,7 +17,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-**Step 4, run by a human or with `@devcontainers/cli` allowed:** the `.devcontainer/` files exist but have never been built. Reopen the repo in the container and run the checks in Step 4. `devcontainer-lock.json` was derived from `shop`'s lockfile, not generated, so also run `devcontainer upgrade --workspace-folder .` from PowerShell. Don't use Git Bash: it sets both `HOME` and `USERPROFILE`, which doubles the `~/.claude/commands` mount path.
+Only deferred items remain, see `## Steps`. Both need a human: the login check needs a rebuild from the host, and the `gh` decision needs the cause of the version mismatch.
 
 ## What to take from `academy/shop`
 
@@ -45,7 +43,8 @@ What we get out of this — the goals and deliverables:
 
 ## Steps
 
-- [ ] Step 4: Verify in a fresh container: `post-create.sh` reports no missing tools, `./gradlew build` passes in `backend/`, the frontend builds, and the local stub stack starts with smoke tests green
+- [ ] Step 5: Confirm `gh`, `gcloud` and Claude Code logins survive a rebuild, and that `gh extension install optivem/gh-optivem` works after login — ⏳ Deferred: needs interactive logins and a rebuild from the host, neither possible from inside the container
+- [ ] Step 6: Make `gh` match its pin — ⏳ Deferred: `devcontainer.json` and the README say 2.67.0 but the container has 2.103.3. `/var/log/dpkg.log` shows 2.67.0 installed, then upgraded 11 seconds later; the cause is unknown. Find it, then either fix the pin or drop it, and verify with a rebuild
 
 ## Open questions
 
