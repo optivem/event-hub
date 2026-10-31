@@ -14,9 +14,6 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="speaker-home.html">event-hub</a>
-    <nav class="nav" aria-label="Speaker">
-      <a href="speaker-home.html">Your event</a>
-    </nav>
     <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
     <details class="account">
       <summary aria-label="Account menu: Mara Sample"><span class="avatar" aria-hidden="true">MS</span></summary>
@@ -45,25 +42,25 @@
         </div>
         <div class="field">
           <label for="role">Role</label>
-          <input id="role" type="text">
+          <input id="role" type="text" data-saved="Staff Engineer">
         </div>
         <div class="field">
           <label for="company">Company</label>
-          <input id="company" type="text">
+          <input id="company" type="text" data-saved="Sample Company">
         </div>
         <div class="field">
           <label for="bio">Short bio</label>
-          <textarea id="bio" rows="4"></textarea>
+          <textarea id="bio" rows="4" data-saved="Mara has spent 15 years working on old systems and helps teams get them under test."></textarea>
         </div>
         <div class="field">
           <label for="linkedin">LinkedIn
             <span class="hint">Required. We use your LinkedIn photo, so please check it's a professional headshot. Use Need help if you'd prefer another photo.</span>
           </label>
-          <input id="linkedin" type="url" required>
+          <input id="linkedin" type="url" required data-saved="https://www.linkedin.com/in/mara-sample">
         </div>
         <div class="field">
           <label for="github">GitHub <span class="hint">Required</span></label>
-          <input id="github" type="url" required>
+          <input id="github" type="url" required data-saved="https://github.com/mara-sample">
         </div>
         <div class="field">
           <label for="twitter">Twitter / X <span class="hint">Optional</span></label>
@@ -84,16 +81,19 @@
   <p class="proto-next" id="account-next">Next in the flow: <a href="speaker-home.html">back to your event</a></p>
 </main>
 <script>
-if (new URLSearchParams(location.search).has('onboarding')) {
+var accountParams = new URLSearchParams(location.search);
+if (accountParams.has('onboarding')) {
   var head = document.querySelector('.page-head');
   head.querySelector('h1').textContent = 'Welcome to Tech Excellence';
   head.querySelector('.meta').textContent = 'Tell us about you first. You only do this once, and we use it for all your events.';
-  document.querySelector('.topbar .nav').hidden = true;
   document.querySelector('.account').hidden = true;
   var save = document.getElementById('account-save');
   save.textContent = 'Save and continue';
   save.href = 'speaker-date.html';
   document.getElementById('account-next').innerHTML = 'Next in the flow: <a href="speaker-date.html">does this date work for you?</a>';
+} else {
+  document.querySelectorAll('[data-saved]').forEach(function (field) { field.value = field.dataset.saved; });
+  if (accountParams.has('back')) { document.getElementById('account-save').href = accountParams.get('back'); }
 }
 </script>
 </body>

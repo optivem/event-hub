@@ -168,7 +168,7 @@ a { color: var(--accent); }
   border-radius: var(--radius);
   background: var(--surface);
 }
-.phase-tabs a, .phase-tabs span {
+.phase-tabs a, .phase-tabs > span {
   display: flex;
   align-items: center;
   min-height: 44px;
@@ -176,7 +176,21 @@ a { color: var(--accent); }
   text-decoration: none;
 }
 .phase-tabs a { color: var(--muted); }
-.phase-tabs span { color: #7b8794; cursor: not-allowed; }
+.phase-tabs > span { color: #7b8794; cursor: not-allowed; }
+.phase-tabs .tab-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--ok);
+  border-radius: 4px;
+}
 .phase-tabs a[aria-current="page"] {
   color: var(--ink);
   font-weight: 600;
@@ -205,6 +219,7 @@ a { color: var(--accent); }
 
 .facts { margin: 0; }
 .help-note { margin: 12px 0 0; }
+.edit-about { margin-top: 12px; }
 .facts dt { font-size: 0.8rem; color: var(--muted); }
 .facts dd { margin: 0 0 10px; overflow-wrap: anywhere; }
 .facts dd:last-child { margin-bottom: 0; }

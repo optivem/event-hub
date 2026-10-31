@@ -21,7 +21,13 @@
 
   PHASES.forEach(function (phase, index) {
     var tab = document.createElement(isOpen(phase) ? 'a' : 'span');
-    tab.textContent = (isDone(phase) ? '✓ ' : '') + phase.name;
+    if (isDone(phase)) {
+      var tick = document.createElement('span');
+      tick.className = 'tab-tick';
+      tick.textContent = '\u2713';
+      tab.appendChild(tick);
+    }
+    tab.append(phase.name);
     if (isOpen(phase)) {
       tab.href = index === active ? location.pathname.split('/').pop() + location.search : link(phase);
     } else {
@@ -68,6 +74,10 @@
   function showSubmitted() {
     controls.forEach(function (control) {
       if (control.dataset.submitted) { control.value = control.dataset.submitted; }
+      if (control.type === 'checkbox') {
+        control.checked = true;
+        control.closest('.task').classList.add('done');
+      }
       control.disabled = !stillChangeable;
     });
   }
