@@ -1,9 +1,9 @@
-# 2026-10-31 10:11:57 UTC — UX diagram of the Tech Excellence meetup speaker process
+# 2026-10-31 10:11:57 UTC — event-hub speaker & organizer user flow
 
 ## TL;DR
 
 **Why:** The meetup organizing procedure exists only as a long document of timing notes, email templates and leftover drafts. The real flow — who acts when, what each check branches to, and where a speaker drops out — is hard to see, so gaps and inconsistencies stay hidden. event-hub will replace these emails with in-app steps, keeping email only for the speaker invitation and step reminders, so that UX needs designing first.
-**End result:** A single UX diagram shows the future event-hub journey from first contact to the post-event thank-you, across speaker, speaker coordinator and the other organizers, on a timeline relative to the event date, with every decision point and exit path visible.
+**End result:** A single user flow diagram shows the future event-hub journey from first contact to the post-event thank-you, across speaker, speaker coordinator and the other organizers, on a timeline relative to the event date, with every decision point and exit path visible.
 
 ## Outcomes
 
