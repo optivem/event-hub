@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About you | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="proto-bar">
+  <span>Prototype: nothing is saved</span>
+  <a href="index.html">Back to login</a>
+</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html">event-hub</a>
+    <nav class="nav" aria-label="Speaker">
+      <a href="speaker-home.html">Your event</a>
+      <a href="speaker-agenda-materials.html">Agenda &amp; materials</a>
+      <a href="speaker-event-details.html">Event details</a>
+      <a href="speaker-about-you.html" aria-current="page">About you</a>
+    </nav>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>About you</h1>
+    <p class="meta">Mara Sample &middot; Used for all your talks at Tech Excellence</p>
+  </div>
+  <div>
+    <div>
+      <section class="card">
+        <div class="field">
+          <label for="speaker-name">Name
+            <span class="hint">From your invitation. Use Need help if it needs changing.</span>
+          </label>
+          <input id="speaker-name" type="text" value="Mara Sample" readonly>
+        </div>
+        <div class="field">
+          <label for="role">Role</label>
+          <input id="role" type="text">
+        </div>
+        <div class="field">
+          <label for="company">Company</label>
+          <input id="company" type="text">
+        </div>
+        <div class="field">
+          <label for="bio">Short bio</label>
+          <textarea id="bio" rows="4"></textarea>
+        </div>
+        <div class="field">
+          <label for="linkedin">LinkedIn
+            <span class="hint">Required. We use your LinkedIn photo, so please check it's a professional headshot. Use Need help if you'd prefer another photo.</span>
+          </label>
+          <input id="linkedin" type="url" required>
+        </div>
+        <div class="field">
+          <label for="github">GitHub <span class="hint">Required</span></label>
+          <input id="github" type="url" required>
+        </div>
+        <div class="field">
+          <label for="twitter">Twitter / X <span class="hint">Optional</span></label>
+          <input id="twitter" type="url">
+        </div>
+        <div class="field">
+          <label for="youtube">YouTube <span class="hint">Optional</span></label>
+          <input id="youtube" type="url">
+        </div>
+        <div class="field">
+          <label for="website">Website or blog <span class="hint">Optional</span></label>
+          <input id="website" type="url">
+        </div>
+        <div class="actions"><a class="button" href="speaker-home.html">Save</a></div>
+      </section>
+    </div>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="speaker-home.html">back to your event</a></p>
+</main>
+</body>
+</html>

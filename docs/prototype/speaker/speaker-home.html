@@ -18,7 +18,9 @@
       <a href="speaker-home.html" aria-current="page">Your event</a>
       <a href="speaker-agenda-materials.html">Agenda &amp; materials</a>
       <a href="speaker-event-details.html">Event details</a>
+      <a href="speaker-about-you.html">About you</a>
     </nav>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
   </div>
 </header>
 <main class="page">
@@ -31,7 +33,7 @@
       <div class="notice warn">Your agenda and materials are due by <strong>21 December 2026</strong>, 1 month before the event.</div>
       <section class="card">
         <h2>Your tasks</h2>
-        <p class="meta" id="task-progress" aria-live="polite">0 of 5 done</p>
+        <p class="meta" id="task-progress" aria-live="polite">0 of 6 done</p>
         <ul class="tasks" id="task-list">
           <li class="task">
             <label class="check task-check">
@@ -48,6 +50,7 @@
               <span class="task-body">
                 <span class="task-title">I've read and agree to the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a></span>
                 <span class="task-note">Please read them before you write your agenda</span>
+                <span class="task-note" id="guidelines-stamp" aria-live="polite" hidden></span>
               </span>
             </label>
           </li>
@@ -63,9 +66,16 @@
           <li class="task">
             <span class="task-body">
               <span class="task-title">Fill in your talk details</span>
-              <span class="task-note">Title, agenda and about you. Due 21 December 2026</span>
+              <span class="task-note">Title and agenda. Due 21 December 2026</span>
             </span>
             <a class="button secondary" href="speaker-agenda-materials.html">Start</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Fill in about you</span>
+              <span class="task-note">Role, bio and links, used for all your talks. Due 21 December 2026</span>
+            </span>
+            <a class="button secondary" href="speaker-about-you.html">Start</a>
           </li>
           <li class="task">
             <span class="task-body">
@@ -94,15 +104,6 @@
           <li>After the event</li>
         </ol>
       </section>
-      <section class="card">
-        <h2>Your organizer</h2>
-        <dl class="facts">
-          <dt>Name</dt>
-          <dd>Nina Example</dd>
-          <dt>Email</dt>
-          <dd>nina.example@example.com</dd>
-        </dl>
-      </section>
     </aside>
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-agenda-materials.html">hand in your agenda and materials</a>. Not in by the due date, <a href="email-reminder-1-month.html">reminder email</a></p>
@@ -110,6 +111,7 @@
 <script>
 var list = document.getElementById('task-list');
 var tasks = Array.from(list.children);
+var guidelinesStamp = document.getElementById('guidelines-stamp');
 
 function isRemembered(id) {
   try { return sessionStorage.getItem('task-' + id) === 'done'; } catch (e) { return false; }
@@ -120,10 +122,24 @@ function remember(id, done) {
   } catch (e) { /* the tick just won't survive leaving the page */ }
 }
 function refresh() {
-  var open = tasks.filter(function (task) { return !task.classList.contains('done'); });
   var done = tasks.filter(function (task) { return task.classList.contains('done'); });
-  open.concat(done).forEach(function (task) { list.appendChild(task); });
   document.getElementById('task-progress').textContent = done.length + ' of ' + tasks.length + ' done';
+}
+function showGuidelinesStamp() {
+  var saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem('guidelines-stamp')); } catch (e) { /* no stamp to show */ }
+  guidelinesStamp.hidden = !saved;
+  if (!saved) { return; }
+  var at = new Date(saved.at);
+  guidelinesStamp.textContent = (saved.agreed ? 'Agreed on ' : 'Agreement withdrawn on ') +
+    at.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' at ' +
+    at.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+function saveGuidelinesStamp(agreed) {
+  try {
+    sessionStorage.setItem('guidelines-stamp', JSON.stringify({ agreed: agreed, at: new Date().toISOString() }));
+  } catch (e) { /* the stamp just won't survive leaving the page */ }
+  showGuidelinesStamp();
 }
 function setDone(box, done) {
   box.checked = done;
@@ -135,10 +151,12 @@ document.querySelectorAll('[data-task]').forEach(function (box) {
   box.addEventListener('change', function () {
     setDone(box, box.checked);
     remember(id, box.checked);
+    if (id === 'guidelines') { saveGuidelinesStamp(box.checked); }
     refresh();
     box.focus();
   });
 });
+showGuidelinesStamp();
 refresh();
 </script>
 </body>

@@ -18,7 +18,9 @@
       <a href="speaker-home.html">Your event</a>
       <a href="speaker-agenda-materials.html" aria-current="page">Agenda &amp; materials</a>
       <a href="speaker-event-details.html">Event details</a>
+      <a href="speaker-about-you.html">About you</a>
     </nav>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
   </div>
 </header>
 <main class="page">
@@ -35,7 +37,7 @@
           <label for="talk-title">Title
             <span class="hint">Title plus your name: 80 characters at most.</span>
           </label>
-          <input id="talk-title" type="text" value="Testing Legacy Code Without Fear">
+          <input id="talk-title" type="text" value="Testing Legacy Code Without Fear" data-speaker="Mara Sample">
           <p class="title-preview" id="title-preview">
             <span class="title-full" id="title-full">Testing Legacy Code Without Fear (Mara Sample)</span>
             <span class="title-count" id="title-count" aria-live="polite">46 of 80 characters</span>
@@ -46,49 +48,6 @@
             <span class="hint">What the talk is about, and a short list of what people will learn.</span>
           </label>
           <textarea id="agenda" rows="6"></textarea>
-        </div>
-      </section>
-      <section class="card">
-        <h2>About you</h2>
-        <div class="field">
-          <label for="speaker-name">Name
-            <span class="hint">From your invitation. Ask your organizer if it needs changing.</span>
-          </label>
-          <input id="speaker-name" type="text" value="Mara Sample" readonly>
-        </div>
-        <div class="field">
-          <label for="role">Role</label>
-          <input id="role" type="text">
-        </div>
-        <div class="field">
-          <label for="company">Company</label>
-          <input id="company" type="text">
-        </div>
-        <div class="field">
-          <label for="bio">Short bio</label>
-          <textarea id="bio" rows="4"></textarea>
-        </div>
-        <div class="field">
-          <label for="linkedin">LinkedIn
-            <span class="hint">Required. We use your LinkedIn photo, so please check it's a professional headshot. Tell your organizer if you'd prefer another photo.</span>
-          </label>
-          <input id="linkedin" type="url" required>
-        </div>
-        <div class="field">
-          <label for="github">GitHub <span class="hint">Required</span></label>
-          <input id="github" type="url" required>
-        </div>
-        <div class="field">
-          <label for="twitter">Twitter / X <span class="hint">Optional</span></label>
-          <input id="twitter" type="url">
-        </div>
-        <div class="field">
-          <label for="youtube">YouTube <span class="hint">Optional</span></label>
-          <input id="youtube" type="url">
-        </div>
-        <div class="field">
-          <label for="website">Website or blog <span class="hint">Optional</span></label>
-          <input id="website" type="url">
         </div>
       </section>
       <section class="card">
@@ -122,22 +81,13 @@
           <li>After the event</li>
         </ol>
       </section>
-      <section class="card">
-        <h2>Your organizer</h2>
-        <dl class="facts">
-          <dt>Name</dt>
-          <dd>Nina Example</dd>
-          <dt>Email</dt>
-          <dd>nina.example@example.com</dd>
-        </dl>
-      </section>
     </aside>
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-home-waiting.html">wait for the review</a></p>
 </main>
 <script>
 var titleInput = document.getElementById('talk-title');
-var speakerName = document.getElementById('speaker-name').value;
+var speakerName = titleInput.dataset.speaker;
 var titleLimit = 80;
 function showTitle() {
   var fullTitle = titleInput.value.trim() + ' (' + speakerName + ')';

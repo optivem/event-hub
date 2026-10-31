@@ -25,7 +25,7 @@ None. All are decided, and the screen changes are already made.
 
 ## Steps
 
-- [ ] Step 1: Speaker journey, in `docs/prototype/speaker/`. Start at login, `index.html`, then go through `email-invitation`, `speaker-set-password`, `speaker-date`, `speaker-home`, `speaker-agenda-materials`, `speaker-home-waiting`, `speaker-event-details`, `speaker-day-of` and `speaker-after-event`.
+- [ ] Step 1: Speaker journey, in `docs/prototype/speaker/`. Start at login, `index.html`, then go through `email-invitation`, `speaker-set-password`, `speaker-date`, `speaker-home`, `speaker-about-you`, `speaker-help`, `speaker-agenda-materials`, `speaker-home-waiting`, `speaker-event-details`, `speaker-day-of` and `speaker-after-event`.
 - [ ] Step 2: Organizer journey, in `docs/prototype/organizer/`. Start at login, `index.html`, then go through `organizer-home`, `organizer-speaker-detail`, `organizer-propose-date`, `organizer-invitation-status`, `organizer-confirm-date`, `organizer-materials-status`, `organizer-review`, `organizer-approve`, `organizer-publish`, `organizer-day-of` and `organizer-after-event`.
 - [ ] Step 3: Exit and exception paths. Each prototype stands alone, so start each side from its own login.
   - Date doesn't work. Speaker: `speaker-date`, `speaker-date-closed`. Organizer: `organizer-home`, `organizer-other-date`, then `organizer-invitation-status` or "No slot left".
