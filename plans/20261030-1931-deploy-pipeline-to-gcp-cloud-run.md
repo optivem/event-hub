@@ -22,7 +22,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Step 2 is the user\'s: rebuild the dev container (or rely on the `npx` fallback), run `gcloud auth login --no-launch-browser`, `gcloud auth application-default login --no-launch-browser` and `neonctl login`, then `./setup-gcp.sh`. Next, Step 5 switches `acceptance-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (inputs `stack`, `image-urls`, `source-ref`; caller needs `id-token: write`).
+Step 2 is the user's: rebuild the dev container (or rely on the `npx` fallback), run `gcloud auth login --no-launch-browser`, `gcloud auth application-default login --no-launch-browser` and `neonctl login`, then `./setup-gcp.sh`. Next, Step 5 switches `acceptance-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (inputs `stack`, `image-urls`, `source-ref`; caller needs `id-token: write`).
 
 ## Steps
 
