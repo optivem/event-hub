@@ -7,7 +7,7 @@ sonar:
 system:
     architecture: multitier
     config: docker/systems.yaml
-    db-migration-path: system/db/migrations
+    db-migration-path: db/migrations
     backend:
         path: backend
         repo: optivem/event-hub
