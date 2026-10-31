@@ -1,7 +1,5 @@
 # 2026-10-30 19:31:32 UTC — Deploy the pipeline to GCP Cloud Run
 
-> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-10-31T19:30:26Z`
-
 ## TL;DR
 
 **Why:** The acceptance, QA and prod stages only simulate deployment: `deploy-docker-compose` starts the system on a throwaway GitHub runner at `localhost`, so nothing is ever really deployed and "production" disappears when the job ends.
@@ -22,13 +20,13 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Step 7: add the `shop-prod` realm and take prod out of the `shop` realm (`cloud-realm.jq`). The human-only part of Step 6, the QA sign-off, is still open and blocks the prod run.
+Human first: test QA and run the sign-off in Step 6, then dispatch prod per Step 8. An agent can then do Step 9. Until then nothing is executable by an agent.
 
 ## Steps
 
 - [ ] Step 6: `qa-stage.yml` is on Cloud Run and green (run 41236790333); only `qa-signoff.yml` remains. A human tests https://event-hub-qa-frontend-992033658880.us-central1.run.app, then runs `gh workflow run qa-signoff.yml --repo optivem/event-hub --ref main -f version=v1.0.227-rc.14 -f result=approved`. An agent must not dispatch it: it records a human approval and unlocks prod
-- [ ] Step 7: Add a `shop-prod` realm as a new import file without the password-grant test client and test users, and remove the prod URL from the `shop` realm (an existing realm is not re-imported, so this needs `event_hub_keycloak` recreated), and make sure no test suite runs against prod except login-free smoke tests
-- [ ] Step 8: Switch `prod-stage.yml` to it, passing `realm: shop-prod`. The agent stops here without dispatching and hands the user the exact command, because a prod run publishes a real tag and a public GitHub Release
+- [ ] Step 7: The `shop-prod` realm is live. Only one item remains: the live `shop` realm still accepts the prod URL as a redirect, because an existing realm is not re-imported. Remove it with the Keycloak admin API (edit `redirectUris`, `webOrigins` and `post.logout.redirect.uris` on `shop-frontend`, no data loss), or recreate `event_hub_keycloak`
+- [ ] Step 8: `prod-stage.yml` is switched but has never run. After the QA sign-off the user runs `gh workflow run prod-stage.yml --repo optivem/event-hub --ref main -f version=v1.0.227-rc.14`, which publishes tags and a public GitHub Release. After it, create a real user in `shop-prod`: the realm has no users and registration is off
 - [ ] Step 9: Remove what is now unused: `docker-compose.pipeline.*.yml`, Docker Hub logins and `DOCKERHUB_*` checks that only served them; set `deploy` in `gh-optivem.yaml` to the matching value
 - [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
 
