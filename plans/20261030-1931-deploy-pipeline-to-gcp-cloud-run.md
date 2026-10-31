@@ -22,11 +22,11 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Step 6: switch `.github/workflows/qa-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (stack `qa`, `environment: qa`, caller needs `id-token: write`), using RC `v1.0.227-rc.14`, then get one green run including `qa-signoff.yml`.
+Step 7: add the `shop-prod` realm and take prod out of the `shop` realm (`cloud-realm.jq`). The human-only part of Step 6, the QA sign-off, is still open and blocks the prod run.
 
 ## Steps
 
-- [ ] Step 6: Switch `qa-stage.yml` to it, using an RC cut after `db/Dockerfile` and `external-systems/stubs/Dockerfile` exist; get one green run including `qa-signoff.yml`
+- [ ] Step 6: `qa-stage.yml` is on Cloud Run and green (run 41236790333); only `qa-signoff.yml` remains. A human tests https://event-hub-qa-frontend-992033658880.us-central1.run.app, then runs `gh workflow run qa-signoff.yml --repo optivem/event-hub --ref main -f version=v1.0.227-rc.14 -f result=approved`. An agent must not dispatch it: it records a human approval and unlocks prod
 - [ ] Step 7: Add a `shop-prod` realm as a new import file without the password-grant test client and test users, and remove the prod URL from the `shop` realm (an existing realm is not re-imported, so this needs `event_hub_keycloak` recreated), and make sure no test suite runs against prod except login-free smoke tests
 - [ ] Step 8: Switch `prod-stage.yml` to it, passing `realm: shop-prod`. The agent stops here without dispatching and hands the user the exact command, because a prod run publishes a real tag and a public GitHub Release
 - [ ] Step 9: Remove what is now unused: `docker-compose.pipeline.*.yml`, Docker Hub logins and `DOCKERHUB_*` checks that only served them; set `deploy` in `gh-optivem.yaml` to the matching value
