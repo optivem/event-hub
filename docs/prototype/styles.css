@@ -1,4 +1,4 @@
-/* event-hub prototype: shared styles for every screen. Mobile first, no build step. */
+/* event-hub prototypes: styles for the landing page only. Each prototype has its own styles.css. */
 
 :root {
   --ink: #1f2933;
@@ -7,15 +7,6 @@
   --surface: #fff;
   --page: #f5f7fa;
   --accent: #2b6cb0;
-  --accent-ink: #fff;
-  --ok: #276749;
-  --ok-bg: #dff3e4;
-  --warn: #8a5a12;
-  --warn-bg: #fdf0cc;
-  --bad: #b03024;
-  --bad-bg: #fbe3e1;
-  --info: #2c5282;
-  --info-bg: #e3f0fb;
   --radius: 8px;
 }
 
@@ -36,67 +27,15 @@ a { color: var(--accent); }
 
 /* Thin strip that says this is not the real app */
 .proto-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 2px 16px;
   padding: 4px 16px;
   font-size: 0.8rem;
   color: #fff;
   background: #334e68;
 }
-.proto-bar a { color: #fff; }
 
-/* Header: brand, role switcher, navigation */
-.topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
-.topbar-inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 24px;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 10px 16px;
-}
-.brand { font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
-
-.roles {
-  display: flex;
-  margin-left: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.roles a {
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-decoration: none;
-  border-left: 1px solid var(--line);
-}
-.roles a:first-child { border-left: 0; }
-.roles a[aria-current="true"] { color: var(--accent-ink); background: var(--accent); }
-
-.nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; }
-.nav a { padding: 4px 0; color: var(--muted); text-decoration: none; }
-.nav a[aria-current="page"] {
-  color: var(--ink);
-  font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--accent);
-}
-
-/* Page layout: one column on phones, main plus side column from tablet up */
-.page { max-width: 1080px; margin: 0 auto; padding: 20px 16px 40px; }
+.page { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
 .page-head { margin-bottom: 16px; }
 .page-head .meta { margin: 0; color: var(--muted); }
-.columns { display: grid; gap: 16px; }
-.columns > * { min-width: 0; }
-
-@media (min-width: 768px) {
-  .columns { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
-  .nav { width: auto; order: 1; }
-  .roles { order: 2; }
-}
 
 .card {
   padding: 16px;
@@ -105,149 +44,4 @@ a { color: var(--accent); }
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
-.columns .card:last-child { margin-bottom: 0; }
-
-/* Status badge: always a word as well as a colour */
-.status {
-  display: inline-block;
-  padding: 1px 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
-  border-radius: 999px;
-  color: var(--muted);
-  background: #e4e9ee;
-}
-.status.ok { color: var(--ok); background: var(--ok-bg); }
-.status.warn { color: var(--warn); background: var(--warn-bg); }
-.status.bad { color: var(--bad); background: var(--bad-bg); }
-.status.info { color: var(--info); background: var(--info-bg); }
-
-/* Task list: each row is one thing a person has to do */
-.tasks { list-style: none; margin: 0; padding: 0; }
-.task {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-}
-.task:first-child { border-top: 0; padding-top: 0; }
-.task:last-child { padding-bottom: 0; }
-.task-body { flex: 1 1 200px; min-width: 0; }
-.task-title { display: block; font-weight: 600; }
-.task-note { display: block; font-size: 0.875rem; color: var(--muted); }
-.task.done .task-title { font-weight: 400; color: var(--muted); }
-
-/* Progress through the phases */
-.phases { list-style: none; margin: 0; padding: 0; }
-.phases li { position: relative; padding: 0 0 12px 22px; color: var(--muted); }
-.phases li:last-child { padding-bottom: 0; }
-.phases li::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 7px;
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--line);
-  border-radius: 50%;
-  background: var(--surface);
-}
-.phases li.done::before { background: var(--ok); border-color: var(--ok); }
-.phases li.current { color: var(--ink); font-weight: 600; }
-.phases li.current::before { background: var(--accent); border-color: var(--accent); }
-
-.facts { margin: 0; }
-.facts dt { font-size: 0.8rem; color: var(--muted); }
-.facts dd { margin: 0 0 10px; }
-.facts dd:last-child { margin-bottom: 0; }
-
-/* Notice: a message that needs attention on a screen */
-.notice {
-  padding: 10px 12px;
-  margin-bottom: 16px;
-  border-left: 4px solid var(--info);
-  border-radius: 4px;
-  background: var(--info-bg);
-}
-.notice.warn { border-color: var(--warn); background: var(--warn-bg); }
-.notice.bad { border-color: var(--bad); background: var(--bad-bg); }
-
-/* Buttons are links, so nothing is ever saved */
-.button {
-  display: inline-block;
-  padding: 8px 14px;
-  font: inherit;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-}
-.button.secondary { color: var(--accent); background: var(--surface); }
-.button.danger { color: #fff; background: var(--bad); border-color: var(--bad); }
-.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-
-/* Forms */
-.field { margin-bottom: 14px; }
-fieldset.field { border: 0; margin-inline: 0; padding: 0; }
-fieldset.field legend { padding: 0; margin-bottom: 4px; font-weight: 600; }
-.field label { display: block; margin-bottom: 4px; font-weight: 600; }
-.field .hint { display: block; font-size: 0.875rem; font-weight: 400; color: var(--muted); }
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  padding: 8px 10px;
-  font: inherit;
-  color: inherit;
-  background: var(--surface);
-  border: 1px solid var(--muted);
-  border-radius: 6px;
-}
-.check { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; }
-.check input { margin-top: 5px; }
-
-/* Overview tables: scroll sideways inside the card on phones */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-th, td { padding: 8px 10px; text-align: left; vertical-align: top; border-top: 1px solid var(--line); }
-th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
-
-/* Prototype only: the link that carries the journey across to the next role */
-.proto-next {
-  padding: 10px 12px;
-  margin-top: 16px;
-  font-size: 0.9rem;
-  border: 1px dashed #334e68;
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-/* Mock emails */
-.email { max-width: 620px; margin: 0 auto; }
-.email-head { padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
-.email-head div { color: var(--muted); }
-
-/* Phones: comfortable tap targets, and tables become labelled rows */
-.check input { flex: none; width: 20px; height: 20px; margin-top: 2px; }
-.check { min-height: 28px; }
-.button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
-@media (max-width: 767px) {
-  .brand, .nav a, .roles a, .proto-bar a { display: inline-flex; align-items: center; min-height: 44px; }
-  .roles { margin-left: 0; width: 100%; display: flex; }
-  .roles a { flex: 1; justify-content: center; }
-  .actions .button { flex: 1 1 100%; }
-  .table-wrap { overflow-x: visible; }
-  .table-wrap table, .table-wrap tbody, .table-wrap tr, .table-wrap td { display: block; }
-  .table-wrap thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .table-wrap tr { padding: 10px 0; border-top: 1px solid var(--line); }
-  .table-wrap tr:first-child { border-top: 0; padding-top: 0; }
-  .table-wrap td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 3px 0; border-top: 0; text-align: right; }
-  .table-wrap td::before { content: attr(data-label); flex: none; font-size: 0.8rem; color: var(--muted); text-align: left; }
-}
+.card p:last-child { margin-bottom: 0; }
