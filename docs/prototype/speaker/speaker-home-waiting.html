@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your event | event-hub prototype</title>
+<title>Your event: waiting for review | event-hub prototype</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="proto-bar">
   <span>Prototype: nothing is saved</span>
-  <a href="index.html">All screens</a>
+  <a href="../index.html">All screens</a>
 </div>
 <header class="topbar">
   <div class="topbar-inner">
@@ -21,19 +21,19 @@
     </nav>
     <nav class="roles" aria-label="View as role">
       <a href="speaker-home.html" aria-current="true">Speaker</a>
-      <a href="coordinator-home.html">Coordinator</a>
-      <a href="organizers-speakers.html">Organizers</a>
+      <a href="../organizer/organizer-home.html">Coordinator</a>
+      <a href="../organizer/organizer-speakers.html">Organizers</a>
     </nav>
   </div>
 </header>
 <main class="page">
   <div class="page-head">
     <h1>Testing Legacy Code Without Fear</h1>
-    <p class="meta">Tech Excellence meetup &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status ok">Date confirmed</span></p>
+    <p class="meta">Tech Excellence meetup &middot; Thursday 21 January 2027, 17:00 &middot; <span class="status info">Waiting for review</span></p>
   </div>
   <div class="columns">
     <div>
-      <div class="notice warn">Your agenda and materials are due by <strong>21 December 2026</strong>, 1 month before the event.</div>
+      <div class="notice">Thanks, your agenda and materials are in. Nina Example will review them by <strong>7 January 2027</strong>.</div>
       <section class="card">
         <h2>Your tasks</h2>
         <ul class="tasks">
@@ -44,31 +44,31 @@
             </span>
             <span class="status ok">Done</span>
           </li>
-          <li class="task">
+          <li class="task done">
             <span class="task-body">
               <span class="task-title">Agree to the Speaker Guidelines</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <span class="status ok">Done</span>
           </li>
-          <li class="task">
+          <li class="task done">
             <span class="task-body">
               <span class="task-title">Join the Meetup group</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <span class="status ok">Done</span>
           </li>
-          <li class="task">
+          <li class="task done">
             <span class="task-body">
               <span class="task-title">Fill in your talk details</span>
               <span class="task-note">Title, agenda, presentation style and about you. Due 21 December 2026</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <span class="status ok">Done</span>
           </li>
-          <li class="task">
+          <li class="task done">
             <span class="task-body">
               <span class="task-title">Share your materials</span>
               <span class="task-note">Due 21 December 2026</span>
             </span>
-            <a class="button secondary" href="speaker-agenda-materials.html">Open</a>
+            <span class="status ok">Done</span>
           </li>
         </ul>
       </section>
@@ -78,8 +78,8 @@
         <h2>Where things stand</h2>
         <ol class="phases">
           <li class="done">Date reservation</li>
-          <li class="current">Agenda &amp; materials</li>
-          <li>Review</li>
+          <li class="done">Agenda &amp; materials</li>
+          <li class="current">Review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>
           <li>After the event</li>
@@ -96,6 +96,7 @@
       </section>
     </aside>
   </div>
+  <p class="proto-next">Next in the flow: <a href="../organizer/organizer-materials-status.html">coordinator checks agenda and materials</a></p>
 </main>
 </body>
 </html>
