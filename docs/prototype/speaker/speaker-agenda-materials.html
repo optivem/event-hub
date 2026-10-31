@@ -47,18 +47,22 @@
           </label>
           <textarea id="agenda" rows="6"></textarea>
         </div>
-        <fieldset class="field">
-          <legend>Presentation style</legend>
-          <label class="check"><input type="checkbox"> <span>Slides</span></label>
-          <label class="check"><input type="checkbox"> <span>Code demo</span></label>
-          <label class="check"><input type="checkbox"> <span>Live coding</span></label>
-        </fieldset>
       </section>
       <section class="card">
         <h2>About you</h2>
         <div class="field">
-          <label for="role">Role and company</label>
+          <label for="speaker-name">Name
+            <span class="hint">From your invitation. Ask your organizer if it needs changing.</span>
+          </label>
+          <input id="speaker-name" type="text" value="Mara Sample" readonly>
+        </div>
+        <div class="field">
+          <label for="role">Role</label>
           <input id="role" type="text">
+        </div>
+        <div class="field">
+          <label for="company">Company</label>
+          <input id="company" type="text">
         </div>
         <div class="field">
           <label for="bio">Short bio</label>
@@ -78,6 +82,15 @@
           <label for="github">GitHub <span class="hint">Optional</span></label>
           <input id="github" type="url">
         </div>
+      </section>
+      <section class="card">
+        <h2>Presentation style</h2>
+        <fieldset class="field">
+          <legend class="visually-hidden">Presentation style</legend>
+          <label class="check"><input type="checkbox"> <span>Slides</span></label>
+          <label class="check"><input type="checkbox"> <span>Code demo</span></label>
+          <label class="check"><input type="checkbox"> <span>Live coding</span></label>
+        </fieldset>
       </section>
       <section class="card">
         <h2>Your materials</h2>
@@ -125,7 +138,7 @@
 </main>
 <script>
 var titleInput = document.getElementById('talk-title');
-var speakerName = 'Mara Sample';
+var speakerName = document.getElementById('speaker-name').value;
 var titleLimit = 80;
 function showTitle() {
   var fullTitle = titleInput.value.trim() + ' (' + speakerName + ')';
