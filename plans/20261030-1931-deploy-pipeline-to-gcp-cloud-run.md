@@ -22,11 +22,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Step 5: switch `.github/workflows/acceptance-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (inputs `stack`, `image-urls`, `source-ref`; caller needs `id-token: write`), then get one green manual run. Provisioning is done: project `event-hub-d1986e`, Neon project `event-hub`, secrets and GitHub variables are set.
+Step 6: switch `.github/workflows/qa-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (stack `qa`, `environment: qa`, caller needs `id-token: write`), using RC `v1.0.227-rc.14`, then get one green run including `qa-signoff.yml`.
 
 ## Steps
 
-- [ ] Step 5: Switch `acceptance-stage.yml` to it: replace both `deploy-docker-compose` steps and the `localhost` endpoints, and point `docker/systems.yaml` and the test URLs at the deployed stacks; chain the two acceptance deploys with `needs` (in parallel they race on the shared Keycloak); change the cron to daily; get one green manual run. If an empty `environment` input fails on GitHub, make it required in `_deploy-cloud-run.yml`
 - [ ] Step 6: Switch `qa-stage.yml` to it, using an RC cut after `db/Dockerfile` and `external-systems/stubs/Dockerfile` exist; get one green run including `qa-signoff.yml`
 - [ ] Step 7: Add a `shop-prod` realm as a new import file without the password-grant test client and test users, and remove the prod URL from the `shop` realm (an existing realm is not re-imported, so this needs `event_hub_keycloak` recreated), and make sure no test suite runs against prod except login-free smoke tests
 - [ ] Step 8: Switch `prod-stage.yml` to it, passing `realm: shop-prod`. The agent stops here without dispatching and hands the user the exact command, because a prod run publishes a real tag and a public GitHub Release
