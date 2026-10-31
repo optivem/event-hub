@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Events | event-hub prototype</title>
+<title>Home | event-hub prototype</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,13 +21,13 @@
     <nav class="roles" aria-label="View as role">
       <a href="../speaker/speaker-home.html">Speaker</a>
       <a href="organizer-home.html" aria-current="true">Coordinator</a>
-      <a href="organizer-speakers.html">Organizers</a>
+      <a href="organizer-home.html#potential-speakers">Organizers</a>
     </nav>
   </div>
 </header>
 <main class="page">
   <div class="page-head">
-    <h1>Events</h1>
+    <h1>Events and speakers</h1>
     <p class="meta">Shared status of every speaker and event</p>
   </div>
   <div class="columns">
@@ -53,6 +53,47 @@
                 <td data-label="Talk">Contract Tests in Practice</td>
                 <td data-label="Event">18 February 2027</td>
                 <td data-label="Status"><span class="status warn">Waiting for reply</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card" id="potential-speakers">
+        <h2>Potential speakers</h2>
+        <p class="meta">Practical talks first</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Speaker</th><th>Topic</th><th>From</th><th>Status</th><th>Screen</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Speaker">Mara Sample</td>
+                <td data-label="Topic">Testing Legacy Code Without Fear</td>
+                <td data-label="From">Intake form</td>
+                <td data-label="Status"><span class="status info">New proposal</span></td>
+                <td data-label="Screen"><a class="button secondary" href="organizer-speaker-detail.html">Open</a></td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Sam Mockup</td>
+                <td data-label="Topic">Refactoring Without a Net</td>
+                <td data-label="From">Organizers</td>
+                <td data-label="Status"><span class="status">Asking about topics</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Theo Placeholder</td>
+                <td data-label="Topic">Contract Tests in Practice</td>
+                <td data-label="From">Organizers</td>
+                <td data-label="Status"><span class="status ok">Invited</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Jo Fictional</td>
+                <td data-label="Topic">Better Team Conversations</td>
+                <td data-label="From">Intake form</td>
+                <td data-label="Status"><span class="status bad">Not invited</span></td>
                 <td data-label="Screen">Sample row</td>
               </tr>
             </tbody>
@@ -108,6 +149,10 @@
       </section>
     </div>
     <aside>
+      <section class="card">
+        <h2>Open slot</h2>
+        <p>Thursday 21 January 2027, 17:00</p>
+      </section>
       <section class="card">
         <h2>Testing Legacy Code Without Fear</h2>
         <ol class="phases">
