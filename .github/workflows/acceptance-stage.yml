@@ -2,7 +2,7 @@ name: acceptance-stage
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Run every hour
+    - cron: '0 3 * * *'  # Run daily
   workflow_dispatch:
     inputs:
       commit-sha:
@@ -60,10 +60,20 @@ jobs:
             DOCKERHUB_USERNAME
             DOCKERHUB_TOKEN
             WORKFLOW_TOKEN
+            GCP_PROJECT_ID
+            GCP_REGION
+            GCP_WORKLOAD_IDENTITY_PROVIDER
+            GCP_SERVICE_ACCOUNT
+            SYSTEM_NAME
         env:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ vars.GCP_REGION }}
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          SYSTEM_NAME: ${{ vars.SYSTEM_NAME }}
 
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -127,6 +137,7 @@ jobs:
           paths: |
             system-test
             .github/workflows/acceptance-stage.yml
+            .github/workflows/_deploy-cloud-run.yml
 
       - name: Evaluate Run Gate
         id: gate
@@ -138,8 +149,42 @@ jobs:
               {"when": ${{ inputs.commit-sha == '' && steps.artifacts-changed.outputs.newer != 'true' && steps.test-changes.outputs.changed != 'true' }}, "reason": "No new artifacts since last run AND no test/workflow changes since last RC tag." }
             ]
 
-  run:
+  # === Deploy: Real External Systems ===
+  deploy-real:
     needs: check
+    if: needs.check.outputs.should-run == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_deploy-cloud-run.yml
+    with:
+      stack: acceptance-real
+      image-urls: ${{ needs.check.outputs.image-digest-urls }}
+      source-ref: ${{ inputs.commit-sha || github.sha }}
+      environment: acceptance
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+  # === Deploy: Stub External Systems ===
+  # After deploy-real, not beside it: the two stacks share one Keycloak.
+  deploy-stub:
+    needs: [check, deploy-real]
+    if: needs.check.outputs.should-run == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/_deploy-cloud-run.yml
+    with:
+      stack: acceptance-stub
+      image-urls: ${{ needs.check.outputs.image-digest-urls }}
+      source-ref: ${{ inputs.commit-sha || github.sha }}
+      environment: acceptance
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+  # === Run System Tests ===
+  run:
+    needs: [check, deploy-real, deploy-stub]
     if: needs.check.outputs.should-run == 'true'
     runs-on: ubuntu-latest
     # A hung suite must fail fast instead of burning GitHub's 6h job limit.
@@ -151,8 +196,18 @@ jobs:
     env:
       GH_OPTIVEM_CONFIG: gh-optivem.yaml
       # Enables token acquisition in the TypeScript system tests (opt-in; unset => no auth).
-      KEYCLOAK_URL_REAL: http://localhost:8391
-      KEYCLOAK_URL_STUB: http://localhost:8392
+      KEYCLOAK_URL_REAL: ${{ needs.deploy-real.outputs.keycloak-url }}
+      KEYCLOAK_URL_STUB: ${{ needs.deploy-stub.outputs.keycloak-url }}
+      # configuration-loader.ts overrides test-config-acceptance-{stub,real}.json with these.
+      MYSHOP_UI_BASE_URL_REAL: ${{ needs.deploy-real.outputs.frontend-url }}
+      MYSHOP_API_BASE_URL_REAL: ${{ needs.deploy-real.outputs.backend-url }}
+      ERP_API_BASE_URL_REAL: ${{ needs.deploy-real.outputs.external-systems-url }}/erp
+      TAX_API_BASE_URL_REAL: ${{ needs.deploy-real.outputs.external-systems-url }}/tax
+      MYSHOP_UI_BASE_URL_STUB: ${{ needs.deploy-stub.outputs.frontend-url }}
+      MYSHOP_API_BASE_URL_STUB: ${{ needs.deploy-stub.outputs.backend-url }}
+      ERP_API_BASE_URL_STUB: ${{ needs.deploy-stub.outputs.external-systems-url }}/erp
+      CLOCK_API_BASE_URL_STUB: ${{ needs.deploy-stub.outputs.external-systems-url }}/clock
+      TAX_API_BASE_URL_STUB: ${{ needs.deploy-stub.outputs.external-systems-url }}/tax
       # configuration-loader.ts uses ENVIRONMENT to pick test-config-acceptance-{stub,real}.json.
       ENVIRONMENT: acceptance
     outputs:
@@ -180,58 +235,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      # === Deploy: Real External Systems ===
-      - name: Simulate Deployment (Real External Systems)
-        uses: optivem/actions/deploy-docker-compose@v1
-        with:
-          environment: acceptance
-          version: ${{ env.COMMIT_SHA }}
-          image-urls: ${{ needs.check.outputs.image-digest-urls }}
-          service-names: |
-            frontend
-            backend
-          compose-file: docker-compose.pipeline.real.yml
-          working-directory: docker
-
-      - name: Wait for Systems (Simulate Deployment (Real External Systems))
-        uses: optivem/actions/wait-for-endpoints@v1
-        with:
-          endpoints: |
-            [
-              { "name": "Eventhub UI", "url": "http://localhost:3311/" },
-              { "name": "Eventhub API", "url": "http://localhost:8311/health" },
-              { "name": "ERP", "url": "http://localhost:9311/erp/health" },
-              { "name": "Clock", "url": "http://localhost:9311/clock/health" }
-            ]
-          compose-file: docker-compose.pipeline.real.yml
-          working-directory: docker
-
-      # === Deploy: Stub External Systems ===
-      - name: Simulate Deployment (Stub External Systems)
-        uses: optivem/actions/deploy-docker-compose@v1
-        with:
-          environment: acceptance
-          version: ${{ env.COMMIT_SHA }}
-          image-urls: ${{ needs.check.outputs.image-digest-urls }}
-          service-names: |
-            frontend
-            backend
-          compose-file: docker-compose.pipeline.stub.yml
-          working-directory: docker
-
-      - name: Wait for Systems (Simulate Deployment (Stub External Systems))
-        uses: optivem/actions/wait-for-endpoints@v1
-        with:
-          endpoints: |
-            [
-              { "name": "Eventhub UI", "url": "http://localhost:3312/" },
-              { "name": "Eventhub API", "url": "http://localhost:8312/health" },
-              { "name": "ERP", "url": "http://localhost:9312/erp/health" },
-              { "name": "Clock", "url": "http://localhost:9312/clock/health" }
-            ]
-          compose-file: docker-compose.pipeline.stub.yml
-          working-directory: docker
-
       # === Setup Test Harness ===
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -255,10 +258,34 @@ jobs:
       # `gh optivem system-test setup` runs the setupCommands block (npm ci +
       # playwright install) once for the whole batch; the per-suite `test
       # system` steps then run against the prepared workspace. The SUT itself
-      # was already brought up earlier by the Simulate Deployment / Wait for
-      # Systems steps, so no `gh optivem system start` is needed.
+      # was already deployed by the deploy jobs, so no `gh optivem system start`
+      # is needed.
       - name: Setup Test Harness
         run: gh optivem system-test setup
+
+      # `system-test run` health-probes systems.yaml before each suite, so this checkout's
+      # copy must name the deployed stacks. The committed file stays local-only.
+      - name: Point systems.yaml at the Deployed Stacks
+        env:
+          EXT_URL_REAL: ${{ needs.deploy-real.outputs.external-systems-url }}
+          EXT_URL_STUB: ${{ needs.deploy-stub.outputs.external-systems-url }}
+        run: |
+          set -euo pipefail
+          sed -i \
+            -e "s|http://localhost:3311|${MYSHOP_UI_BASE_URL_REAL}|" \
+            -e "s|http://localhost:8311|${MYSHOP_API_BASE_URL_REAL}|" \
+            -e "s|http://localhost:8391|${KEYCLOAK_URL_REAL}|" \
+            -e "s|http://localhost:9311|${EXT_URL_REAL}|" \
+            -e "s|http://localhost:3312|${MYSHOP_UI_BASE_URL_STUB}|" \
+            -e "s|http://localhost:8312|${MYSHOP_API_BASE_URL_STUB}|" \
+            -e "s|http://localhost:8392|${KEYCLOAK_URL_STUB}|" \
+            -e "s|http://localhost:9312|${EXT_URL_STUB}|" \
+            docker/systems.yaml
+          if grep -n 'url: .*localhost' docker/systems.yaml; then
+            echo "::error::systems.yaml still points at localhost."
+            exit 1
+          fi
+
       # === Run Smoke Tests ===
       - name: smoke-stub
         run: gh optivem system-test run --suite smoke-stub
@@ -360,7 +387,7 @@ jobs:
           command: bash ./run-sonar.sh
 
   summary:
-    needs: [preflight, check, run, publish-tag, sonar]
+    needs: [preflight, check, deploy-real, deploy-stub, run, publish-tag, sonar]
     if: always()
     runs-on: ubuntu-latest
     permissions:
@@ -371,8 +398,8 @@ jobs:
       with:
         stage-name: 'Acceptance Stage'
         stage-result: >-
-          ${{ (needs.preflight.result == 'failure' || needs.check.result == 'failure' || needs.run.result == 'failure' || needs.publish-tag.result == 'failure') && 'failure'
-              || (needs.preflight.result == 'cancelled' || needs.check.result == 'cancelled' || needs.run.result == 'cancelled' || needs.publish-tag.result == 'cancelled') && 'cancelled'
+          ${{ (needs.preflight.result == 'failure' || needs.check.result == 'failure' || needs.deploy-real.result == 'failure' || needs.deploy-stub.result == 'failure' || needs.run.result == 'failure' || needs.publish-tag.result == 'failure') && 'failure'
+              || (needs.preflight.result == 'cancelled' || needs.check.result == 'cancelled' || needs.deploy-real.result == 'cancelled' || needs.deploy-stub.result == 'cancelled' || needs.run.result == 'cancelled' || needs.publish-tag.result == 'cancelled') && 'cancelled'
               || needs.run.result }}
         environment: acceptance
         success-version: ${{ needs.check.outputs.on-main == 'true' && needs.run.outputs.version || 'not computed — non-main run' }}

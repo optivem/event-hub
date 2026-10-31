@@ -1,5 +1,7 @@
 # 2026-10-30 19:31:32 UTC — Deploy the pipeline to GCP Cloud Run
 
+> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-10-31T19:30:26Z`
+
 ## TL;DR
 
 **Why:** The acceptance, QA and prod stages only simulate deployment: `deploy-docker-compose` starts the system on a throwaway GitHub runner at `localhost`, so nothing is ever really deployed and "production" disappears when the job ends.
@@ -20,11 +22,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Step 2 is the user's: rebuild the dev container (or rely on the `npx` fallback), run `gcloud auth login --no-launch-browser`, `gcloud auth application-default login --no-launch-browser` and `neonctl login`, then `./setup-gcp.sh`. Next, Step 5 switches `acceptance-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (inputs `stack`, `image-urls`, `source-ref`; caller needs `id-token: write`).
+Step 5: switch `.github/workflows/acceptance-stage.yml` to `.github/workflows/_deploy-cloud-run.yml` (inputs `stack`, `image-urls`, `source-ref`; caller needs `id-token: write`), then get one green manual run. Provisioning is done: project `event-hub-d1986e`, Neon project `event-hub`, secrets and GitHub variables are set.
 
 ## Steps
 
-- [ ] Step 2: Provision GCP and Neon with `./setup-gcp.sh`, with one database per stack: `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak`
 - [ ] Step 5: Switch `acceptance-stage.yml` to it: replace both `deploy-docker-compose` steps and the `localhost` endpoints, and point `docker/systems.yaml` and the test URLs at the deployed stacks; chain the two acceptance deploys with `needs` (in parallel they race on the shared Keycloak); change the cron to daily; get one green manual run. If an empty `environment` input fails on GitHub, make it required in `_deploy-cloud-run.yml`
 - [ ] Step 6: Switch `qa-stage.yml` to it, using an RC cut after `db/Dockerfile` and `external-systems/stubs/Dockerfile` exist; get one green run including `qa-signoff.yml`
 - [ ] Step 7: Add a `shop-prod` realm as a new import file without the password-grant test client and test users, and remove the prod URL from the `shop` realm (an existing realm is not re-imported, so this needs `event_hub_keycloak` recreated), and make sure no test suite runs against prod except login-free smoke tests

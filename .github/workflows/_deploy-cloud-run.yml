@@ -247,6 +247,8 @@ jobs:
       EXT_IMAGE: ${{ needs.promote-images.outputs.external-systems-image }}
       EXT_SERVICE: ${{ inputs.stack == 'acceptance-stub' && 'stubs' || 'sim' }}
       EXT_PORT: ${{ inputs.stack == 'acceptance-stub' && '8080' || '9000' }}
+      # WireMock keeps the mappings tests add over /__admin in memory: a second instance would miss them.
+      EXT_MAX_INSTANCES: ${{ inputs.stack == 'acceptance-stub' && '1' || '2' }}
       EXTERNAL_SYSTEM_MODE: ${{ inputs.stack == 'acceptance-stub' && 'stub' || 'real' }}
     steps:
       - name: Authenticate to Google Cloud
@@ -283,7 +285,7 @@ jobs:
           gcloud run deploy "$EXT_NAME" \
             --image "$EXT_IMAGE" --region "$REGION" --project "$PROJECT" \
             --service-account "$SA" --port "$EXT_PORT" --memory 1Gi \
-            --max-instances 2 --allow-unauthenticated
+            --max-instances "$EXT_MAX_INSTANCES" --allow-unauthenticated
 
       - name: Read DB Credentials
         run: |

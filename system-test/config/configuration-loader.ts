@@ -49,8 +49,8 @@ export function loadConfiguration(overrides?: ConfigOverrides): TestConfig {
   const configContent = fs.readFileSync(configPath, 'utf-8');
   const config = JSON.parse(configContent) as TestConfig;
 
-  // Env var overrides let the cross-lang verification workflow point this
-  // test process at a different language's SUT without touching the JSON files.
+  // Env var overrides let the pipeline point this test process at the deployed
+  // Cloud Run stacks without touching the JSON files.
   // Suffix matches externalSystemMode so stub/real suites in one tests.yaml
   // run can each get their own URL set.
   const suffix = '_' + externalSystemMode.toUpperCase();
