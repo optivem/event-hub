@@ -7,18 +7,16 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="proto-bar">
-  <span>Prototype: nothing is saved</span>
-  <a href="index.html">Back to login</a>
-</div>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-home.html">event-hub</a>
+    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
       <a href="organizer-home.html">Home</a>
       <a href="organizer-materials-status.html">Materials</a>
       <a href="organizer-publish.html">Publish</a>
       <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-settings.html">Settings</a>
+      <a href="index.html">Log out</a>
     </nav>
   </div>
 </header>
@@ -30,22 +28,43 @@
   <div class="columns">
     <div>
       <section class="card">
-        <h2>Date and due dates</h2>
+        <h2>Date, times and due dates</h2>
         <dl class="facts">
           <dt>Event</dt>
-          <dd>Thursday 21 January 2027, 17:00</dd>
+          <dd>Thursday 21 January 2027</dd>
         </dl>
         <div class="field">
+          <label for="start-time">Start time
+            <span class="hint">Usually 17:00. Change it for this event if you need to.</span>
+          </label>
+          <input id="start-time" type="time" value="17:00">
+        </div>
+        <div class="field">
+          <label for="end-time">End time
+            <span class="hint">Usually 19:00. Change it for this event if you need to.</span>
+          </label>
+          <input id="end-time" type="time" value="19:00">
+        </div>
+        <div class="field">
           <label for="agenda-due">Agenda due
-            <span class="hint">Set to 6 weeks before the event. Change it for this event if you need to.</span>
+            <span class="hint">Set to 6 weeks before the event, from <a href="organizer-settings.html">Settings</a>. Change it for this event if you need to.</span>
           </label>
           <input id="agenda-due" type="date" value="2026-12-10">
         </div>
         <div class="field">
           <label for="materials-due">Materials due
-            <span class="hint">Set to 1 month before the event. Change it for this event if you need to.</span>
+            <span class="hint">Set to 1 month before the event, from <a href="organizer-settings.html">Settings</a>. Change it for this event if you need to.</span>
           </label>
           <input id="materials-due" type="date" value="2026-12-21">
+        </div>
+        <div class="field">
+          <label for="meetup-organizer">Meetup organizer
+            <span class="hint">The one organizer who registers this event on Meetup.</span>
+          </label>
+          <select id="meetup-organizer">
+            <option selected>Nina Example</option>
+            <option>Omar Example</option>
+          </select>
         </div>
       </section>
       <section class="card">
@@ -59,8 +78,8 @@
           </li>
           <li class="task">
             <span class="task-body">
-              <span class="task-title">Agenda &amp; materials step opens</span>
-              <span class="task-note">The speaker sees their tasks in the app</span>
+              <span class="task-title">The speaker's event phases open</span>
+              <span class="task-note">They start with Event Reservation, then Event Agenda and Event Materials</span>
             </span>
           </li>
         </ul>
@@ -83,7 +102,8 @@
         <h2>Where things stand</h2>
         <ol class="phases">
           <li class="current">Date reservation</li>
-          <li>Agenda &amp; materials</li>
+          <li>Event Agenda</li>
+          <li>Event Materials</li>
           <li>Review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-home.html">Home</a>
+      <a href="organizer-materials-status.html">Materials</a>
+      <a href="organizer-publish.html">Publish</a>
+      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-settings.html" aria-current="page">Settings</a>
+      <a href="index.html">Log out</a>
+    </nav>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Settings</h1>
+    <p class="meta">Rules for all events</p>
+  </div>
+  <div class="narrow">
+    <section class="card">
+      <h2>Due dates</h2>
+      <p class="meta">These set the due dates when you confirm a date. Events already confirmed keep theirs, and you can still change them for one event.</p>
+      <div class="field">
+        <label for="agenda-weeks">Agenda due: weeks before the event</label>
+        <input id="agenda-weeks" type="number" min="1" value="6">
+      </div>
+      <div class="field">
+        <label for="materials-months">Materials due: months before the event</label>
+        <input id="materials-months" type="number" min="1" value="1">
+      </div>
+      <p class="meta">The speaker gets a reminder on each due date if that item is missing.</p>
+      <div class="actions"><a class="button" href="organizer-home.html">Save</a></div>
+    </section>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="organizer-confirm-date.html">confirm a date</a> to see these rules applied</p>
+</main>
+</body>
+</html>

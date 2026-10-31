@@ -1,7 +1,7 @@
 /* Wizard tabs for the speaker's event. Each phase opens in turn and locks once submitted.
    "reached": 1 reservation, 2 agenda, 3 materials, 4 in review, 5 backstage, 6 event over.
    Event Materials is the exception: submitted materials can change until the event is over.
-   It travels in the tab links, so the prototype needs no saved state. */
+   It travels in the tab links, so the prototype needs no saved state. The sample starts with Event Reservation done. */
 (function () {
   var PHASES = [
     { name: 'Status', href: 'speaker-home.html', opensAt: 0 },
@@ -13,7 +13,7 @@
   var bar = document.getElementById('phase-tabs');
   var active = Number(bar.dataset.phase);
   var fromLink = new URLSearchParams(location.search).get('reached');
-  var reached = Number(fromLink || bar.dataset.reached || PHASES[active].opensAt);
+  var reached = Number(fromLink || bar.dataset.reached || Math.max(PHASES[active].opensAt, 2));
 
   function isOpen(phase) { return reached >= phase.opensAt; }
   function isDone(phase) { return phase.opensAt > 0 && reached > phase.opensAt; }

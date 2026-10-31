@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Community | event-hub prototype</title>
+<link rel="stylesheet" href="../organizer/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="administrator-community.html"><img class="brand-logo" id="brand-logo" src="../community-logo.svg" alt=""><span id="brand-name">Tech Excellence</span></a>
+    <a class="button secondary help-link" href="index.html">Log out</a>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Community</h1>
+    <p class="meta">Speakers and organizers see this name and logo at the top of every screen, and the name on every email.</p>
+  </div>
+  <div class="narrow">
+    <section class="card">
+      <div class="field">
+        <label for="community-name">Name</label>
+        <input id="community-name" type="text" value="Tech Excellence">
+      </div>
+      <div class="field">
+        <label for="logo">Logo</label>
+        <input id="logo" type="file" accept="image/*">
+      </div>
+      <div class="actions"><a class="button" href="administrator-community.html">Save</a></div>
+    </section>
+  </div>
+</main>
+<script>
+document.getElementById('community-name').addEventListener('input', function (event) {
+  document.getElementById('brand-name').textContent = event.target.value;
+});
+document.getElementById('logo').addEventListener('change', function (event) {
+  var file = event.target.files[0];
+  if (file) { document.getElementById('brand-logo').src = URL.createObjectURL(file); }
+});
+</script>
+</body>
+</html>
