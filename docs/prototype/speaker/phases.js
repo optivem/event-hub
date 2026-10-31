@@ -1,4 +1,5 @@
-/* Wizard tabs for the speaker's event. Each phase opens in turn and locks once submitted.
+/* Tabs for the speaker's event. Every phase can be opened at any time, so speakers can work ahead,
+   and each locks once submitted. Event Day stays empty until the talk is approved.
    "reached": 1 reservation, 2 agenda, 3 materials, 4 in review, 5 event day, 6 event over.
    Event Materials is the exception: submitted materials can change until the event is over.
    It travels in the tab links, so the prototype needs no saved state. The sample starts with Event Reservation done. */
@@ -15,12 +16,21 @@
   var fromLink = new URLSearchParams(location.search).get('reached');
   var reached = Number(fromLink || bar.dataset.reached || Math.max(PHASES[active].opensAt, 2));
 
-  function isOpen(phase) { return reached >= phase.opensAt; }
-  function isDone(phase) { return phase.opensAt > 0 && reached > phase.opensAt; }
+  function materialsInEarly() {
+    try { return sessionStorage.getItem('materials-early') === 'yes'; } catch (e) { return false; }
+  }
+  function rememberMaterialsEarly(early) {
+    try {
+      if (early) { sessionStorage.setItem('materials-early', 'yes'); } else { sessionStorage.removeItem('materials-early'); }
+    } catch (e) { /* the early submission just won't be remembered */ }
+  }
+  function isDone(phase) {
+    return phase.opensAt > 0 && (reached > phase.opensAt || (phase.opensAt === 3 && materialsInEarly()));
+  }
   function link(phase) { return phase.href + '?reached=' + reached; }
 
   PHASES.forEach(function (phase, index) {
-    var tab = document.createElement(isOpen(phase) ? 'a' : 'span');
+    var tab = document.createElement('a');
     if (isDone(phase)) {
       var tick = document.createElement('span');
       tick.className = 'tab-tick';
@@ -28,12 +38,7 @@
       tab.appendChild(tick);
     }
     tab.append(phase.name);
-    if (isOpen(phase)) {
-      tab.href = index === active ? location.pathname.split('/').pop() + location.search : link(phase);
-    } else {
-      tab.setAttribute('aria-disabled', 'true');
-      tab.title = 'Opens later';
-    }
+    tab.href = index === active ? location.pathname.split('/').pop() + location.search : link(phase);
     if (index === active) { tab.setAttribute('aria-current', 'page'); }
     bar.appendChild(tab);
   });
@@ -51,7 +56,7 @@
       title.className = 'task-title';
       title.textContent = phase.name;
       body.appendChild(title);
-      var isCurrent = isOpen(phase) && !isDone(phase);
+      var isCurrent = !isDone(phase);
       var noteText = inReview ? 'In review' : isCurrent && phase.due ? 'Due ' + phase.due : '';
       if (noteText) {
         var note = document.createElement('span');
@@ -74,6 +79,7 @@
   }
 
   var phase = PHASES[active];
+  var nothingYet = phase.opensAt === 5 && reached < 5;
   var controls = document.querySelectorAll('main input, main textarea');
   var stillChangeable = phase.opensAt === 3 && reached < 6;
 
@@ -92,6 +98,11 @@
       }
       control.disabled = !stillChangeable;
     });
+  }
+
+  if (nothingYet) {
+    document.querySelectorAll('main .card, main .proto-next, .page-head .status').forEach(function (block) { block.hidden = true; });
+    showNotice('Your event details will appear here once your talk is approved.');
   }
 
   if (isDone(phase) && controls.length) {
@@ -131,7 +142,17 @@
       confirm.type = 'button';
       confirm.className = 'button';
       confirm.textContent = 'Yes, submit';
-      confirm.addEventListener('click', function () { location.href = button.href; });
+      confirm.addEventListener('click', function () {
+        var target = button.href;
+        if (phase.opensAt === 3 && reached < 3) {
+          rememberMaterialsEarly(true);
+          target = 'speaker-home.html?reached=' + reached;
+        } else if (phase.opensAt === 2 && materialsInEarly()) {
+          rememberMaterialsEarly(false);
+          target = 'speaker-home-waiting.html';
+        }
+        location.href = target;
+      });
       actions.append(back, confirm);
       dialog.append(heading, warning, actions);
       dialog.addEventListener('close', function () { dialog.remove(); });
