@@ -19,7 +19,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 5 of `## Steps`: open `docs/speaker-organizer-user-flow.html` with the user, walk it against the source procedure step by step, and correct it. The sources are not in the repo, so have the user paste them only if a step needs checking. Keep real people out of every committed file; made-up names are fine in the mockup.
+Run Step 5 of `## Steps`: open `docs/speaker-organizer-user-flow.html` with the user, walk it against the source procedure phase by phase from Filtering, and correct it. All 18 gaps now carry a recommended handling on the page, so the walkthrough only needs to catch where those or the steps differ from the procedure. The sources are not in the repo, so have the user paste them only if a step needs checking. Keep real people out of every committed file; made-up names are fine in the mockup.
 
 ## Steps
 

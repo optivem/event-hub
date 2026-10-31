@@ -69,7 +69,7 @@ th{background:#f0f3f6}
 <ul class="legend">
 <li><span class="k "></span>Step</li><li><span class="k dec"></span>Decision</li><li><span class="k mail"></span>Email (invitation and reminders only)</li><li><span class="k end"></span>Exit</li><li><span class="k ok"></span>Finished</li><li><span class="k exc"></span>Exception path</li><li><span class="k un"></span>Unconfirmed by the written procedure</li>
 <li><b>FIRST</b>, <b>SECOND</b>, <b>THIRD</b>: replaces that email</li>
-<li><b>G1&ndash;G16</b>: see gaps below</li>
+<li><b>G1&ndash;G18</b>: see gaps below</li>
 </ul>
 <div class="flow">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2800 1140" role="img" aria-labelledby="flow-title">
@@ -89,7 +89,7 @@ th{background:#f0f3f6}
 <text class="phs" x="1510.0" y="52">1 month, 3 weeks, 2 weeks before</text>
 <rect class="ph0" x="1730" y="0" width="290" height="1130"/>
 <text class="pht" x="1875.0" y="28">Review</text>
-<text class="phs" x="1875.0" y="52">about 2 weeks before</text>
+<text class="phs" x="1875.0" y="52">materials in, by 2 weeks before</text>
 <rect class="ph1" x="2020" y="0" width="310" height="1130"/>
 <text class="pht" x="2175.0" y="28">Publish &amp; announce</text>
 <text class="phs" x="2175.0" y="52">about 2 weeks before</text>
@@ -204,7 +204,7 @@ th{background:#f0f3f6}
 <g class="tg"><rect x="818.8" y="602.0" width="27.2" height="20" rx="4"/><text x="832.4" y="616.5">G4</text></g>
 <g class="n dec">
 <polygon points="770,703.0 835.0,745 770,787.0 705.0,745"/>
-<text><tspan x="770" y="741.5">Reply</tspan><tspan x="770" y="758.5">now?</tspan></text>
+<text><tspan x="770" y="741.5">Reply within</tspan><tspan x="770" y="758.5">1 more week?</tspan></text>
 </g>
 <g class="n end">
 <rect x="695.0" y="855.0" width="150" height="50" rx="25.0"/>
@@ -272,7 +272,7 @@ th{background:#f0f3f6}
 </g>
 <g class="n step">
 <rect x="1890.0" y="228.0" width="130" height="64" rx="10"/>
-<text><tspan x="1955" y="256.5">Updates agenda</tspan><tspan x="1955" y="273.5">or materials</tspan></text>
+<text><tspan x="1955" y="248.0">Updates agenda</tspan><tspan x="1955" y="265.0">or materials</tspan><tspan x="1955" y="282.0">within 1 week</tspan></text>
 </g>
 <g class="tg"><rect x="1991.2" y="218.0" width="34.8" height="20" rx="4"/><text x="2008.6000000000001" y="232.5">G12</text></g>
 <g class="n step">
@@ -340,6 +340,12 @@ th{background:#f0f3f6}
 <rect x="1315.0" y="838.0" width="270" height="84" rx="10"/>
 <text><tspan x="1450" y="859.5">Another organizer covers any</tspan><tspan x="1450" y="876.5">coordinator step while they are</tspan><tspan x="1450" y="893.5">away. Status is shared, so no Reply</tspan><tspan x="1450" y="910.5">All.</tspan></text>
 </g>
+<g class="tg"><rect x="788" y="705" width="34.8" height="20" rx="4"/><text x="805.4" y="719.5">G17</text></g>
+<g class="tg"><rect x="1678" y="705" width="34.8" height="20" rx="4"/><text x="1695.4" y="719.5">G11</text></g>
+<g class="tg"><rect x="1861.2" y="448" width="34.8" height="20" rx="4"/><text x="1878.6" y="462.5">G18</text></g>
+<g class="tg"><rect x="2146" y="700" width="34.8" height="20" rx="4"/><text x="2163.4" y="714.5">G13</text></g>
+<g class="tg"><rect x="2486.2" y="458" width="34.8" height="20" rx="4"/><text x="2503.6" y="472.5">G16</text></g>
+<g class="tg"><rect x="2711.2" y="202" width="34.8" height="20" rx="4"/><text x="2728.6" y="216.5">G16</text></g>
 <rect class="lb" x="343.5" y="948" width="113.0" height="20"/><text class="el" x="400" y="963">No: soft skills</text>
 <rect class="lb" x="465.0" y="805" width="190.0" height="20"/><text class="el" x="560" y="820">Yes: practical talks first</text>
 <rect class="lb" x="755.5" y="390" width="29.0" height="20"/><text class="el" x="770" y="405">Yes</text>
@@ -370,11 +376,11 @@ th{background:#f0f3f6}
 </tbody>
 </table>
 <h2>Gaps in the procedure</h2>
-<p>Each gap shows what the diagram does for now. To change the procedure, raise it in #organizers.</p>
+<p>Each gap shows the recommended handling, which is a proposal until organizers agree it. It is drawn in the diagram unless marked otherwise. To agree or change it, raise it in #organizers.</p>
 <table class="gaps">
 <thead><tr><th>Ref</th><th>Topic</th><th>Gap and current treatment</th></tr></thead>
 <tbody>
-<tr><td>G1</td><td>Speaker-initiated proposals</td><td>The procedure doesn't cover them. <b>Drawn:</b> a second way into Filtering, decided by the other organizers.</td></tr><tr><td>G2</td><td>Returning speakers</td><td>The design covers a new speaker's account. <b>Assumed:</b> a returning speaker gets the same invitation and signs in.</td></tr><tr><td>G3</td><td>No reply to the invitation</td><td>&ldquo;Ignore them&rdquo; ends the path but says nothing about the slot. <b>Drawn:</b> a loop back to Filtering for the next speaker.</td></tr><tr><td>G4</td><td>Reminder after 1 week</td><td>The in-app design lists automatic reminders at 1 month and 3 weeks only. <b>Assumed:</b> this one is also an automatic email.</td></tr><tr><td>G5</td><td>Speaker can't make the date</td><td>The template has a single &ldquo;last slot&rdquo; email and marks &ldquo;tell us which months&rdquo; as ignore, but in practice dates went back and forth. <b>Drawn:</b> the loop.</td></tr><tr><td>G6</td><td>Checks with no follow-up</td><td>Accepting the calendar invite and joining the Meetup group are requested but never checked. <b>Drawn:</b> speaker tasks only.</td></tr><tr><td>G7</td><td>Disagreeing with the guidelines</td><td>Speakers proceed &ldquo;if you agree&rdquo;, but nothing says what happens otherwise. <b>Not drawn.</b></td></tr><tr><td>G8</td><td>What the checks look for</td><td>&ldquo;Timing&rdquo; checks materials only, while reminders chase agenda and materials. One template calls materials required, another optional. <b>Drawn:</b> both are checked.</td></tr><tr><td>G9</td><td>Due date after a reschedule</td><td>When an event moved 1 week earlier, the due date stayed, so it fell about 3 weeks before the event. <b>Drawn:</b> no reset. A reschedule should probably reset it.</td></tr><tr><td>G10</td><td>Cancellation</td><td>The final reminder warns of cancellation, but &ldquo;Timing&rdquo; has no cancellation step. <b>Drawn:</b> no agenda or materials by 2 weeks before cancels the event.</td></tr><tr><td>G11</td><td>Conflicting final deadline</td><td>A leftover draft sets a last deadline that publishes 1 week before the event, not 2. <b>Drawn:</b> 2 weeks.</td></tr><tr><td>G12</td><td>Review doesn't pass</td><td>No source says what happens. <b>Drawn:</b> the speaker updates and it is reviewed again, with no limit or deadline.</td></tr><tr><td>G13</td><td>Publish order</td><td>&ldquo;Timing&rdquo; publishes before the THIRD EMAIL, and the template says Meetup is already live. In practice it went out first and everything was announced the next day. <b>Drawn:</b> the practice.</td></tr><tr><td>G14</td><td>Publishing owner</td><td>A leftover note gives LinkedIn and Twitter to one organizer. <b>Drawn:</b> under Other organizers, with no separate lane.</td></tr><tr><td>G15</td><td>Speaker drops out after the announcement</td><td>The template says the event is cancelled and another speaker arranged, but no step covers it. <b>Drawn:</b> as an end point. Who finds the replacement is open.</td></tr><tr><td>G16</td><td>Day-of and post-event steps</td><td>These come only from leftover drafts and one sample, so they are drawn with dotted borders as unconfirmed. When the co-host is added is also unclear.</td></tr>
+<tr><td>G1</td><td>Speaker-initiated proposals</td><td>The procedure doesn't cover them. <b>Drawn:</b> a second way into Filtering, decided by the other organizers.</td></tr><tr><td>G2</td><td>Returning speakers</td><td>The design covers a new speaker's account. <b>Recommended:</b> a returning speaker gets the same invitation and signs in.</td></tr><tr><td>G3</td><td>No reply to the invitation</td><td>&ldquo;Ignore them&rdquo; ends the path but says nothing about the slot. <b>Recommended:</b> the slot goes back to Filtering for the next speaker.</td></tr><tr><td>G4</td><td>Reminder after 1 week</td><td>The in-app design lists automatic reminders at 1 month and 3 weeks only. <b>Recommended:</b> make this one an automatic email too.</td></tr><tr><td>G5</td><td>Speaker can't make the date</td><td>The template has a single &ldquo;last slot&rdquo; email and marks &ldquo;tell us which months&rdquo; as ignore, but in practice dates went back and forth. <b>Recommended:</b> the loop, until no slot is left.</td></tr><tr><td>G6</td><td>Checks with no follow-up</td><td>Accepting the calendar invite and joining the Meetup group are requested but never checked. <b>Recommended:</b> keep them as speaker tasks, with no check.</td></tr><tr><td>G7</td><td>Disagreeing with the guidelines</td><td>Speakers proceed &ldquo;if you agree&rdquo;, but nothing says what happens otherwise. <b>Recommended, not drawn:</b> the speaker raises it with the coordinator, and the path ends if they can&#x27;t agree.</td></tr><tr><td>G8</td><td>What the checks look for</td><td>&ldquo;Timing&rdquo; checks materials only, while reminders chase agenda and materials. One template calls materials required, another optional. <b>Recommended:</b> both are required and checked.</td></tr><tr><td>G9</td><td>Due date after a reschedule</td><td>When an event moved 1 week earlier, the due date stayed, so it fell about 3 weeks before the event. <b>Recommended:</b> a reschedule goes back through date confirmation, which resets the due date to 1 month before the new date.</td></tr><tr><td>G10</td><td>Cancellation</td><td>The final reminder warns of cancellation, but &ldquo;Timing&rdquo; has no cancellation step. <b>Recommended:</b> no agenda or materials by 2 weeks before cancels the event.</td></tr><tr><td>G11</td><td>Conflicting final deadline</td><td>A leftover draft sets a last deadline that publishes 1 week before the event, not 2. <b>Recommended:</b> 2 weeks.</td></tr><tr><td>G12</td><td>Review doesn't pass</td><td>No source says what happens. <b>Recommended:</b> the speaker updates within 1 week and it is reviewed again. <b>Not drawn:</b> a missed update cancels the event, as in G10.</td></tr><tr><td>G13</td><td>Publish order</td><td>&ldquo;Timing&rdquo; publishes before the THIRD EMAIL, and the template says Meetup is already live. In practice it went out first and everything was announced the next day. <b>Recommended:</b> follow the practice.</td></tr><tr><td>G14</td><td>Publishing owner</td><td>A leftover note gives LinkedIn and Twitter to one organizer. <b>Recommended:</b> keep it under Other organizers, with no separate lane.</td></tr><tr><td>G15</td><td>Speaker drops out after the announcement</td><td>The template says the event is cancelled and another speaker arranged, but no step covers it. <b>Recommended:</b> an end point, with the coordinator finding the replacement.</td></tr><tr><td>G16</td><td>Day-of and post-event steps</td><td>These come only from leftover drafts and one sample, so they are drawn with dotted borders as unconfirmed. When the co-host is added is also unclear. <b>Recommended:</b> confirm them with organizers, and add the co-host on the event day before 17:00.</td></tr><tr><td>G17</td><td>Waiting after the reminder</td><td>Nothing says how long to wait for a reply after the reminder before the path ends. <b>Recommended:</b> 1 more week.</td></tr><tr><td>G18</td><td>When review starts</td><td>A speaker can hand everything in well before the 2-week check. <b>Recommended:</b> review starts once agenda and materials are in, and 2 weeks before the event at the latest.</td></tr>
 </tbody>
 </table>
 </body>
