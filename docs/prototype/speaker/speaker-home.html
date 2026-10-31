@@ -34,23 +34,31 @@
         <p class="meta" id="task-progress" aria-live="polite">0 of 5 done</p>
         <ul class="tasks" id="task-list">
           <li class="task">
-            <span class="task-body">
-              <span class="task-title">Accept the calendar invite</span>
-              <span class="task-note">Sent to mara.sample@example.com</span>
-            </span>
-            <button class="button secondary" type="button" data-task="calendar">Accept</button>
+            <label class="check task-check">
+              <input type="checkbox" data-task="calendar">
+              <span class="task-body">
+                <span class="task-title">I've accepted the calendar invite</span>
+                <span class="task-note">Sent to mara.sample@example.com</span>
+              </span>
+            </label>
           </li>
           <li class="task">
-            <span class="task-body">
-              <span class="task-title">Agree to the Speaker Guidelines</span>
-            </span>
-            <button class="button secondary" type="button" data-task="guidelines">Accept</button>
+            <label class="check task-check">
+              <input type="checkbox" data-task="guidelines">
+              <span class="task-body">
+                <span class="task-title">I've read and agree to the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a></span>
+                <span class="task-note">Please read them before you write your agenda</span>
+              </span>
+            </label>
           </li>
           <li class="task">
-            <span class="task-body">
-              <span class="task-title">Confirm you're in the Meetup group</span>
-            </span>
-            <button class="button secondary" type="button" data-task="meetup">Confirm</button>
+            <label class="check task-check">
+              <input type="checkbox" data-task="meetup">
+              <span class="task-body">
+                <span class="task-title">I'm in the <a href="https://www.meetup.com/techexcellence/" target="_blank" rel="noopener">Meetup group</a></span>
+                <span class="task-note">We add you as a co-host on Meetup, so you need to be a member</span>
+              </span>
+            </label>
           </li>
           <li class="task">
             <span class="task-body">
@@ -99,32 +107,6 @@
   </div>
   <p class="proto-next">Next in the flow: <a href="speaker-agenda-materials.html">hand in your agenda and materials</a>. Not in by the due date, <a href="email-reminder-1-month.html">reminder email</a></p>
 </main>
-<dialog class="popup" id="calendar">
-  <h2>Accept the calendar invite</h2>
-  <p>Open the invite we sent to mara.sample@example.com and accept it, then confirm here.</p>
-  <div class="actions">
-    <button class="button" type="button" data-confirm>I've accepted it</button>
-    <button class="text-button" type="button" data-close>Not yet</button>
-  </div>
-</dialog>
-<dialog class="popup" id="guidelines">
-  <h2>Agree to the Speaker Guidelines</h2>
-  <p>Please read them before you write your agenda, then come back here to agree.</p>
-  <div class="actions">
-    <a class="button" href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Open Speaker Guidelines</a>
-    <button class="button secondary" type="button" data-confirm>I agree</button>
-    <button class="text-button" type="button" data-close>Not yet</button>
-  </div>
-</dialog>
-<dialog class="popup" id="meetup">
-  <h2>Are you in our Meetup group?</h2>
-  <p>We add you as a co-host on Meetup, so you need to be a member. If you're not one yet, join the group, then come back here to confirm.</p>
-  <div class="actions">
-    <a class="button" href="https://www.meetup.com/techexcellence/" target="_blank" rel="noopener">Open Meetup group</a>
-    <button class="button secondary" type="button" data-confirm>I'm a member</button>
-    <button class="text-button" type="button" data-close>Not yet</button>
-  </div>
-</dialog>
 <script>
 var list = document.getElementById('task-list');
 var tasks = Array.from(list.children);
@@ -143,36 +125,18 @@ function refresh() {
   open.concat(done).forEach(function (task) { list.appendChild(task); });
   document.getElementById('task-progress').textContent = done.length + ' of ' + tasks.length + ' done';
 }
-function markDone(id) {
-  var button = document.querySelector('[data-task="' + id + '"]');
-  var task = button.closest('.task');
-  var result = document.createElement('span');
-  result.className = 'task-result';
-  result.innerHTML = '<span class="status ok">Done</span><button class="text-button" type="button">Undo</button>';
-  result.querySelector('button').addEventListener('click', function () {
-    result.replaceWith(button);
-    task.classList.remove('done');
-    remember(id, false);
-    refresh();
-  });
-  button.replaceWith(result);
-  task.classList.add('done');
+function setDone(box, done) {
+  box.checked = done;
+  box.closest('.task').classList.toggle('done', done);
 }
-document.querySelectorAll('[data-task]').forEach(function (button) {
-  var id = button.dataset.task;
-  button.addEventListener('click', function () { document.getElementById(id).showModal(); });
-  if (isRemembered(id)) { markDone(id); }
-});
-document.querySelectorAll('dialog [data-close]').forEach(function (button) {
-  button.addEventListener('click', function () { button.closest('dialog').close(); });
-});
-document.querySelectorAll('dialog [data-confirm]').forEach(function (button) {
-  button.addEventListener('click', function () {
-    var dialog = button.closest('dialog');
-    dialog.close();
-    remember(dialog.id, true);
-    markDone(dialog.id);
+document.querySelectorAll('[data-task]').forEach(function (box) {
+  var id = box.dataset.task;
+  setDone(box, isRemembered(id));
+  box.addEventListener('change', function () {
+    setDone(box, box.checked);
+    remember(id, box.checked);
     refresh();
+    box.focus();
   });
 });
 refresh();
