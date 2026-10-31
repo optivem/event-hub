@@ -231,3 +231,21 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
 .email { max-width: 620px; margin: 0 auto; }
 .email-head { padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
 .email-head div { color: var(--muted); }
+
+/* Phones: comfortable tap targets, and tables become labelled rows */
+.check input { flex: none; width: 20px; height: 20px; margin-top: 2px; }
+.check { min-height: 28px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+@media (max-width: 767px) {
+  .brand, .nav a, .roles a, .proto-bar a { display: inline-flex; align-items: center; min-height: 44px; }
+  .roles { margin-left: 0; width: 100%; display: flex; }
+  .roles a { flex: 1; justify-content: center; }
+  .actions .button { flex: 1 1 100%; }
+  .table-wrap { overflow-x: visible; }
+  .table-wrap table, .table-wrap tbody, .table-wrap tr, .table-wrap td { display: block; }
+  .table-wrap thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .table-wrap tr { padding: 10px 0; border-top: 1px solid var(--line); }
+  .table-wrap tr:first-child { border-top: 0; padding-top: 0; }
+  .table-wrap td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 3px 0; border-top: 0; text-align: right; }
+  .table-wrap td::before { content: attr(data-label); flex: none; font-size: 0.8rem; color: var(--muted); text-align: left; }
+}
