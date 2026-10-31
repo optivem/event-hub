@@ -20,11 +20,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Run Step 7. Both prototypes and the landing page in `docs/prototype/` are done. Step 7 updates `docs/speaker-organizer-user-flow.html` to the two roles: merge the coordinator and other organizers lanes, drop the "Covers" note, and reword the gap table. Screen names to reference are `docs/prototype/speaker/*` and `docs/prototype/organizer/*`. Stay on `main`.
+Run Step 8. The prototypes and the user flow doc are done. Step 8 updates `plans/20261031-1137-manual-test-html-prototype.md`: use file names that exist in `docs/prototype/speaker/` and `docs/prototype/organizer/`, start each journey from login, and drop the role switcher step and the "covering" banner decision. Stay on `main`.
 
 ## Steps
 
-- [ ] Step 7: Update `docs/speaker-organizer-user-flow.html` to the two roles: merge the coordinator and other organizers lanes, drop the "Covers" note, and reword the gap table.
 - [ ] Step 8: Update `plans/20261031-1137-manual-test-html-prototype.md` to the new journeys and file names, and drop its role switcher step and its "covering" banner decision.
 - [ ] Step 9: Replace the leftover shop use cases in `docs/use-cases.md` (Customer, Eventhub Owner, orders, coupons) with Speaker and Organizer as actors and the use cases from the two prototypes. `docs/use-case-narrative.md` follows the same actors. Account creation is an Organizer use case; keep `registrationAllowed: false` in mind when the real realm is set up.
 - [ ] Step 10: Click through both prototypes from login, including the exit and exception paths, and check for dead links.
