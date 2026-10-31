@@ -33,7 +33,7 @@ jobs:
         with:
           version-files: |
             [
-              {"path": "VERSION",            "value": "multitier-java-v"},
+              {"path": "VERSION",            "value": "v"},
               {"path": "backend/VERSION",    "value": "v"},
               {"path": "frontend/VERSION",  "value": "v"}
             ]
