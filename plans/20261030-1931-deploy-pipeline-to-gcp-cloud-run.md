@@ -20,7 +20,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Only a user step remains. Step 10: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
+Only a user step remains. Step 10: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is fixed in `optivem/shop` first, then ported here via `plans/20261102-1953-port-cold-start-fixes-from-shop.md`.
 
 ## Steps
 
