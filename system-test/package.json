@@ -27,7 +27,7 @@
     "optivem"
   ],
   "author": "optivem",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": ">=22"
   },

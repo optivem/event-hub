@@ -31,7 +31,11 @@
 
 ## License
 
-MIT License
+Copyright (C) 2026 optivem
+
+EventHub is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0-only). If you run a modified version of EventHub as a network service, you must make your modified source code available to its users.
+
+Versions released before 2 November 2026 were licensed under the MIT License.
 
 ## Contributors
 

@@ -40,7 +40,7 @@ system-test:
         api: system-test/src/testkit/driver/adapter/api
         ui: system-test/src/testkit/driver/adapter/ui
 system-name: EventHub
-license: mit
+license: mit  # gh-optivem has no agpl-3.0 option; the real license is AGPL-3.0 (see LICENSE)
 deploy: docker
 channels:
     - api
