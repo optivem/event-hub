@@ -18,7 +18,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Do step 1, which needs a person with a browser. Serve `docs/prototype` and open `administrator/administrator-community.html`, `organizer/organizer-home.html`, `organizer/organizer-profile.html`, `administrator/administrator-profile.html` and `speaker/speaker-profile.html` at desktop and phone width. Record any problems under `## Findings`. Steps 2 onward stop until the open questions are answered, so settle those with `/refine-plan` first.
+Do step 1, which needs a person with a browser. Serve `docs/prototype` and open `administrator/administrator-community.html`, `organizer/organizer-home.html`, `organizer/organizer-profile.html`, `administrator/administrator-profile.html` and `speaker/speaker-profile.html` at desktop and phone width. Record any problems under `## Findings`.
 
 ## Steps
 
@@ -27,14 +27,14 @@ Do step 1, which needs a person with a browser. Serve `docs/prototype` and open 
 - [ ] Step 3: Add the agreed rules for several roles and the last organizer to `docs/use-cases.md`.
 - [ ] Step 4: Add one sample person who holds several roles, since each prototype currently uses a different made-up person.
 - [ ] Step 5: Add the role switcher to the account menu on the speaker, organizer and administrator screens. This touches every speaker screen, so commit or set aside the uncommitted speaker changes first.
-- [ ] Step 6: Block removing the last organizer on `administrator-organizers.html` and `administrator-remove-organizer.html`.
+- [ ] Step 6: Block removing the last organizer on `administrator-organizers.html` and `administrator-remove-organizer.html`, and block removing the last administrator in the same way.
 - [ ] Step 7: Add the new paths to `plans/20261031-1137-manual-test-html-prototype.md`.
 
 ## Findings
 
-## Open questions
+## Resolved decisions
 
-- Role switching: is it one login per person, with roles on the account and a switcher in the account menu? Recommended: yes, landing on the last used view, with one shared profile.
-- Last organizer: should removing the last organizer be blocked? Recommended: yes, with a message explaining why on the Organizers tab.
-- Who can add a new administrator? Nothing says yet. Inferred, not decided: an existing administrator, using the same invitation flow as organizers.
-- Can an administrator remove themselves, and does the last administrator need the same protection? Inferred, not raised by the user. Recommended: yes, block it the same way.
+- Role switching: one login per person, with roles on the account and one shared profile. The account menu shows a switcher listing only the roles the person holds, and they land on the view they used last.
+- Last organizer: removing the last organizer is blocked, with a message on the Organizers tab explaining why.
+- New administrators: an existing administrator adds them, using the same invitation flow as organizers.
+- Administrators can remove themselves, but removing the last administrator is blocked the same way as the last organizer.

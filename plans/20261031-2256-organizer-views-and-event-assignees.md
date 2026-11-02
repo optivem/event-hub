@@ -16,12 +16,12 @@
 
 ## ▶ Next executable step (resume here)
 
-Answer the two questions under `## Open questions`, then do Step 1 of `## Steps`. No files have been changed for this plan yet.
+Do Step 1 of `## Steps`. No files have been changed for this plan yet.
 
-## Open questions
+## Resolved decisions
 
-1. Are agenda and materials approved separately? Recommendation: yes. It catches a wrong agenda before the speaker builds slides around it. Today `organizer-review.html` covers both in one review, so yes means a new agenda review step, dividing the checklist between the two, and agenda-only feedback in the speaker's flow. The speaker can still work ahead, but materials built on an agenda that's later sent back may need rework.
-2. When does an event get its assignees? Recommendation: at date confirmation, when the confirming organizer chooses one or more, defaulting to themselves. The event then appears in My events from the start. The alternative is assigning when materials arrive, but nobody would be tracking the event until then.
+1. Agenda and materials are approved separately. This catches a wrong agenda before the speaker builds slides around it. It means a new agenda review step, the checklist divided between the two, and agenda-only feedback in the speaker's flow. The speaker can still work ahead, but materials built on an agenda that's later sent back may need rework.
+2. An event gets its assignees at date confirmation. The confirming organizer chooses one or more, defaulting to themselves, so the event appears in My events from the start.
 
 ## Decisions
 
@@ -58,8 +58,8 @@ A task is approved only when every assignee has approved it. One assignee is the
 - [ ] Step 2: Replace `organizer-home.html` with My events, and add All events and Potential speakers pages. The current "Speakers and events" table has one row per speaker, so All events needs one row per event.
 - [ ] Step 3: Turn the "Other steps for this event" card on the home page into next-action items in My events.
 - [ ] Step 4: Change the top nav on every organizer page to My events, All events, Potential speakers and Settings. Materials, Publish and Reschedule move inside the event, because they only make sense for a specific event. Update links that point to `organizer-home.html#potential-speakers`.
-- [ ] Step 5: Add assignee selection to `organizer-confirm-date.html`, or wherever open question 2 lands, and add a way to reassign from the event.
+- [ ] Step 5: Add assignee selection to `organizer-confirm-date.html`, defaulting to the confirming organizer, and add a way to reassign from the event.
 - [ ] Step 6: Update `organizer-review.html` and `organizer-approve.html` to show assignees and approval progress, and add a sample read-only state for organizers who aren't assigned.
-- [ ] Step 7: If open question 1 is yes, split the review into agenda and materials steps and update the speaker's screens and the phases on both sides.
+- [ ] Step 7: Split the review into agenda and materials steps and update the speaker's screens and the phases on both sides.
 - [ ] Step 8: Update `administrator-remove-organizer.html` to deal with the events the organizer is assigned to.
 - [ ] Step 9: Update `docs/speaker-organizer-user-flow.html` and the manual test steps in `plans/20261031-1137-manual-test-html-prototype.md`.
