@@ -9,10 +9,9 @@
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="brand" href="organizer-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
-      <a href="organizer-my-events.html">My events</a>
-      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-events.html">Events</a>
       <a href="organizer-potential-speakers.html">Potential speakers</a>
       <a href="organizer-settings.html">Settings</a>
     </nav>
@@ -64,7 +63,7 @@
         <li class="task">
           <span class="task-body">
             <span class="task-title">Nobody left</span>
-            <span class="task-note">The event has no assignees and stands out in All events until someone is added.</span>
+            <span class="task-note">The event has no assignees and shows under Unassigned in Events until someone is added.</span>
           </span>
         </li>
       </ul>
@@ -76,10 +75,10 @@
 // Prototype only: ?none shows an event whose last assignee was removed.
 if (new URLSearchParams(location.search).has('none')) {
   document.getElementById('none-notice').hidden = false;
-  document.getElementById('save').href = 'organizer-all-events.html';
-  document.getElementById('back').href = 'organizer-all-events.html';
+  document.getElementById('save').href = 'organizer-events.html#unassigned';
+  document.getElementById('back').href = 'organizer-events.html#unassigned';
   document.querySelector('.page-head .meta').textContent = 'Pat Stub \u00b7 Domain Modelling with Types';
-  document.querySelector('.proto-next').innerHTML = 'Next in the flow: add someone, then <a href="organizer-all-events.html">back to All events</a>, where the event no longer stands out.';
+  document.querySelector('.proto-next').innerHTML = 'Next in the flow: add someone, then <a href="organizer-events.html#unassigned">back to Unassigned events</a>, where it no longer appears.';
 }
 </script>
 <script src="../account.js"></script>

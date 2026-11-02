@@ -86,14 +86,14 @@
   // Removing an organizer takes them off the events they're assigned to.
   var assigned = {
     omar: [
-      ['Property-Based Testing', '25 February 2027', 'Omar is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
+      ['Property-Based Testing', '25 February 2027', 'Omar is the only assignee, so the event will have no assignees. It shows under Unassigned in Events until an organizer adds someone.', true],
       ['Testing Legacy Code Without Fear', '21 January 2027', 'Nina Example stays as assignee. Omar\'s pending approval of the agenda goes away.'],
       ['Event Sourcing Without Tears', '4 February 2027', 'Nina Example has already approved the agenda, so it\'s approved once Omar is removed.'],
       ['Ports and Adapters by Example', '14 January 2027', 'Omar\'s approval of the materials goes away, so they wait for Nina Example.'],
       ['3 more events', '', 'Trunk-Based Development in Practice, Mutation Testing Explained and Feature Toggles Done Right. Nothing is waiting for Omar there, and Nina Example stays as assignee.']
     ],
     nina: [
-      ['Contract Tests in Practice', '18 February 2027', 'Nina is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
+      ['Contract Tests in Practice', '18 February 2027', 'Nina is the only assignee, so the event will have no assignees. It shows under Unassigned in Events until an organizer adds someone.', true],
       ['Testing Legacy Code Without Fear', '21 January 2027', 'Omar Example stays as assignee. Nina\'s pending approval of the agenda goes away.'],
       ['Ports and Adapters by Example', '14 January 2027', 'Omar Example has already approved the materials, so they\'re approved once Nina is removed.'],
       ['Event Sourcing Without Tears', '4 February 2027', 'Nina\'s approval of the agenda goes away, so it waits for Omar Example.'],
@@ -120,8 +120,8 @@
   byId('remove-button').textContent = self ? 'Remove me' : 'Remove ' + role;
   byId('keep-button').textContent = self ? 'Keep my role' : 'Keep ' + role;
   if (self && role === 'administrator') {
-    byId('remove-button').href = '../organizer/organizer-my-events.html';
-    byId('remove-next').innerHTML = 'Next in the flow: you leave the administrator screens and land on <a href="../organizer/organizer-my-events.html">My events, your organizer home</a>. Administrator is gone from your account menu.';
+    byId('remove-button').href = '../organizer/organizer-events.html';
+    byId('remove-next').innerHTML = 'Next in the flow: you leave the administrator screens and land on <a href="../organizer/organizer-events.html">Events, your organizer home</a>. Administrator is gone from your account menu.';
   } else {
     byId('remove-next').innerHTML = 'Next in the flow: <a href="administrator-organizers.html">back to organizers</a>, without this ' + role + ' on the list.';
   }

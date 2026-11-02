@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Events | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-events.html" aria-current="page">Events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Events</h1>
+    <p class="meta" id="filter-meta"></p>
+  </div>
+
+  <div class="segmented" role="group" aria-label="Show events">
+    <a href="#mine" data-filter="mine">Assigned to me <span class="count"></span></a>
+    <a href="#unassigned" data-filter="unassigned">Unassigned <span class="count"></span></a>
+    <a href="#all" data-filter="all">All <span class="count"></span></a>
+  </div>
+
+  <div class="event-list">
+    <section class="card" data-group="mine">
+      <h2>Waiting for your approval</h2>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Ports and Adapters by Example</span>
+            <span class="task-note">Kim Dummy &middot; Thursday 14 January 2027</span>
+            <span class="task-note">Materials: 1 of 2 approved. Waiting for you.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button" href="organizer-review-materials.html">Review materials</a>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Testing Legacy Code Without Fear</span>
+            <span class="task-note">Mara Sample &middot; Thursday 21 January 2027</span>
+            <span class="task-note">Agenda: 0 of 2 approved. Waiting for you and Omar Example.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button" href="organizer-review-agenda.html">Review agenda</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="mine">
+      <h2>Other things to do</h2>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Trunk-Based Development in Practice</span>
+            <span class="task-note">Alex Template &middot; Thursday 10 December 2026</span>
+            <span class="task-note">Approved by everyone. Publish and announce it.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-publish.html">Publish</a>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Feature Toggles Done Right</span>
+            <span class="task-note">Noor Dummy &middot; Thursday 28 January 2027</span>
+            <span class="task-note">The speaker can't make it. Cancel and arrange a new speaker.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-speaker-dropped.html">Open</a>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Mutation Testing Explained</span>
+            <span class="task-note">Robin Standin &middot; Thursday 7 January 2027</span>
+            <span class="task-note">Materials missed the deadline. Cancel the event.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-cancel-event.html">Open</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="unassigned">
+      <h2>No assignees</h2>
+      <p class="meta">The last assignee was removed. Every organizer sees this until someone is added.</p>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Domain Modelling with Types</span>
+            <span class="task-note">Pat Stub &middot; Thursday 4 March 2027</span>
+            <span class="task-note">Agenda approved. Materials due next.</span>
+          </span>
+          <a class="button" href="organizer-assignees.html?none">Add assignees</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="unassigned">
+      <h2>Before a date is confirmed</h2>
+      <p class="meta">Assignees are chosen when the date is confirmed, so every organizer sees these.</p>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Chris Draft accepted the date</span>
+            <span class="task-note">Small Steps with TDD &middot; Thursday 15 April 2027</span>
+            <span class="task-note">Confirm it and choose the assignees.</span>
+          </span>
+          <a class="button" href="organizer-confirm-date.html">Confirm date</a>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Ali Testcase offered other months</span>
+            <span class="task-note">Propose another date.</span>
+          </span>
+          <a class="button secondary" href="organizer-other-date.html">Propose date</a>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Dana Testcase hasn't replied</span>
+            <span class="task-note">Event Storming for Beginners &middot; invited for Thursday 18 March 2027</span>
+          </span>
+          <a class="button secondary" href="organizer-invitation-status.html">Open</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="mine">
+      <h2>Waiting for another assignee</h2>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Event Sourcing Without Tears</span>
+            <span class="task-note">Lee Mockup &middot; Thursday 4 February 2027</span>
+            <span class="task-note">Agenda: 1 of 2 approved. Waiting for Omar Example.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-review-agenda.html?view=approved">Open</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="mine">
+      <h2>Waiting for the speaker</h2>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Contract Tests in Practice</span>
+            <span class="task-note">Theo Placeholder &middot; Thursday 18 February 2027</span>
+            <span class="task-note">Agenda due 7 January 2027</span>
+            <span class="task-note assignee-note">Assignees: you</span>
+          </span>
+          <a class="button secondary" href="organizer-materials-status.html">Track materials</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="others">
+      <h2>Assigned to other organizers</h2>
+      <p class="meta">You can follow these, but only their assignees can approve.</p>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Property-Based Testing</span>
+            <span class="task-note">Jamie Stub &middot; Thursday 25 February 2027</span>
+            <span class="task-note">Agenda: 0 of 1 approved. Waiting for Omar Example.</span>
+            <span class="task-note assignee-note">Assignees: Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-review-agenda.html?view=readonly">View</a>
+        </li>
+      </ul>
+    </section>
+
+    <p class="card meta" id="empty" hidden>Nothing here right now.</p>
+  </div>
+
+  <p class="proto-next">Next in the flow: start with <a href="organizer-potential-speakers.html">potential speakers</a> and Mara Sample's new proposal. Each button opens the event at the step that needs work. In the prototype they all open Mara's event at that stage, so each step and every exception is one click away. <a href="#unassigned">Unassigned</a> is where an organizer picks up new events. In <a href="#all">All</a>, Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>.</p>
+</main>
+<script>
+// Prototype only: one list of events with three filters. The filter lives in the URL hash
+// (#mine, #unassigned, #all) so Back and links from other screens land on the right one.
+(function () {
+  var META = {
+    mine: 'Events you are assigned to. What needs you comes first.',
+    unassigned: 'Events nobody is assigned to yet. Any organizer can pick them up.',
+    all: 'Every event, including ones assigned to other organizers'
+  };
+  var sections = document.querySelectorAll('[data-group]');
+  var tabs = document.querySelectorAll('.segmented a');
+
+  function rowsIn(group) {
+    var n = 0;
+    sections.forEach(function (s) {
+      if (group === 'all' || s.dataset.group === group) { n += s.querySelectorAll('.task').length; }
+    });
+    return n;
+  }
+
+  function show() {
+    var filter = location.hash.replace('#', '');
+    if (!META[filter]) { filter = 'mine'; }
+    var shown = 0;
+    sections.forEach(function (s) {
+      var match = filter === 'all' || s.dataset.group === filter;
+      s.hidden = !match;
+      if (match) { shown += 1; }
+    });
+    document.getElementById('empty').hidden = shown > 0;
+    document.body.classList.toggle('show-assignees', filter === 'all');
+    document.getElementById('filter-meta').textContent = META[filter];
+    tabs.forEach(function (t) {
+      if (t.dataset.filter === filter) { t.setAttribute('aria-current', 'true'); } else { t.removeAttribute('aria-current'); }
+    });
+  }
+
+  tabs.forEach(function (t) { t.querySelector('.count').textContent = rowsIn(t.dataset.filter); });
+  window.addEventListener('hashchange', show);
+  show();
+})();
+</script>
+<script src="../account.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
 
   var ROLES = {
     speaker: { label: 'Speaker', home: 'speaker/speaker-home.html', profile: 'speaker/speaker-profile.html' },
-    organizer: { label: 'Organizer', home: 'organizer/organizer-my-events.html', profile: 'organizer/organizer-profile.html' },
+    organizer: { label: 'Organizer', home: 'organizer/organizer-events.html', profile: 'organizer/organizer-profile.html' },
     administrator: { label: 'Administrator', home: 'administrator/administrator-community.html', profile: 'administrator/administrator-profile.html' }
   };
 
@@ -87,7 +87,7 @@
     person.roles.forEach(function (id) {
       var target = store.get('last-' + personId + '-' + id);
       // Screens that were renamed: fall back to the role's first screen.
-      if (!target || /organizer-(home|review)\.html/.test(target)) { target = ROLES[id].home; }
+      if (!target || /organizer-(home|review|my-events|all-events)\.html/.test(target)) { target = ROLES[id].home; }
       items += '<li><a href="' + root + target + '"' + (id === role ? ' aria-current="true"' : '') + '>' + ROLES[id].label + '</a></li>';
     });
     menu.insertAdjacentHTML('afterbegin', items + '<li class="account-divider" role="separator"></li>');

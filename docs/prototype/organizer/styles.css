@@ -278,14 +278,20 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
   .table-wrap td::before { content: attr(data-label); flex: none; font-size: 0.8rem; color: var(--muted); text-align: left; }
 }
 
-/* Links to the other screens of one event, and the rows of All events with nobody assigned */
+/* Links to the other screens of one event */
 .event-links { margin: 24px 0 0; font-size: 0.875rem; color: var(--muted); }
 .event-links a { color: var(--muted); }
-.filter { max-width: 280px; }
-tr.unassigned td { background: var(--warn-bg); }
-@media (min-width: 768px) {
-  #events td[data-label="Date"], #events td[data-label="Approvals"], #events .button { white-space: nowrap; }
-}
 #assignees .tasks + .meta, #assignees .tasks + p { margin-top: 12px; }
 .field input:disabled, .field textarea:disabled { color: var(--muted); background: transparent; }
 .field .check input { width: 20px; height: 20px; min-height: 0; padding: 0; }
+
+/* Events filter: Assigned to me | Unassigned | All. Full width on phones. */
+.segmented { display: flex; margin-bottom: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.segmented a { flex: 1 1 auto; white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 4px 8px; color: var(--muted); text-decoration: none; text-align: center; font-size: 0.95rem; }
+.segmented a + a { border-left: 1px solid var(--line); }
+.segmented a[aria-current="true"] { color: var(--accent-ink); background: var(--accent); font-weight: 600; }
+.segmented .count { font-size: 0.8rem; opacity: 0.85; }
+@media (min-width: 768px) { .segmented { display: inline-flex; } .segmented a { flex: none; padding: 4px 18px; } }
+.event-list { max-width: 760px; }
+.assignee-note { display: none !important; }
+.show-assignees .assignee-note { display: block !important; }
