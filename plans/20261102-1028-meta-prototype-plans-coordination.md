@@ -21,7 +21,6 @@ How to run this meta-plan: `/execute-plan` on this file runs **one step per sess
 
 ## Steps
 
-- [ ] Step 3 (Wave 1): `/execute-plan plans/20261031-1011-speaker-organizer-user-flow.md` — walk the user flow page with the user against the source procedure. Can run in parallel with Step 4 in another session.
 - [ ] Step 4 (Wave 1): `/execute-plan plans/20261031-2257-prototype-role-switching-follow-ups.md` — its Step 1 needs the user at a browser; the rest needs Step 2 done.
 - [ ] Step 5 (Wave 2, after Steps 3 and 4): `/execute-plan plans/20261031-2256-organizer-views-and-event-assignees.md`.
 - [ ] Step 6 (Wave 3, after Step 5): `plans/20261031-1137-manual-test-html-prototype.md` — the user clicks through every journey and records findings, then `/execute-plan` on it applies the corrections.
