@@ -20,11 +20,10 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Only user steps remain. Step 8: the user creates a real user in `shop-prod` and logs in to prod (how-to below). Step 10: the user runs teardown/setup and one acceptance dispatch. No agent work is left until Step 10 reports a failure.
+Only a user step remains. Step 10: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
 
 ## Steps
 
-- [ ] Step 8: `prod-stage.yml` deployed `v1.0.227` to Cloud Run (run 41439611882, release `v1.0.227`); prod frontend https://event-hub-prod-frontend-992033658880.us-central1.run.app uses the `shop-prod` realm. Only one item remains: the user creates a real user in `shop-prod` (the realm has no users and registration is off) and logs in to prod. How: read the Keycloak admin password with `gcloud secrets versions access latest --secret=event-hub-keycloak-admin-password --project=<event-hub GCP project>` (username `admin`; the bootstrap password only applies on first start), sign in at https://event-hub-keycloak-992033658880.us-central1.run.app/admin, switch to `shop-prod`, Users → Add user (email verified on), Credentials → set password with Temporary off, Role mapping → `ADMIN` and/or `CUSTOMER`. Keep the password in a password manager, never in the repo
 - [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
 
 ## Decisions
