@@ -116,6 +116,9 @@ echo ""
 # Get GitHub repo
 REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
 echo "  📦 GitHub repo: $REPO"
+# Repo variable, set once by hand (see terraform/README.md "Custom domains"); the teardown keeps it
+CUSTOM_DOMAIN=$(gh variable get CUSTOM_DOMAIN 2> /dev/null) || CUSTOM_DOMAIN=""
+echo "  🌐 Custom domain: ${CUSTOM_DOMAIN:-(none — stages use *.run.app)}"
 echo ""
 
 # The state project comes first: the billing lookup below needs a project to run against
@@ -323,7 +326,6 @@ fi
 # Custom domains: the deploy maps them (.github/scripts/ensure-domain-mapping.sh); these are the
 # one-time steps outside GCP. The CNAMEs survive a project rebuild; the owner entry does not,
 # because a new project has a new deployer service account.
-CUSTOM_DOMAIN=$(gh variable get CUSTOM_DOMAIN 2> /dev/null) || CUSTOM_DOMAIN=""
 if [[ -n "$CUSTOM_DOMAIN" ]]; then
   echo "  Custom domain: $CUSTOM_DOMAIN (prod events., QA events-qa., Keycloak auth.)"
   echo "    1. In Webmaster Central (https://www.google.com/webmasters/verification), add this as an"
