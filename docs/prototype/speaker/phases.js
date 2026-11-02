@@ -29,18 +29,39 @@
   }
   function link(phase) { return phase.href + '?reached=' + reached; }
 
+  /* The next phase to complete. Event Day has nothing to do until the talk is approved. */
+  var nextPhase = PHASES.filter(function (phase) {
+    return phase.opensAt > 0 && !isDone(phase) && (phase.opensAt < 5 || reached >= 5);
+  })[0];
+
+  /* The same green tick or yellow circle marks a phase on the tabs and in the Overview list. */
+  function stateMarker(phase) {
+    var marker = document.createElement('span');
+    marker.setAttribute('role', 'img');
+    if (isDone(phase)) {
+      marker.className = 'state-done';
+      marker.textContent = '\u2713';
+      marker.setAttribute('aria-label', 'Done:');
+    } else if (phase === nextPhase) {
+      marker.className = 'state-next';
+      marker.setAttribute('aria-label', 'Next to complete:');
+      marker.title = 'Next to complete';
+    } else {
+      return null;
+    }
+    return marker;
+  }
+
   PHASES.forEach(function (phase, index) {
     var tab = document.createElement('a');
-    if (isDone(phase)) {
-      var tick = document.createElement('span');
-      tick.className = 'tab-tick';
-      tick.textContent = '\u2713';
-      tab.appendChild(tick);
-    }
+    var marker = stateMarker(phase);
+    if (marker) { tab.appendChild(marker); }
+    if (isDone(phase)) { tab.className = 'done'; }
     tab.append(phase.name);
     tab.href = index === active ? location.pathname.split('/').pop() + location.search : link(phase);
     if (index === active) { tab.setAttribute('aria-current', 'page'); }
     bar.appendChild(tab);
+    if (index === active) { tab.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
   });
 
   var list = document.getElementById('status-phases');
@@ -49,33 +70,60 @@
     phases.forEach(function (phase) {
       var inReview = phase.opensAt === 3 && reached === 4;
       var row = document.createElement('li');
-      row.className = 'task' + (isDone(phase) && !inReview ? ' done' : '');
+      row.className = 'task' + (isDone(phase) ? ' done' : '');
+      var marker = stateMarker(phase) || document.createElement('span');
+      if (!marker.className) { marker.className = 'state-none'; }
+      row.appendChild(marker);
       var body = document.createElement('span');
       body.className = 'task-body';
       var title = document.createElement('span');
       title.className = 'task-title';
       title.textContent = phase.name;
       body.appendChild(title);
-      var isCurrent = !isDone(phase);
-      var noteText = inReview ? 'In review' : isCurrent && phase.due ? 'Due ' + phase.due : '';
+      var noteText = inReview ? 'In review' : !isDone(phase) && phase.due ? 'Due ' + phase.due : '';
       if (noteText) {
         var note = document.createElement('span');
         note.className = 'task-note';
         note.textContent = noteText;
         body.appendChild(note);
       }
-      if (isDone(phase) && !inReview) {
-        var tick = document.createElement('span');
-        tick.className = 'status ok';
-        tick.textContent = '\u2713';
-        tick.setAttribute('aria-label', 'Done');
-        row.appendChild(tick);
-      }
-      row.insertBefore(body, row.firstChild);
+      row.appendChild(body);
       list.appendChild(row);
     });
-    document.getElementById('status-progress').textContent =
-      phases.filter(isDone).length + ' of ' + phases.length + ' phases done';
+  }
+
+  /* The speaker's own checklist for going live, shown before and on the day. Ticks are not saved. */
+  var checklist = document.getElementById('live-checklist');
+  if (checklist) {
+    [
+      ['Water within reach', 'You will be talking for about 90 minutes'],
+      ['Computer notifications turned off', 'Turn on Do Not Disturb and close email and chat apps'],
+      ['Phone on silent', 'Keep it nearby in case the organizer needs to reach you'],
+      ['Font size increased', 'In your slides, code editor and terminal, so people can read them on a small screen'],
+      ['I know how to increase the font while live', 'Try the shortcut in each app you will show, in case someone asks'],
+      ['Charger plugged in', 'So your laptop lasts the whole session'],
+      ['Microphone and camera tested', 'Check them in StreamYard when you join at 16:30']
+    ].forEach(function (item) {
+      var row = document.createElement('li');
+      row.className = 'task';
+      var label = document.createElement('label');
+      label.className = 'check task-check';
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.addEventListener('change', function () { row.classList.toggle('done', box.checked); });
+      var body = document.createElement('span');
+      body.className = 'task-body';
+      var title = document.createElement('span');
+      title.className = 'task-title';
+      title.textContent = item[0];
+      var note = document.createElement('span');
+      note.className = 'task-note';
+      note.textContent = item[1];
+      body.append(title, note);
+      label.append(box, body);
+      row.appendChild(label);
+      checklist.appendChild(row);
+    });
   }
 
   var phase = PHASES[active];

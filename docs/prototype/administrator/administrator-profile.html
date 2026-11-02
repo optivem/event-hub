@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile | event-hub prototype</title>
+<link rel="stylesheet" href="../organizer/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="administrator-community.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Administrator">
+      <a href="administrator-community.html">Community</a>
+      <a href="administrator-organizers.html">Organizers</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Ada Example"><span class="avatar">AE</span></summary>
+      <ul class="account-menu">
+        <li><a href="administrator-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Profile</h1>
+    <p class="meta">Ada Example &middot; Your Tech Excellence account</p>
+  </div>
+  <div class="narrow" id="profile"></div>
+  <p class="proto-next">Next in the flow: <a href="administrator-community.html">back to the community</a></p>
+</main>
+<script src="../profile.js"></script>
+<script>
+renderProfile({
+  name: 'Ada Example',
+  email: 'ada.example@example.com',
+  help: 'Ask another administrator if it needs changing.',
+  back: 'administrator-community.html'
+});
+</script>
+</body>
+</html>

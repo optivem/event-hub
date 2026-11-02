@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organizers | event-hub prototype</title>
+<link rel="stylesheet" href="../organizer/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="administrator-community.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Administrator">
+      <a href="administrator-community.html">Community</a>
+      <a href="administrator-organizers.html" aria-current="page">Organizers</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Ada Example"><span class="avatar">AE</span></summary>
+      <ul class="account-menu">
+        <li><a href="administrator-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Organizers</h1>
+    <p class="meta">Only people on this list can log in as organizers.</p>
+  </div>
+  <div class="narrow">
+    <section class="card">
+      <ul class="tasks">
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Nina Example</span>
+            <span class="task-note">nina.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Omar Example</span>
+            <span class="task-note">omar.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Sam Example</span>
+            <span class="task-note">sam.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Priya Example</span>
+            <span class="task-note">priya.example@example.com</span>
+            <span class="task-note"><a href="administrator-organizers.html">Resend invitation</a> &middot; <a href="administrator-remove-organizer.html">Remove</a></span>
+          </div>
+          <span class="status warn">Invited</span>
+        </li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Add an organizer</h2>
+      <p class="meta">This creates their account and emails them a link to set a password.</p>
+      <div class="field">
+        <label for="organizer-name">Name</label>
+        <input id="organizer-name" type="text">
+      </div>
+      <div class="field">
+        <label for="organizer-email">Email</label>
+        <input id="organizer-email" type="email">
+      </div>
+      <div class="actions"><a class="button" href="administrator-organizers.html">Send invitation</a></div>
+    </section>
+    <p class="proto-next">Next in the flow: the new organizer gets an <a href="../organizer/email-organizer-invitation.html">invitation email</a> and shows as Invited until they set a password.</p>
+  </div>
+</main>
+</body>
+</html>

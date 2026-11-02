@@ -10,16 +10,27 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="administrator-community.html"><img class="brand-logo" id="brand-logo" src="../community-logo.svg" alt=""><span id="brand-name">Tech Excellence</span></a>
-    <a class="button secondary help-link" href="index.html">Log out</a>
+    <nav class="nav" aria-label="Administrator">
+      <a href="administrator-community.html" aria-current="page">Community</a>
+      <a href="administrator-organizers.html">Organizers</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Ada Example"><span class="avatar">AE</span></summary>
+      <ul class="account-menu">
+        <li><a href="administrator-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
   </div>
 </header>
 <main class="page">
   <div class="page-head">
     <h1>Community</h1>
-    <p class="meta">Speakers and organizers see this name and logo at the top of every screen, and the name on every email.</p>
+    <p class="meta">Your community's name and logo</p>
   </div>
   <div class="narrow">
     <section class="card">
+      <p class="meta">Speakers and organizers see this name and logo at the top of every screen, and the name on every email.</p>
       <div class="field">
         <label for="community-name">Name</label>
         <input id="community-name" type="text" value="Tech Excellence">

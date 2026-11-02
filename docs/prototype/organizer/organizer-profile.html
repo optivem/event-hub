@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-home.html">Home</a>
+      <a href="organizer-materials-status.html">Materials</a>
+      <a href="organizer-publish.html">Publish</a>
+      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Profile</h1>
+    <p class="meta">Nina Example &middot; Your Tech Excellence account</p>
+  </div>
+  <div class="narrow" id="profile"></div>
+  <p class="proto-next">Next in the flow: <a href="organizer-home.html">back to home</a></p>
+</main>
+<script src="../profile.js"></script>
+<script>
+renderProfile({
+  name: 'Nina Example',
+  email: 'nina.example@example.com',
+  help: 'Ask an administrator if it needs changing.',
+  back: 'organizer-home.html'
+});
+</script>
+</body>
+</html>

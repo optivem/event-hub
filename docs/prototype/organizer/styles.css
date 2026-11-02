@@ -20,6 +20,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -53,7 +54,37 @@ a { color: var(--accent); }
 .cancel-link a { color: var(--muted); }
 .brand-logo { width: 28px; height: 28px; object-fit: contain; }
 
-.nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; }
+/* Account menu: top right on every signed-in screen. Avatar shows initials when there's no photo. */
+.account { position: relative; margin-left: auto; }
+.account summary { display: flex; align-items: center; min-height: 44px; list-style: none; cursor: pointer; }
+.account summary::-webkit-details-marker { display: none; }
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 50%;
+}
+.account-menu {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  min-width: 160px;
+  padding: 4px 0;
+  margin: 4px 0 0;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.account-menu a { display: flex; align-items: center; min-height: 44px; padding: 4px 14px; text-decoration: none; }
+
+.nav { display: flex; flex-wrap: wrap; gap: 4px 16px; width: 100%; order: 1; }
 .nav a { padding: 4px 0; color: var(--muted); text-decoration: none; }
 .nav a[aria-current="page"] {
   color: var(--ink);
@@ -70,7 +101,8 @@ a { color: var(--accent); }
 
 @media (min-width: 768px) {
   .columns { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
-  .nav { width: auto; order: 1; }
+  .nav { width: auto; }
+  .account { order: 2; }
 }
 
 .card {
@@ -188,6 +220,9 @@ fieldset.field legend { padding: 0; margin-bottom: 4px; font-weight: 600; }
   border: 1px solid var(--muted);
   border-radius: 6px;
 }
+.photo-field { display: flex; align-items: center; gap: 12px; }
+.photo-preview { width: 72px; height: 72px; flex: none; object-fit: cover; border-radius: 50%; }
+.field .photo-field input { min-width: 0; padding: 6px 0; border: 0; background: transparent; }
 .title-preview { margin: 6px 0 0; font-size: 0.875rem; color: var(--muted); }
 .title-full { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .title-count { display: block; }
@@ -213,12 +248,17 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
 }
 .proto-next:target { border-style: solid; background: var(--info-bg); }
 
+/* Email screens */
+.email { max-width: 620px; margin: 0 auto; }
+.email-head { padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
+.email-head div { color: var(--muted); }
+
 /* Phones: comfortable tap targets, and tables become labelled rows */
 .check input { flex: none; width: 20px; height: 20px; margin-top: 2px; }
 .check { min-height: 28px; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
 @media (max-width: 767px) {
-  .brand, .nav a,   .actions .button { flex: 1 1 100%; }
+  .nav a,   .actions .button { flex: 1 1 100%; }
   .check { min-height: 44px; align-items: center; margin-bottom: 4px; }
   .check input { margin-top: 0; }
   .field input, .field select { min-height: 44px; }
