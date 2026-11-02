@@ -118,7 +118,11 @@ REPO=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
 echo "  📦 GitHub repo: $REPO"
 # Repo variable, set once by hand (see terraform/README.md "Custom domains"); the teardown keeps it
 CUSTOM_DOMAIN=$(gh variable get CUSTOM_DOMAIN 2> /dev/null) || CUSTOM_DOMAIN=""
-echo "  🌐 Custom domain: ${CUSTOM_DOMAIN:-(none — stages use *.run.app)}"
+if [[ -n "$CUSTOM_DOMAIN" ]]; then
+  echo "  🌐 Custom domains: events.$CUSTOM_DOMAIN (prod), events-qa.$CUSTOM_DOMAIN (QA), auth.$CUSTOM_DOMAIN (Keycloak)"
+else
+  echo "  🌐 Custom domains: none (stages use *.run.app)"
+fi
 echo ""
 
 # The state project comes first: the billing lookup below needs a project to run against
