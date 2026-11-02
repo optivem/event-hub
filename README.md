@@ -37,6 +37,8 @@ EventHub is licensed under the [GNU Affero General Public License v3.0](LICENSE)
 
 Versions released before 2 November 2026 were licensed under the MIT License.
 
+Contributions require signing the [Contributor License Agreement](CLA.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Contributors
 
 - [optivem](https://github.com/optivem)
