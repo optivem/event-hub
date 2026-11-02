@@ -19,12 +19,12 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Your steps for 2026-11-03, in this order. None of them has to come before `./setup-gcp.sh`. Then the agent continues at Step 5. Already in place: the deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`). The main site (`techexcellence.io`, `www`) is never mapped.
+Your steps for 2026-11-03, in this order. `./setup-gcp.sh` is done. Then the agent continues at Step 5. Already in place: the deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`). The main site (`techexcellence.io`, `www`) is never mapped.
 
 Done on 2026-11-02: the TXT record `google-site-verification=…` is at Namecheap and live, the `CUSTOM_DOMAIN=techexcellence.io` repo variable is set, and `techexcellence.io` is verified in Search Console.
 
-1. **Finish `./setup-gcp.sh`.** The previous project `event-hub-7bfbd4` was torn down, so setup creates a new one.
-2. **Add the deployer as an owner.** Get the email with `gh variable get GCP_SERVICE_ACCOUNT`; it's the **new** `github-deployer@event-hub-<new-suffix>.iam.gserviceaccount.com`, not the `7bfbd4` one. Open https://www.google.com/webmasters/verification/home, click `techexcellence.io`, then **Add an owner**, and paste the email. If the old `7bfbd4` account is listed there, remove it. **Don't run a QA or prod deploy before this step:** with `CUSTOM_DOMAIN` set, the deploy's "Map Custom Domain" step fails until the account is an owner.
+1. ~~**Finish `./setup-gcp.sh`.**~~ Done on 2026-11-02: setup succeeded and created project `event-hub-686953` (us-central1), the Neon project `event-hub` with all five databases, both Secret Manager secrets and the `GCP_*` / `SYSTEM_NAME` repo variables.
+2. **Add the deployer as an owner.** The email is `github-deployer@event-hub-686953.iam.gserviceaccount.com` (also `gh variable get GCP_SERVICE_ACCOUNT`), not the `7bfbd4` one. Open https://www.google.com/webmasters/verification/home, click `techexcellence.io`, then **Add an owner**, and paste the email. If the old `7bfbd4` account is listed there, remove it. **Don't run a QA or prod deploy before this step:** with `CUSTOM_DOMAIN` set, the deploy's "Map Custom Domain" step fails until the account is an owner.
 3. **Add the CNAMEs** at Namecheap (Advanced DNS → Add New Record → CNAME Record): `events`, `events-qa` and `auth`, each → `ghs.googlehosted.com.`. Leave the existing `A @`, `www`, `airline`, `conf` and `kb` records alone.
 4. **Run QA and prod once,** so the deploy creates the mappings. Wait until the "Map Custom Domain" step logs `✅ https://… is ready` (usually about 15 minutes after the CNAME, up to 24 hours). Before it's ready, the deploy only logs a warning.
 5. `/clear`, then `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`. The agent does Step 5 (Keycloak client URLs plus decoupling) and Step 6 (switching the URLs).

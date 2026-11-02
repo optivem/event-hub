@@ -20,7 +20,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Blocked on `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6; Step 10 runs after it. Then: the user runs `./setup-gcp.sh` (the GCP project, Neon project and `GCP_*` variables were torn down again on 2026-11-02 at ~20:53 for the custom-domain work), waits ~5 minutes, then `gh workflow run acceptance-stage.yml` and watch it.
+Blocked on `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6; Step 10 runs after it. Then: the user runs `./teardown-gcp.sh` and `./setup-gcp.sh` (the environment was torn down on 2026-11-02 at ~20:53 and set up again the same evening as project `event-hub-686953`, for the custom-domain work), waits ~5 minutes, then `gh workflow run acceptance-stage.yml` and watch it.
 
 State as of 2026-11-02:
 - Teardown and setup scripts work: teardown is idempotent (a second run reports "already clean"), setup no longer asks for the Keycloak admin password.

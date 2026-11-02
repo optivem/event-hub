@@ -2,7 +2,7 @@
 
 **Plans analysed:** 4 in-scope, 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
-**Live environment right now (2026-11-02 21:07):** no event-hub GCP project, no Neon project, and no `GCP_*` / `SYSTEM_NAME` repo variables, because they were torn down at ~20:53. `CUSTOM_DOMAIN=techexcellence.io` is set. Every plan below except the shop sync needs a live environment, so the first user action is `./setup-gcp.sh`.
+**Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it is not yet a Search Console owner (C Step 1).
 
 ## Per-plan status snapshot
 
@@ -94,7 +94,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 **Batch A (parallel-safe, 2 agent sessions + 1 user track):**
 - **U1:** plan **D**, all steps. Agent session in an `optivem/shop` checkout: `/execute-plan` with the plan's path (it lives in event-hub: `../event-hub/plans/20261102-2015-sync-gcp-scripts-to-shop.md`, or copy it into shop's `plans/`). Touches only shop files.
 - **U2:** `/refine-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md` to resolve its 3 open questions. Plan-only edit.
-- **U0 + C Step 1 (user):** `./setup-gcp.sh`, then add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
+- **U0 + C Step 1 (user):** ~~`./setup-gcp.sh`~~ (done 2026-11-02, project `event-hub-686953`), then add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
 
 ### Wave 2 — after the user track of Wave 1
 
