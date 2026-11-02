@@ -42,58 +42,85 @@ cd "$(dirname "$0")/terraform"
 # shellcheck source=terraform/state-backend.sh
 source ./state-backend.sh
 STATE_PROJECT=$(find_state_project)
-if [[ -z "$STATE_PROJECT" ]]; then
-  echo "❌ No Terraform state project found (label $STATE_PROJECT_LABEL). Nothing to tear down."
-  exit 1
+PROJECT_ID=""
+SYSTEM=""
+if [[ -n "$STATE_PROJECT" ]]; then
+  init_state_backend "${STATE_PROJECT}-tfstate" "$REPO" > /dev/null
+  # -json, not -raw: with no outputs, -raw prints a warning to stdout and still exits 0
+  OUTPUTS=$(terraform output -json 2> /dev/null) || OUTPUTS="{}"
+  PROJECT_ID=$(jq -r '.project_id.value // empty' <<< "$OUTPUTS")
+  SYSTEM=$(jq -r '.system_name.value // empty' <<< "$OUTPUTS")
 fi
-init_state_backend "${STATE_PROJECT}-tfstate" "$REPO" > /dev/null
-PROJECT_ID=$(terraform output -raw project_id 2> /dev/null) || PROJECT_ID=""
-SYSTEM=$(terraform output -raw system_name 2> /dev/null) || SYSTEM=""
 cd - > /dev/null
 
-if [[ -z "$PROJECT_ID" ]]; then
-  echo "❌ No project in the Terraform state for $REPO. Nothing to tear down."
-  exit 1
+# Re-runs are idempotent: with no project in the state (already torn down), still clean
+# up whatever is left in Neon and GitHub. Derive the name the way terraform/main.tf does.
+if [[ -z "$SYSTEM" ]]; then
+  SYSTEM="${SYSTEM_NAME:-$(echo "${REPO#*/}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | cut -c1-14 | sed 's/^-*//; s/-*$//')}"
 fi
+
+GH_VARIABLES=(GCP_PROJECT_ID GCP_REGION GCP_WORKLOAD_IDENTITY_PROVIDER GCP_SERVICE_ACCOUNT SYSTEM_NAME)
+EXISTING_VARIABLES=$(gh variable list --json name -q '.[].name')
+LEFTOVER_VARIABLES=()
+for v in "${GH_VARIABLES[@]}"; do
+  grep -qx "$v" <<< "$EXISTING_VARIABLES" && LEFTOVER_VARIABLES+=("$v")
+done
 
 neon_resolve_org || exit 1
 NEON_PROJECT_ID=$(neon_find_project "$SYSTEM") || exit 1
 
-echo "  GCP Project: $PROJECT_ID"
+echo "  GCP Project: ${PROJECT_ID:-(none in the Terraform state)}"
 echo "  Neon project: ${NEON_PROJECT_ID:-(none named '$SYSTEM')}"
+echo "  GitHub repo variables: ${LEFTOVER_VARIABLES[*]:-(none)}"
 echo ""
-echo "⚠️  This will permanently delete:"
-echo "     - GCP project '$PROJECT_ID' and ALL its resources"
-[[ -n "$NEON_PROJECT_ID" ]] && echo "     - Neon project '$SYSTEM' ($NEON_PROJECT_ID) and ALL its databases"
-echo "     - GitHub repo variables (GCP_PROJECT_ID, GCP_REGION, etc.)"
-echo ""
-read -rp "  Are you sure? Type the GCP project ID to confirm: " CONFIRM
 
-if [[ "$CONFIRM" != "$PROJECT_ID" ]]; then
+if [[ -z "$PROJECT_ID" && -z "$NEON_PROJECT_ID" && ${#LEFTOVER_VARIABLES[@]} -eq 0 ]]; then
+  echo "✅ Nothing to tear down — already clean."
+  exit 0
+fi
+
+echo "⚠️  This will permanently delete:"
+[[ -n "$PROJECT_ID" ]] && echo "     - GCP project '$PROJECT_ID' and ALL its resources"
+[[ -n "$NEON_PROJECT_ID" ]] && echo "     - Neon project '$SYSTEM' ($NEON_PROJECT_ID) and ALL its databases"
+[[ ${#LEFTOVER_VARIABLES[@]} -gt 0 ]] && echo "     - GitHub repo variables: ${LEFTOVER_VARIABLES[*]}"
+echo ""
+CONFIRM_VALUE="${PROJECT_ID:-$SYSTEM}"
+if [[ -n "$PROJECT_ID" ]]; then
+  read -rp "  Are you sure? Type the GCP project ID to confirm: " CONFIRM
+else
+  read -rp "  Are you sure? Type the system name ($SYSTEM) to confirm: " CONFIRM
+fi
+
+if [[ "$CONFIRM" != "$CONFIRM_VALUE" ]]; then
   echo "  Aborted."
   exit 0
 fi
 
 echo ""
 
-# Billing account (needed for terraform destroy)
-use_state_project_for_quota "$STATE_PROJECT"
-BILLING_ACCOUNT=$(gcloud billing accounts list --billing-project="$STATE_PROJECT" --format="value(name)" --limit=1) || {
-  rc=$?
-  echo "  ⚠️  'gcloud billing accounts list' failed (exit $rc) — see stderr above; continuing without billing account" >&2
-  BILLING_ACCOUNT=""
-}
-
-# Terraform destroy
 echo "Step 1/3: Destroying infrastructure with Terraform..."
-cd "$(dirname "$0")/terraform"
-terraform destroy \
-  -var="github_repo=$REPO" \
-  -var="billing_account_id=$BILLING_ACCOUNT" \
-  -var="system_name=$SYSTEM" \
-  -auto-approve
+if [[ -n "$PROJECT_ID" ]]; then
+  # Billing account (needed for terraform destroy)
+  use_state_project_for_quota "$STATE_PROJECT"
+  BILLING_ACCOUNT=$(gcloud billing accounts list --billing-project="$STATE_PROJECT" --format="value(name)" --limit=1) || {
+    rc=$?
+    echo "  ⚠️  'gcloud billing accounts list' failed (exit $rc) — see stderr above; continuing without billing account" >&2
+    BILLING_ACCOUNT=""
+  }
 
-echo "  ✅ GCP infrastructure destroyed"
+  # Terraform destroy
+  cd "$(dirname "$0")/terraform"
+  terraform destroy \
+    -var="github_repo=$REPO" \
+    -var="billing_account_id=$BILLING_ACCOUNT" \
+    -var="system_name=$SYSTEM" \
+    -auto-approve
+
+  echo "  ✅ GCP infrastructure destroyed"
+  cd - > /dev/null
+else
+  echo "  (skipped: no GCP project in the Terraform state)"
+fi
 echo ""
 
 echo "Step 2/3: Deleting the Neon project..."
@@ -123,11 +150,9 @@ delete_gh_thing() {
     GH_DELETE_FAILED=1
   fi
 }
-delete_gh_thing variable GCP_PROJECT_ID
-delete_gh_thing variable GCP_REGION
-delete_gh_thing variable GCP_WORKLOAD_IDENTITY_PROVIDER
-delete_gh_thing variable GCP_SERVICE_ACCOUNT
-delete_gh_thing variable SYSTEM_NAME
+for v in "${LEFTOVER_VARIABLES[@]}"; do
+  delete_gh_thing variable "$v"
+done
 if [[ "$GH_DELETE_FAILED" == 1 ]]; then
   echo "  ⚠️  Some GitHub variables were not removed (see above)"
 else
