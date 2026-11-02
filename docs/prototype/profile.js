@@ -1,6 +1,14 @@
 // Prototype only: the one profile form every role shares. Each role's profile page sets its own
-// header and sample data, then calls renderProfile. A speaker must fill in the fields shown with talks.
+// header and help text, then calls renderProfile. A speaker must fill in the fields shown with talks.
+// The logged-in person (from account.js) fills the form, so every role shows the same profile.
 function renderProfile(options) {
+  var person = window.eventhubPerson;
+  if (person && !options.onboarding) {
+    options.name = person.name;
+    options.email = person.email;
+    options.photo = person.photo ? document.querySelector('script[src$="account.js"]').src.replace(/account\.js.*$/, '') + person.photo : '';
+    options.values = person.values;
+  }
   var hasPhoto = Boolean(options.photo);
   var requirement = options.speaker ? 'Required' : 'Optional';
   var photoHint = options.speaker ? 'Required. A professional headshot, shown with your talk.' : 'Optional. A professional headshot.';

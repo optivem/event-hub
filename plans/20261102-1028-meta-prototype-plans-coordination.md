@@ -15,14 +15,13 @@ When all waves are done:
 
 ## ▶ Next executable step (resume here)
 
-Do Steps 3 and 4 of `## Steps` (Wave 1); they can run in parallel. For Step 3, the source procedure is in the gitignored `.tmp/` folder as PDFs (Host Event Guidelines, Speaker Guidelines, an example event). Keep every real name from them out of committed files. Browser checks run in headless Chromium at desktop and phone width, and the user reviews what's listed for them at the end.
+Do Step 5 of `## Steps`: execute `plans/20261031-2256-organizer-views-and-event-assignees.md`. Its open questions are answered. It builds on the role switcher (`docs/prototype/account.js`, run by every account-menu screen), the multi-role sample person Ada Example, and the last-organizer block on `administrator-remove-organizer.html`, all added by the role-switching plan.
 
-How to run this meta-plan: `/execute-plan` on this file runs **one step per session**, in the main session rather than a subagent. Most steps need the user, either to answer questions or to check pages in a browser. A step is done when the plan it names has no open questions left (Steps 1–2) or has been deleted because it's complete (Steps 3–6). Only then delete the step here, point this block at the next one, and hand off with `/clear` + `/execute-plan plans/20261102-1028-meta-prototype-plans-coordination.md`. If a plan stops partway, for example while waiting for a browser check, leave its step here and note where it stopped.
+How to run this meta-plan: all questions were asked upfront, so steps run via subagents without stopping. Browser checks run in headless Chromium at desktop (1280) and phone (390) width, and the user reviews a list of pages at the end. A step is done when the plan it names is deleted because it's complete. Then delete the step here and point this block at the next one.
 
 ## Steps
 
-- [ ] Step 4 (Wave 1): `/execute-plan plans/20261031-2257-prototype-role-switching-follow-ups.md` — its Step 1 needs the user at a browser; the rest needs Step 2 done.
-- [ ] Step 5 (Wave 2, after Steps 3 and 4): `/execute-plan plans/20261031-2256-organizer-views-and-event-assignees.md`.
+- [ ] Step 5 (Wave 2): `/execute-plan plans/20261031-2256-organizer-views-and-event-assignees.md`.
 - [ ] Step 6 (Wave 3, after Step 5): `plans/20261031-1137-manual-test-html-prototype.md` — the user clicks through every journey and records findings, then `/execute-plan` on it applies the corrections.
 
 **Plans analysed:** 4 in-scope, 0 referenced-only

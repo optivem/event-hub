@@ -29,12 +29,14 @@
   <div id="profile"></div>
   <p class="proto-next" id="account-next">Next in the flow: <a href="speaker-home.html">back to your event</a></p>
 </main>
+<script src="../account.js"></script>
 <script src="../profile.js"></script>
 <script>
 var accountParams = new URLSearchParams(location.search);
 var onboarding = accountParams.has('onboarding');
 renderProfile({
   speaker: true,
+  onboarding: onboarding,
   name: 'Mara Sample',
   email: 'mara.sample@example.com',
   help: 'Use Need help if it needs changing.',

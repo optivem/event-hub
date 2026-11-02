@@ -26,16 +26,25 @@
 <main class="page">
   <div class="page-head">
     <h1>Organizers</h1>
-    <p class="meta">Only people on this list can log in as organizers.</p>
+    <p class="meta">Only people on these lists can log in as organizers or administrators.</p>
   </div>
   <div class="narrow">
     <section class="card">
-      <ul class="tasks">
+      <h2>Organizers</h2>
+      <ul class="tasks" id="organizers">
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Ada Example (you)</span>
+            <span class="task-note">ada.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html?who=ada">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
         <li class="task">
           <div class="task-body">
             <span class="task-title">Nina Example</span>
             <span class="task-note">nina.example@example.com</span>
-            <span class="task-note"><a href="administrator-remove-organizer.html">Remove</a></span>
+            <span class="task-note"><a href="administrator-remove-organizer.html?who=nina">Remove</a></span>
           </div>
           <span class="status ok">Active</span>
         </li>
@@ -49,37 +58,72 @@
         </li>
         <li class="task">
           <div class="task-body">
-            <span class="task-title">Sam Example</span>
-            <span class="task-note">sam.example@example.com</span>
-            <span class="task-note"><a href="administrator-remove-organizer.html">Remove</a></span>
-          </div>
-          <span class="status ok">Active</span>
-        </li>
-        <li class="task">
-          <div class="task-body">
             <span class="task-title">Priya Example</span>
             <span class="task-note">priya.example@example.com</span>
-            <span class="task-note"><a href="administrator-organizers.html">Resend invitation</a> &middot; <a href="administrator-remove-organizer.html">Remove</a></span>
+            <span class="task-note"><a href="administrator-organizers.html">Resend invitation</a> &middot; <a href="administrator-remove-organizer.html?who=priya">Remove</a></span>
           </div>
           <span class="status warn">Invited</span>
         </li>
       </ul>
     </section>
     <section class="card">
-      <h2>Add an organizer</h2>
-      <p class="meta">This creates their account and emails them a link to set a password.</p>
+      <h2>Administrators</h2>
+      <ul class="tasks" id="administrators">
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Ada Example (you)</span>
+            <span class="task-note">ada.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html?who=ada&amp;as=administrator">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
+        <li class="task">
+          <div class="task-body">
+            <span class="task-title">Leo Example</span>
+            <span class="task-note">leo.example@example.com</span>
+            <span class="task-note"><a href="administrator-remove-organizer.html?who=leo&amp;as=administrator">Remove</a></span>
+          </div>
+          <span class="status ok">Active</span>
+        </li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Add someone</h2>
+      <p class="meta">This creates their account and emails them a link to set a password. If they already have an account, they get the new role on it.</p>
       <div class="field">
-        <label for="organizer-name">Name</label>
-        <input id="organizer-name" type="text">
+        <label for="person-name">Name</label>
+        <input id="person-name" type="text">
       </div>
       <div class="field">
-        <label for="organizer-email">Email</label>
-        <input id="organizer-email" type="email">
+        <label for="person-email">Email</label>
+        <input id="person-email" type="email">
+      </div>
+      <div class="field">
+        <label for="person-role">Add as</label>
+        <select id="person-role">
+          <option>Organizer</option>
+          <option>Administrator</option>
+        </select>
       </div>
       <div class="actions"><a class="button" href="administrator-organizers.html">Send invitation</a></div>
     </section>
-    <p class="proto-next">Next in the flow: the new organizer gets an <a href="../organizer/email-organizer-invitation.html">invitation email</a> and shows as Invited until they set a password.</p>
+    <p class="proto-next" id="organizers-next">Next in the flow: the new organizer gets an <a href="../organizer/email-organizer-invitation.html">invitation email</a> and shows as Invited until they set a password. A new administrator gets the same email, for the administrator role. To see the rule for the last organizer and the last administrator, <a href="administrator-organizers.html?last">look at a community with only one of each</a>.</p>
   </div>
 </main>
+<script>
+// Prototype only: ?last shows a community with one organizer and one administrator left.
+if (new URLSearchParams(location.search).has('last')) {
+  var only = function (listId, message) {
+    var list = document.getElementById(listId);
+    var items = list.querySelectorAll('.task');
+    for (var i = 1; i < items.length; i++) { items[i].remove(); }
+    items[0].querySelector('.task-note:last-of-type').outerHTML = '<span class="task-note">' + message + '</span>';
+  };
+  only('organizers', "You can't remove the last organizer. A community needs at least one to run its events. Add another organizer first.");
+  only('administrators', "You can't remove the last administrator. Someone has to look after the community. Add another administrator first.");
+  document.getElementById('organizers-next').innerHTML = 'Next in the flow: add a second organizer or administrator below, and Remove comes back. If someone opens Remove anyway, they get <a href="administrator-remove-organizer.html?last">the same message</a>. <a href="administrator-organizers.html">Back to the full lists</a>.';
+}
+</script>
+<script src="../account.js"></script>
 </body>
 </html>

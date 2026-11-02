@@ -26,18 +26,67 @@
 <main class="page">
   <div class="narrow">
     <div class="page-head">
-      <h1>Remove organizer</h1>
-      <p class="meta">Omar Example &middot; omar.example@example.com</p>
+      <h1 id="remove-title">Remove organizer</h1>
+      <p class="meta" id="remove-who">Omar Example &middot; omar.example@example.com</p>
     </div>
-    <section class="card">
-      <p>Omar won't be able to log in as an organizer any more. The events they worked on stay as they are, and you can add them again later.</p>
+    <section class="card" id="remove-card">
+      <p id="remove-text">Omar won't be able to log in as an organizer any more. The events they worked on stay as they are, and you can add them again later.</p>
       <div class="actions">
-        <a class="button danger" href="administrator-organizers.html">Remove organizer</a>
-        <a class="button secondary" href="administrator-organizers.html">Keep organizer</a>
+        <a class="button danger" id="remove-button" href="administrator-organizers.html">Remove organizer</a>
+        <a class="button secondary" id="keep-button" href="administrator-organizers.html">Keep organizer</a>
       </div>
     </section>
-    <p class="proto-next">Next in the flow: <a href="administrator-organizers.html">back to organizers</a>, without this organizer on the list.</p>
+    <p class="proto-next" id="remove-next">Next in the flow: <a href="administrator-organizers.html">back to organizers</a>, without this organizer on the list.</p>
   </div>
 </main>
+<script>
+// Prototype only: ?who= picks the person, ?as=administrator removes an administrator,
+// and ?last shows the block for the last organizer or administrator.
+(function () {
+  var params = new URLSearchParams(location.search);
+  var people = {
+    ada: { name: 'Ada Example', first: 'Ada', email: 'ada.example@example.com' },
+    nina: { name: 'Nina Example', first: 'Nina', email: 'nina.example@example.com' },
+    omar: { name: 'Omar Example', first: 'Omar', email: 'omar.example@example.com' },
+    priya: { name: 'Priya Example', first: 'Priya', email: 'priya.example@example.com' },
+    leo: { name: 'Leo Example', first: 'Leo', email: 'leo.example@example.com' }
+  };
+  var who = people[params.get('who')] ? params.get('who') : (params.has('last') ? 'ada' : 'omar');
+  var person = people[who];
+  var role = params.get('as') === 'administrator' ? 'administrator' : 'organizer';
+  var self = who === 'ada';
+  var byId = function (id) { return document.getElementById(id); };
+
+  byId('remove-title').textContent = 'Remove ' + role;
+  byId('remove-who').innerHTML = person.name + (self ? ' (you)' : '') + ' &middot; ' + person.email;
+
+  if (params.has('last')) {
+    byId('remove-text').outerHTML = role === 'organizer'
+      ? '<div class="notice warn">You can\'t remove the last organizer. A community needs at least one to run its events. Add another organizer first, then remove this one.</div>'
+      : '<div class="notice warn">You can\'t remove the last administrator. Someone has to look after the community. Add another administrator first, then remove this one.</div>';
+    byId('remove-button').remove();
+    byId('keep-button').textContent = 'Back to organizers';
+    byId('keep-button').href = 'administrator-organizers.html?last';
+    byId('remove-next').innerHTML = 'Next in the flow: <a href="administrator-organizers.html?last">back to organizers</a> to add someone.';
+    return;
+  }
+
+  var others = role === 'administrator' ? 'Speaker and Organizer' : 'Speaker and Administrator';
+  byId('remove-text').textContent = self
+    ? 'You won\'t be able to use the ' + role + ' role any more. You keep your other roles, ' + others + ', and the same login.'
+    : role === 'administrator'
+      ? person.first + ' won\'t be able to log in as an administrator any more. You can add them again later.'
+      : person.first + ' won\'t be able to log in as an organizer any more. The events they worked on stay as they are, and you can add them again later.';
+  byId('remove-button').textContent = self ? 'Remove me' : 'Remove ' + role;
+  byId('keep-button').textContent = self ? 'Keep my role' : 'Keep ' + role;
+  if (self && role === 'administrator') {
+    byId('remove-button').href = '../organizer/organizer-home.html';
+    byId('remove-next').innerHTML = 'Next in the flow: you leave the administrator screens and land on <a href="../organizer/organizer-home.html">your organizer home</a>. Administrator is gone from your account menu.';
+  } else {
+    byId('remove-next').innerHTML = 'Next in the flow: <a href="administrator-organizers.html">back to organizers</a>, without this ' + role + ' on the list.';
+  }
+})();
+</script>
+<script src="../account.js"></script>
 </body>
 </html>
