@@ -20,12 +20,12 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Prod is live (`v1.0.227`). Human first: create a real user in `shop-prod` and log in to prod (Step 8). An agent can do Step 9 now, since it does not depend on that user.
+Prod is live (`v1.0.227`). Human: finish Step 8 (create the `shop-prod` user; the user stopped at reading the Keycloak admin password). Agent: Step 9 is executable now and does not depend on that user.
 
 ## Steps
 
 - [ ] Step 7: The `shop-prod` realm is live. Only one item remains: the live `shop` realm still accepts the prod URL as a redirect, because an existing realm is not re-imported. Remove it with the Keycloak admin API (edit `redirectUris`, `webOrigins` and `post.logout.redirect.uris` on `shop-frontend`, no data loss), or recreate `event_hub_keycloak`
-- [ ] Step 8: `prod-stage.yml` deployed `v1.0.227` to Cloud Run (run 41439611882, release `v1.0.227`); prod frontend https://event-hub-prod-frontend-992033658880.us-central1.run.app uses the `shop-prod` realm. Only one item remains: the user creates a real user in `shop-prod` in the Keycloak admin console (the realm has no users and registration is off) and logs in to prod
+- [ ] Step 8: `prod-stage.yml` deployed `v1.0.227` to Cloud Run (run 41439611882, release `v1.0.227`); prod frontend https://event-hub-prod-frontend-992033658880.us-central1.run.app uses the `shop-prod` realm. Only one item remains: the user creates a real user in `shop-prod` (the realm has no users and registration is off) and logs in to prod. How: read the Keycloak admin password with `gcloud secrets versions access latest --secret=event-hub-keycloak-admin-password --project=<event-hub GCP project>` (username `admin`; the bootstrap password only applies on first start), sign in at https://event-hub-keycloak-992033658880.us-central1.run.app/admin, switch to `shop-prod`, Users → Add user (email verified on), Credentials → set password with Temporary off, Role mapping → `ADMIN` and/or `CUSTOMER`. Keep the password in a password manager, never in the repo
 - [ ] Step 9: Remove what is now unused: `docker-compose.pipeline.*.yml`, Docker Hub logins and `DOCKERHUB_*` checks that only served them; set `deploy` in `gh-optivem.yaml` to the matching value
 - [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
 
