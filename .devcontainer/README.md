@@ -28,6 +28,16 @@ Install once on your host machine:
 
 **Troubleshooting (Windows):** if every git command in the container prints `warning: safe.directory 'C:/...' not absolute`, your Windows `~/.gitconfig` has `safe.directory` entries with Windows paths, and Dev Containers copies that file into the container. The warnings are harmless, but the proper fix is on the host. `safe.directory` is only needed for repos owned by a *different* user. Check the folder's owner with `(Get-Acl <folder>).Owner` in PowerShell. If it's your own account, the entries are stale, so remove them on Windows with `git config --global --unset-all safe.directory`. If git on Windows later reports "dubious ownership", fix the ownership with `takeown /f <folder> /r /d y` instead of adding `safe.directory` entries back.
 
+**Troubleshooting (Windows):** if pushes and pulls print `'C:\Program Files\GitHub CLI\gh.exe' auth git-credential get: ... not found`, it's the same cause: `gh auth setup-git` on Windows wrote credential helpers with the Windows path to `gh.exe`, and Dev Containers copied them in. [fix-git-credential-helpers.sh](fix-git-credential-helpers.sh) runs on every attach and points them at the container's `gh`, so this should clear up on its own. To fix it at the source, make the host entries path-independent in PowerShell. `gh` is on the Windows PATH, so they keep working there:
+
+```powershell
+foreach ($u in 'https://github.com', 'https://gist.github.com') {
+  git config --global --unset-all "credential.$u.helper"
+  git config --global --add "credential.$u.helper" ""
+  git config --global --add "credential.$u.helper" "!gh auth git-credential"
+}
+```
+
 ## Run the system locally
 
 Run these inside the container terminal. Docker runs inside the container, and the stack ports are forwarded, so the frontend opens from the host browser at <http://localhost:3312> (stub) or <http://localhost:3311> (real).

@@ -47,5 +47,6 @@
   },
   "forwardPorts": [3311, 8311, 8391, 9311, 3312, 8312, 8392, 9312],
   "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postAttachCommand": "bash .devcontainer/fix-git-credential-helpers.sh",
   "remoteUser": "vscode"
 }
