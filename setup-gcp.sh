@@ -318,6 +318,24 @@ if (( ${#MISSING_GH_SECRETS[@]} > 0 )); then
   echo "    (GHCR_TOKEN: PAT with read:packages; WORKFLOW_TOKEN: PAT with repo + workflow)"
   echo ""
 fi
+# Custom domains: the deploy maps them (.github/scripts/ensure-domain-mapping.sh); these are the
+# one-time steps outside GCP. The CNAMEs survive a project rebuild; the owner entry does not,
+# because a new project has a new deployer service account.
+CUSTOM_DOMAIN=$(gh variable get CUSTOM_DOMAIN 2> /dev/null) || CUSTOM_DOMAIN=""
+if [[ -n "$CUSTOM_DOMAIN" ]]; then
+  echo "  Custom domain: $CUSTOM_DOMAIN (prod events., QA events-qa., Keycloak auth.)"
+  echo "    1. In Webmaster Central (https://www.google.com/webmasters/verification), add this as an"
+  echo "       owner of $CUSTOM_DOMAIN, or the deploy can't create the mappings:"
+  echo "         $SA_EMAIL"
+  echo "    2. At the DNS provider for $CUSTOM_DOMAIN (once; they stay valid across rebuilds):"
+  for sub in events events-qa auth; do
+    echo "         CNAME  $sub  ->  ghs.googlehosted.com."
+  done
+  echo ""
+else
+  echo "  Custom domain: none (stages use *.run.app). To serve them on your domain, see terraform/README.md."
+  echo ""
+fi
 echo "  Next steps:"
 echo "    - Trigger workflow: gh workflow run acceptance-stage.yml"
 echo "    - To tear down:    ./teardown-gcp.sh   (GCP project, Neon project, GitHub variables)"

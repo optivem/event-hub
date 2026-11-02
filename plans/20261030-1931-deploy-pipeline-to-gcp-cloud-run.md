@@ -24,7 +24,7 @@ Only a user step remains. Step 10: the user runs `./teardown-gcp.sh`, then `./se
 
 ## Steps
 
-- [ ] Step 10: Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
+- [ ] Step 10 (after `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6, so the proof covers the domain mappings and the Keycloak decoupling): Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
 
 ## Decisions
 
