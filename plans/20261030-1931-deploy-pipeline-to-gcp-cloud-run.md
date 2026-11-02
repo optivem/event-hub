@@ -20,11 +20,11 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Only a user step remains. Step 10: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
+Only a user step remains. Step 10: teardown is done (2026-11-02); the user now runs `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
 
 ## Steps
 
-- [ ] Step 10 (after `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6, so the proof covers the domain mappings and the Keycloak decoupling): Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. The Keycloak image bakes in the project number, so a new project needs that image rebuilt and `event_hub_keycloak` recreated
+- [ ] Step 10 (after `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6, so the proof covers the domain mappings and the Keycloak decoupling): Prove it is reproducible: the user runs `./teardown-gcp.sh`, then `./setup-gcp.sh`, then one acceptance dispatch. Nothing manual in between: every deploy rebuilds the Keycloak image with the project number taken from `GCP_WORKLOAD_IDENTITY_PROVIDER` (`_deploy-cloud-run.yml`), and `./setup-gcp.sh` creates the empty `event_hub_keycloak` database. Teardown was run and verified on 2026-11-02 (a second run reports "already clean")
 
 ## Decisions
 
