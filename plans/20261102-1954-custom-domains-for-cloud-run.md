@@ -32,6 +32,12 @@ User step: Step 1. Verify `techexcellence.io` in Google Search Console: add the 
 - [ ] Step 7: Run acceptance → QA → prod and confirm that the suites pass and a real login works on `events.techexcellence.io`
 - [ ] Step 8: Remove the `run.app` entries from the Keycloak clients and config (optional; keep them if they help debugging). Document the domain setup and the Firebase Hosting / load balancer fallback in the README or the deploy docs
 
+## Decisions
+
+- **Subdomain, not the whole site:** the app runs on a subdomain of `techexcellence.io`. The main site stays as it is, because Event Hub is a SaaS product and Tech Excellence is one group using it.
+- **`events.`**, not `portal.`, `hub.` or `meetups.`: it covers meetups and the conference, matches the product name, and doesn't suggest Meetup.com.
+- **Cloud Run domain mapping** (free, preview), not a load balancer (~$18/month) or Firebase Hosting. `us-central1` is supported. Google calls the feature not production-ready because of latency, which is acceptable at this scale.
+
 ## Open questions
 
 - **DNS for `techexcellence.io`:** who hosts the DNS? Steps 1 and 4 add TXT and CNAME records there. The main site must stay untouched: only new subdomain records are added
@@ -43,6 +49,6 @@ User step: Step 1. Verify `techexcellence.io` in Google Search Console: add the 
 
 ## Apply to optivem/shop
 
-`optivem/shop` is also served only at `*.run.app` URLs. Once Steps 1–8 work here:
+`optivem/shop` is also served only at `*.run.app` URLs. The same principles from **Decisions** apply there: a subdomain of an existing site, not a whole site; one subdomain per stage (`<name>.`, `<name>-qa.`, `<name>-acc.`); and free Cloud Run domain mapping. Once Steps 1–8 work here:
 
 - [ ] Step 9: In `optivem/shop`, create `plans/<timestamp>-custom-domains-for-cloud-run.md` that lists the event-hub commits from Steps 2–8. Ask the user which domain and subdomains shop should use; it is not `techexcellence.io`. Then execute it there: Search Console verification and CNAMEs (user steps), domain mappings in its `setup-gcp.sh` / `teardown-gcp.sh`, Keycloak redirect URIs and web origins, and app and system-test URLs. Finish with one acceptance → QA → prod run.
