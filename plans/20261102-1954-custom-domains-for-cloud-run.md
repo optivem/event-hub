@@ -39,3 +39,9 @@ User step: Step 1. Verify `techexcellence.com` in Google Search Console: add the
 - **Backend and Keycloak:** does the frontend call the backend and Keycloak directly in the browser, which means they need their own public subdomains? Or does the frontend proxy them? If they need subdomains, possible names are `portal-api.` and `auth.techexcellence.com`: one shared Keycloak, so one auth domain for all stages.
 - **Keycloak image bakes in the project number:** the custom auth domain could remove that coupling, so Step 10 of the Cloud Run plan no longer needs a rebuild. Should we fold that in?
 - **Ordering with the Cloud Run plan:** do this after its Step 8 (prod user) and Step 10 (teardown/setup proof), or before Step 10 so that the proof also covers the mappings?
+
+## Apply to optivem/shop
+
+`optivem/shop` is also served only at `*.run.app` URLs. Once Steps 1–8 work here:
+
+- [ ] Step 9: In `optivem/shop`, create `plans/<timestamp>-custom-domains-for-cloud-run.md` that lists the event-hub commits from Steps 2–8. Ask the user which domain and subdomains shop should use; it is not `techexcellence.com`. Then execute it there: Search Console verification and CNAMEs (user steps), domain mappings in its `setup-gcp.sh` / `teardown-gcp.sh`, Keycloak redirect URIs and web origins, and app and system-test URLs. Finish with one acceptance → QA → prod run.
