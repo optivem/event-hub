@@ -78,7 +78,7 @@ Keep `registrationAllowed: false` when the real realm is set up.
 
 Every event has one or more assignees. They review and approve it. Being assigned isn't general ownership: it only means being responsible for the review.
 
-The organizer who confirms the date chooses the assignees. They are on the list to start with, so the event appears in their My events straight away. Any organizer can change the assignees later from the event, for example when someone is away.
+The organizer who confirms the date chooses the assignees. They are on the list to start with, so the event appears under Assigned to me for them straight away. Any organizer can change the assignees later from the event, for example when someone is away.
 
 Only assignees can approve a task or send it back to the speaker. Other organizers can read the review but not act on it. Everything else stays open to every organizer: inviting, confirming dates, tracking materials, publishing, rescheduling and cancelling. That way an event never stalls while an assignee is away.
 
@@ -97,4 +97,13 @@ A task is approved only when every assignee has approved it. One assignee follow
 | An assignee is added partway through | They must approve any task that isn't approved yet. Approved tasks stay approved |
 | An organizer is removed from the community | They're taken off their events, as above, and the administrator sees which events are left with no assignees |
 
-Organizers land on My events: the events assigned to them. Events waiting for their approval come first. Once they've approved, an event moves down, even if it's still waiting for another assignee. Events waiting for the speaker come after those. All events lists every event with its assignees, status and approvals, and can be filtered by assignee. Potential speakers has its own page, because proposals don't belong to an event yet.
+Organizers land on Events, which has four filters. It always opens on Assigned to me.
+
+| Filter | What it shows |
+|---|---|
+| Assigned to me | The events assigned to them. Events waiting for their approval come first. Once they've approved, an event moves down, even if it's still waiting for another assignee. Events waiting for the speaker come after those |
+| Unassigned | Events nobody is assigned to yet: ones with no assignees left, and ones before a date is confirmed. Any organizer can pick them up |
+| All | Every upcoming event by month, with its stage and assignees |
+| Past | Finished and cancelled events, newest first |
+
+Within each group, the soonest event comes first. An event with no assignees stands out in warning colour and comes first under Unassigned and All, because nobody is looking after it. Each event opens at the step that needs work. Potential speakers has its own page, because proposals don't belong to an event yet.
