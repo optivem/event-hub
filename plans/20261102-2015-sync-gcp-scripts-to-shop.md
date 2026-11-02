@@ -3,7 +3,7 @@
 ## TL;DR
 
 **Why:** Running `./teardown-gcp.sh` in event-hub on 2026-11-02 found three bugs. `optivem/shop` has the same bugs, because event-hub's scripts were ported from it. Shop's teardown says the GitHub variables were removed when none were, and running it a second time breaks.
-**End result:** Shop's `teardown-gcp.sh` deletes its GitHub variables, says so in the closing banner when something fails, and can be run again safely. Running it twice ends with "already clean" and exit 0. Shop's GCP helper scripts also include event-hub's ADC quota-project handling.
+**End result:** Shop's `teardown-gcp.sh` deletes its GitHub variables, says so in the closing banner when something fails, and can be run again safely. Running it twice ends with "already clean" and exit 0. Shop's GCP helper scripts also include event-hub's ADC quota-project handling, and `setup-gcp.sh` generates the Keycloak admin password instead of asking for it.
 
 ## Outcomes
 
@@ -11,6 +11,7 @@
 - If any delete fails, step 3 and the closing banner both say so ("Teardown Complete — with warnings"), instead of a ✅
 - Running teardown again is idempotent: no `exit 1`, no Terraform "No outputs found" text leaking into `PROJECT_ID`, and leftover Neon or GitHub pieces still get cleaned up
 - The confirmation prompt names the **GCP** project ID
+- A fresh `./setup-gcp.sh` doesn't stop to ask for a Keycloak admin password: it generates one unless `KC_ADMIN_PASSWORD` is set
 - Shop-specific behaviour is kept: step 4 still removes `deploy-config.yml`
 
 ## ▶ Next executable step (resume here)
@@ -34,5 +35,6 @@ Step 1, in a checkout of `optivem/shop`: port the event-hub teardown commits `dd
   - Drop `--yes` from `gh variable delete`. Set `GH_DELETE_FAILED=1` on any real failure, and show it in step 3 and in the closing banner ("Teardown Complete — with warnings" plus a `gh variable delete <name>` hint)
   - Wrap the billing lookup and `terraform destroy` in `if [[ -n "$PROJECT_ID" ]]`, and keep the `cd -` balanced: step 4 currently relies on `cd -` from the terraform directory
 - [ ] Step 2: Port `set_adc_quota_project` into shop's `terraform/state-backend.sh`, and call it from `use_state_project_for_quota` and from `setup-gcp.sh` after the project is created (event-hub `setup-gcp.sh`, right after `DB_PREFIX=`).
+- [ ] Step 2b: In shop's `setup-gcp.sh`, replace the `read -rsp "Choose a Keycloak admin password..."` prompt with event-hub's version: generate the password with `openssl rand -base64 24` unless `KC_ADMIN_PASSWORD` is set, and print the `gcloud secrets versions access` command (with `--project`) to read it back. Add the `# Optional: KC_ADMIN_PASSWORD=...` line to the header comment. First check that shop's prompt matches event-hub's old one, since the script has diverged in places.
 - [ ] Step 3: Verify in shop. Run `bash -n` on both scripts. Run `./teardown-gcp.sh < /dev/null` against shop's live project: it must stop at the prompt and print the right GCP project, Neon project and variable list, with no Terraform warning text. Don't confirm unless a real teardown is wanted. If shop is ever torn down, run it a second time and expect "already clean" with exit 0.
-- [ ] Step 4: Commit in shop, listing the event-hub commits that were ported.
+- [ ] Step 4: Commit in shop, listing the event-hub commits that were ported (including the commit that generates the Keycloak admin password).
