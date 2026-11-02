@@ -1,6 +1,5 @@
 # 2026-10-30 19:31:32 UTC — Deploy the pipeline to GCP Cloud Run
 
-
 ## TL;DR
 
 **Why:** The acceptance, QA and prod stages only simulate deployment: `deploy-docker-compose` starts the system on a throwaway GitHub runner at `localhost`, so nothing is ever really deployed and "production" disappears when the job ends.
