@@ -67,7 +67,7 @@ echo "     - GCP project '$PROJECT_ID' and ALL its resources"
 [[ -n "$NEON_PROJECT_ID" ]] && echo "     - Neon project '$SYSTEM' ($NEON_PROJECT_ID) and ALL its databases"
 echo "     - GitHub repo variables (GCP_PROJECT_ID, GCP_REGION, etc.)"
 echo ""
-read -rp "  Are you sure? Type the project ID to confirm: " CONFIRM
+read -rp "  Are you sure? Type the GCP project ID to confirm: " CONFIRM
 
 if [[ "$CONFIRM" != "$PROJECT_ID" ]]; then
   echo "  Aborted."
