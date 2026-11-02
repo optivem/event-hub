@@ -19,14 +19,20 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-User steps, then agent work again at Step 5. Already in place: the deploy maps `events.`, `events-qa.` and `auth.<CUSTOM_DOMAIN>` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`) once the `CUSTOM_DOMAIN` repo variable is set. The one-time steps are in `terraform/README.md` § Custom domains.
+Your steps for 2026-11-03, in this order. None of them has to come before `./setup-gcp.sh`. Then the agent continues at Step 5. Already in place: the deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`). The main site (`techexcellence.io`, `www`) is never mapped.
 
-1. Step 1 (user): verify `techexcellence.io` in Search Console. Add `GCP_SERVICE_ACCOUNT` as an owner in Webmaster Central. Then run `gh variable set CUSTOM_DOMAIN --body techexcellence.io`
-2. Step 4 (user): add the CNAMEs `events`, `events-qa` and `auth` → `ghs.googlehosted.com.`. Run QA and prod once so the mappings get created, and wait until the deploy log shows `✅ https://… is ready`
+Done on 2026-11-02: the TXT record `google-site-verification=…` is at Namecheap and live, and the `CUSTOM_DOMAIN=techexcellence.io` repo variable is set.
+
+1. **Finish `./setup-gcp.sh`.** The previous project `event-hub-7bfbd4` was torn down, so setup creates a new one.
+2. **Verify the domain:** in Search Console, open the pending `techexcellence.io` Domain property and click **Verify**.
+3. **Add the deployer as an owner.** Get the email with `gh variable get GCP_SERVICE_ACCOUNT`; it's the **new** `github-deployer@event-hub-<new-suffix>.iam.gserviceaccount.com`, not the `7bfbd4` one. Open https://www.google.com/webmasters/verification/home, click `techexcellence.io`, then **Add an owner**, and paste the email. If the old `7bfbd4` account is listed there, remove it. **Don't run a QA or prod deploy before this step:** with `CUSTOM_DOMAIN` set, the deploy's "Map Custom Domain" step fails until the account is an owner.
+4. **Add the CNAMEs** at Namecheap (Advanced DNS → Add New Record → CNAME Record): `events`, `events-qa` and `auth`, each → `ghs.googlehosted.com.`. Leave the existing `A @`, `www`, `airline`, `conf` and `kb` records alone.
+5. **Run QA and prod once,** so the deploy creates the mappings. Wait until the "Map Custom Domain" step logs `✅ https://… is ready` (usually about 15 minutes after the CNAME, up to 24 hours). Before it's ready, the deploy only logs a warning.
+6. `/clear`, then `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`. The agent does Step 5 (Keycloak client URLs plus decoupling) and Step 6 (switching the URLs).
 
 ## Steps
 
-- [ ] Step 1 (user): Verify `techexcellence.io` in Google Search Console (TXT record at the DNS provider). In Webmaster Central, add the deployer service account (`gh variable get GCP_SERVICE_ACCOUNT`) as an owner. Then run `gh variable set CUSTOM_DOMAIN --body techexcellence.io`
+- [ ] Step 1 (user): Click **Verify** in Search Console; the TXT record and `CUSTOM_DOMAIN` were done on 2026-11-02. In Webmaster Central, add the deployer service account (`gh variable get GCP_SERVICE_ACCOUNT`, after setup) as an owner
 - [ ] Step 4 (user): Add the CNAME records `events`, `events-qa` and `auth` → `ghs.googlehosted.com.` at the DNS provider. Run QA and prod once, so the deploy creates the mappings. Wait for the certificates (usually about 15 minutes, up to 24 hours); the deploy log and `gcloud beta run domain-mappings describe` show when they are ready
 - [ ] Step 5: Keycloak clients: add `https://events.<domain>` (realm `shop-prod`) and `https://events-qa.<domain>` (realm `shop`) to redirect URIs, web origins and post-logout redirect URIs. Keep the `run.app` entries until the switch is proven. **Decoupling (decided):** stop baking frontend URLs into the image. Drop `RUN_APP_SUFFIX` from `docker/keycloak/Dockerfile.cloud`, `cloud-realm.jq` and `prod-realm.jq` and from `.github/actions/build-cloud-images`. Have the deploy set the `shop-frontend` client's URLs idempotently through the Keycloak admin API after Keycloak is up, computing the acceptance `run.app` URLs at deploy time. A project rebuild then needs no Keycloak image rebuild, which simplifies Step 10 of `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md`
 - [ ] Step 6: Switch the URLs, all in `.github/workflows/_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud` (see the inventory below). System tests follow automatically, because `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml` read the deploy outputs
