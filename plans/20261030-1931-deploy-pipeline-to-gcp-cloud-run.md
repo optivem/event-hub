@@ -20,7 +20,12 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Only a user step remains. Step 10: teardown is done (2026-11-02); the user now runs `./setup-gcp.sh`, then one acceptance dispatch. No agent work is left until Step 10 reports a failure. Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
+Blocked on `plans/20261102-1954-custom-domains-for-cloud-run.md` Step 6; Step 10 runs after it. Then: the user runs `./setup-gcp.sh` (the GCP project, Neon project and `GCP_*` variables were torn down again on 2026-11-02 at ~20:53 for the custom-domain work), waits ~5 minutes, then `gh workflow run acceptance-stage.yml` and watch it.
+
+State as of 2026-11-02:
+- Teardown and setup scripts work: teardown is idempotent (a second run reports "already clean"), setup no longer asks for the Keycloak admin password.
+- The one acceptance run after a fresh setup (run 41522626191) failed in `deploy-real / deploy-keycloak` with `ACCOUNT_STATE_INVALID` for `github-deployer@…`, ~5 min after setup created that service account. Likely IAM propagation, but unconfirmed: the rerun hit the teardown instead. If it recurs after the ~5 min wait, add a wait-for-the-service-account step at the end of `./setup-gcp.sh` (and to the shop sync plan).
+- Prod login and order creation were verified on 2026-11-02; prod slowness is tracked in `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
 
 ## Steps
 
