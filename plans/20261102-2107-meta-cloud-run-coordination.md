@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | `20261030-1931-deploy-pipeline-to-gcp-cloud-run` (**A**) | refined; only Step 10 left | 9 / 10 | none planned; `setup-gcp.sh` only if `ACCOUNT_STATE_INVALID` recurs | Step 10 is explicitly after **C** Step 6. User runs teardown → setup → acceptance |
 | `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | **not refined**: 3 open questions | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Next step says to `/refine-plan` first |
-| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 2–3 done | 2 / 9 (Step 1 partly done: `CUSTOM_DOMAIN` set) | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 1 and 4 are user steps (Search Console, DNS) |
+| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 2–3 done | 2 / 9 (Step 1 partly done: `CUSTOM_DOMAIN` set, domain verified) | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 1 and 4 are user steps (Search Console, DNS) |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | refined, ready | 0 / 5 | `optivem/shop`: `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` | Runs from a shop checkout; doesn't need event-hub's live environment |
 
 ## Dependency graph
@@ -94,7 +94,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 **Batch A (parallel-safe, 2 agent sessions + 1 user track):**
 - **U1:** plan **D**, all steps. Agent session in an `optivem/shop` checkout: `/execute-plan` with the plan's path (it lives in event-hub: `../event-hub/plans/20261102-2015-sync-gcp-scripts-to-shop.md`, or copy it into shop's `plans/`). Touches only shop files.
 - **U2:** `/refine-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md` to resolve its 3 open questions. Plan-only edit.
-- **U0 + C Step 1 (user):** `./setup-gcp.sh`, then verify `techexcellence.io` in Search Console if it isn't verified yet, and add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set.
+- **U0 + C Step 1 (user):** `./setup-gcp.sh`, then add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
 
 ### Wave 2 — after the user track of Wave 1
 
