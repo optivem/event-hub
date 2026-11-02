@@ -3,18 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Review | event-hub prototype</title>
+<title>Review agenda | event-hub prototype</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
-      <a href="organizer-home.html">Home</a>
-      <a href="organizer-materials-status.html">Materials</a>
-      <a href="organizer-publish.html">Publish</a>
-      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
       <a href="organizer-settings.html">Settings</a>
     </nav>
     <details class="account">
@@ -28,13 +27,13 @@
 </header>
 <main class="page">
   <div class="page-head">
-    <h1>Review</h1>
-    <p class="meta">Mara Sample &middot; Thursday 21 January 2027, 17:00&ndash;19:00 &middot; <span class="status info">In review</span></p>
+    <h1>Review agenda</h1>
+    <p class="meta">Mara Sample &middot; Thursday 21 January 2027, 17:00&ndash;19:00 &middot; <span class="status info">Agenda review</span></p>
   </div>
   <div class="columns">
     <div>
       <section class="card">
-        <h2>Agenda and materials</h2>
+        <h2>Agenda</h2>
         <p class="meta">The speaker's details are the copy saved when they submitted Event Agenda.</p>
         <dl class="facts">
           <dt>Photo</dt>
@@ -43,10 +42,6 @@
           <dd>Mara Sample, Staff Engineer at Sample Company</dd>
           <dt>Agenda</dt>
           <dd>Why legacy code feels risky. Writing the first test. Breaking dependencies safely. Live example.</dd>
-          <dt>Draft slides</dt>
-          <dd><a href="#">testing-legacy-code-draft</a></dd>
-          <dt>Repository</dt>
-          <dd><a href="#">legacy-code-sample</a></dd>
           <dt>Bio</dt>
           <dd>Mara has spent 15 years working on old systems and helps teams get them under test.</dd>
           <dt>Links</dt>
@@ -55,17 +50,14 @@
           <dd>Agreed on 2 December 2026 at 09:42</dd>
         </dl>
       </section>
-      <section class="card">
+      <section class="card" id="review">
         <h2>Review</h2>
-        <p>Check against the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a>.</p>
-        <label class="check"><input type="checkbox"> <span>The title and agenda are reflected in the materials</span></label>
-        <label class="check"><input type="checkbox"> <span>Live coding shows both the start and end states</span></label>
+        <p>Check against the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a>. You review the materials separately, once they're in.</p>
         <label class="check"><input type="checkbox"> <span>No politics, beliefs, personal attacks or inappropriate language</span></label>
-        <label class="check"><input type="checkbox"> <span>No NDA or copyright problems, and image sources are credited</span></label>
         <label class="check"><input type="checkbox"> <span>No discrimination</span></label>
         <label class="check"><input type="checkbox"> <span>Not a sales pitch</span></label>
         <div class="field">
-          <label for="title">Title <span class="hint">Title plus speaker name: 80 characters at most. Shorten it if it's longer.</span></label>
+          <label for="title">Title <span class="hint">Title plus speaker name: 80 characters at most. Shorten it if it's longer. Changing it clears approvals other assignees have already given.</span></label>
           <input id="title" type="text" value="Testing Legacy Code Without Fear">
           <p class="title-preview" id="title-preview">
             <span class="title-full" id="title-full">Testing Legacy Code Without Fear (Mara Sample)</span>
@@ -77,16 +69,31 @@
           <textarea id="feedback" rows="3"></textarea>
         </div>
         <div class="actions">
-          <a class="button" href="organizer-approve.html">Passes</a>
+          <a class="button" href="organizer-my-events.html">Approve agenda</a>
           <a class="button secondary" href="#what-next">Send back to speaker</a>
         </div>
       </section>
-      <section class="card">
+      <section class="card" id="send-back">
         <h2>If you send it back</h2>
-        <p>The speaker has 1 week to update, then you review again. A missed update <a href="organizer-cancel-event.html">cancels the event</a>.</p>
+        <p>It goes back to the speaker straight away, even if another assignee has approved. The speaker has 1 week to update the agenda, then you all review it again. A missed update <a href="organizer-cancel-event.html">cancels the event</a>.</p>
       </section>
     </div>
     <aside>
+      <section class="card" id="assignees" data-task="Agenda">
+        <h2>Assignees</h2>
+        <ul class="tasks">
+          <li class="task" data-person="you" data-approved="no">
+            <span class="task-body"><span class="task-title">You</span></span>
+            <span class="status warn">Not yet</span>
+          </li>
+          <li class="task" data-person="omar" data-approved="no">
+            <span class="task-body"><span class="task-title">Omar Example</span></span>
+            <span class="status warn">Not yet</span>
+          </li>
+        </ul>
+        <p class="meta" id="approval-count">Agenda: 0 of 2 approved. Waiting for you and Omar Example.</p>
+        <p><a href="organizer-assignees.html">Change assignees</a></p>
+      </section>
       <section class="card">
         <h2>Speaker</h2>
         <dl class="facts">
@@ -101,8 +108,9 @@
         <ol class="phases">
           <li class="done">Date reservation</li>
           <li class="done">Event Agenda</li>
-          <li class="done">Event Materials</li>
-          <li class="current">Review</li>
+          <li class="current">Agenda review</li>
+          <li>Event Materials</li>
+          <li>Materials review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>
           <li>After the event</li>
@@ -110,8 +118,8 @@
       </section>
     </aside>
   </div>
-  <p class="cancel-link"><a href="organizer-cancel-event.html">Cancel event</a></p>
-  <p class="proto-next" id="what-next">Next in the flow: if it passes, <a href="organizer-approve.html">approve</a>. If you send it back, the speaker sees &ldquo;Update your agenda or materials&rdquo; and has 1 week, then you review again on this screen.</p>
+  <p class="event-links"><a href="organizer-materials-status.html">Agenda and materials</a> &middot; <a href="organizer-reschedule.html">Reschedule</a> &middot; <a href="organizer-cancel-event.html">Cancel event</a></p>
+  <p class="proto-next" id="what-next">Next in the flow: approve the agenda. When Omar Example approves too, the speaker sees it as approved, and you <a href="organizer-materials-status.html">track the materials</a>. If you send it back, the speaker sees &ldquo;<a href="../speaker/speaker-update-agenda.html">Update your agenda</a>&rdquo; and has 1 week. All approvals are cleared, and you all review the update on this screen. Other states: <a href="organizer-review-agenda.html?view=approved">you've approved</a>, <a href="organizer-review-agenda.html?view=readonly">not assigned to you</a>.</p>
 </main>
 <script>
 var titleInput = document.getElementById('title');
@@ -128,6 +136,7 @@ function showTitle() {
 titleInput.addEventListener('input', showTitle);
 showTitle();
 </script>
+<script src="review.js"></script>
 <script src="../account.js"></script>
 </body>
 </html>

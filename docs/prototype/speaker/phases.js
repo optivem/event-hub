@@ -1,6 +1,9 @@
 /* Tabs for the speaker's event. Every phase can be opened at any time, so speakers can work ahead,
    and each locks once submitted. Event Day stays empty until the talk is approved.
-   "reached": 1 reservation, 2 agenda, 3 materials, 4 in review, 5 event day, 6 event over.
+   The organizers review the agenda as soon as it's in, then the materials, and approve each separately.
+   "reached": 1 reservation, 2 agenda, 3 materials (agenda in review), 4 materials in review (agenda approved),
+   5 event day, 6 event over. ?agenda=review keeps the agenda in review at 4, when materials went in first.
+   data-sent-back on the tab bar marks a phase the organizers sent back, so it can be changed again.
    Event Materials is the exception: submitted materials can change until the event is over.
    It travels in the tab links, so the prototype needs no saved state. The sample starts with Event Reservation done. */
 (function () {
@@ -15,6 +18,8 @@
   var active = Number(bar.dataset.phase);
   var fromLink = new URLSearchParams(location.search).get('reached');
   var reached = Number(fromLink || bar.dataset.reached || Math.max(PHASES[active].opensAt, 2));
+  var agendaInReview = reached === 3 || new URLSearchParams(location.search).get('agenda') === 'review';
+  var sentBack = bar.hasAttribute('data-sent-back');
 
   function materialsInEarly() {
     try { return sessionStorage.getItem('materials-early') === 'yes'; } catch (e) { return false; }
@@ -68,7 +73,8 @@
   if (list) {
     var phases = PHASES.slice(1);
     phases.forEach(function (phase) {
-      var inReview = phase.opensAt === 3 && reached === 4;
+      var inReview = (phase.opensAt === 2 && agendaInReview) || (phase.opensAt === 3 && reached === 4);
+      var approved = !inReview && ((phase.opensAt === 2 && reached >= 4) || (phase.opensAt === 3 && reached >= 5));
       var row = document.createElement('li');
       row.className = 'task' + (isDone(phase) ? ' done' : '');
       var marker = stateMarker(phase) || document.createElement('span');
@@ -80,7 +86,7 @@
       title.className = 'task-title';
       title.textContent = phase.name;
       body.appendChild(title);
-      var noteText = inReview ? 'In review' : !isDone(phase) && phase.due ? 'Due ' + phase.due : '';
+      var noteText = inReview ? 'In review' : approved ? 'Approved' : !isDone(phase) && phase.due ? 'Due ' + phase.due : '';
       if (noteText) {
         var note = document.createElement('span');
         note.className = 'task-note';
@@ -153,7 +159,7 @@
     showNotice('Your event details will appear here once your talk is approved.');
   }
 
-  if (isDone(phase) && controls.length) {
+  if (isDone(phase) && controls.length && !sentBack) {
     showSubmitted();
     if (stillChangeable) {
       var save = document.querySelector('[data-submit]');
@@ -197,7 +203,7 @@
           target = 'speaker-home.html?reached=' + reached;
         } else if (phase.opensAt === 2 && materialsInEarly()) {
           rememberMaterialsEarly(false);
-          target = 'speaker-home-waiting.html';
+          target = 'speaker-home-waiting.html?agenda=review';
         }
         location.href = target;
       });

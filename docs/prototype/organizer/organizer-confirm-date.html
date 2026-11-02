@@ -9,12 +9,11 @@
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
-      <a href="organizer-home.html">Home</a>
-      <a href="organizer-materials-status.html">Materials</a>
-      <a href="organizer-publish.html">Publish</a>
-      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
       <a href="organizer-settings.html">Settings</a>
     </nav>
     <details class="account">
@@ -72,6 +71,14 @@
             <option>Omar Example</option>
           </select>
         </div>
+        <fieldset class="field" data-assignee-picker>
+          <legend>Assignees
+            <span class="hint">They review and approve the agenda and the materials. Choose at least one. Any organizer can change them later.</span>
+          </legend>
+          <label class="check"><input type="checkbox" value="Ada Example"> <span>Ada Example</span></label>
+          <label class="check"><input type="checkbox" value="Nina Example" data-you checked> <span>Nina Example (you)</span></label>
+          <label class="check"><input type="checkbox" value="Omar Example"> <span>Omar Example</span></label>
+        </fieldset>
       </section>
       <section class="card">
         <h2>When you confirm</h2>
@@ -86,6 +93,12 @@
             <span class="task-body">
               <span class="task-title">The speaker's event phases open</span>
               <span class="task-note">They start with Event Reservation, then Event Agenda and Event Materials</span>
+            </span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">The event appears in the assignees' My events</span>
+              <span class="task-note">They review the agenda as soon as it's in, then the materials</span>
             </span>
           </li>
         </ul>
@@ -109,8 +122,9 @@
         <ol class="phases">
           <li class="current">Date reservation</li>
           <li>Event Agenda</li>
+          <li>Agenda review</li>
           <li>Event Materials</li>
-          <li>Review</li>
+          <li>Materials review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>
           <li>After the event</li>
@@ -121,5 +135,6 @@
   <p class="proto-next">Next in the flow: <a href="organizer-materials-status.html">track agenda and materials</a> while the speaker works through their tasks</p>
 </main>
 <script src="../account.js"></script>
+<script src="assignees.js"></script>
 </body>
 </html>

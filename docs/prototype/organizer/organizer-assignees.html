@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Change assignees | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="narrow">
+    <div class="page-head">
+      <h1>Change assignees</h1>
+      <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear</p>
+    </div>
+    <div class="notice warn" id="none-notice" hidden>This event has no assignees, so nobody can approve its agenda or materials. Add at least one.</div>
+    <section class="card">
+      <fieldset class="field" data-assignee-picker>
+        <legend>Assignees
+          <span class="hint">They review and approve this event. Any organizer can change them, for example when someone is away.</span>
+        </legend>
+        <label class="check"><input type="checkbox" value="Ada Example"> <span>Ada Example</span></label>
+        <label class="check"><input type="checkbox" value="Nina Example" data-you checked> <span>Nina Example (you)</span></label>
+        <label class="check"><input type="checkbox" value="Omar Example" checked> <span>Omar Example</span></label>
+      </fieldset>
+      <div class="actions">
+        <a class="button" id="save" href="organizer-review-agenda.html">Save</a>
+        <a class="button secondary" id="back" href="organizer-review-agenda.html">Back</a>
+      </div>
+    </section>
+    <section class="card">
+      <h2>When you save</h2>
+      <ul class="tasks">
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Someone you add</span>
+            <span class="task-note">Must approve any task that isn't approved yet. Tasks already approved stay approved.</span>
+          </span>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Someone you remove</span>
+            <span class="task-note">Their pending approval goes away. If everyone left has approved, the task is approved.</span>
+          </span>
+        </li>
+        <li class="task">
+          <span class="task-body">
+            <span class="task-title">Nobody left</span>
+            <span class="task-note">The event has no assignees and stands out in All events until someone is added.</span>
+          </span>
+        </li>
+      </ul>
+    </section>
+    <p class="proto-next">Next in the flow: <a href="organizer-review-agenda.html">back to the agenda review</a>. An event with nobody assigned: <a href="organizer-assignees.html?none">no assignees</a>.</p>
+  </div>
+</main>
+<script>
+// Prototype only: ?none shows an event whose last assignee was removed.
+if (new URLSearchParams(location.search).has('none')) {
+  document.getElementById('none-notice').hidden = false;
+  document.getElementById('save').href = 'organizer-all-events.html';
+  document.getElementById('back').href = 'organizer-all-events.html';
+  document.querySelector('.page-head .meta').textContent = 'Pat Stub \u00b7 Domain Modelling with Types';
+}
+</script>
+<script src="../account.js"></script>
+<script src="assignees.js"></script>
+</body>
+</html>

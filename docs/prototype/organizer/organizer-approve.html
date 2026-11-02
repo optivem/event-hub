@@ -9,12 +9,11 @@
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
-      <a href="organizer-home.html">Home</a>
-      <a href="organizer-materials-status.html">Materials</a>
-      <a href="organizer-publish.html">Publish</a>
-      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
       <a href="organizer-settings.html">Settings</a>
     </nav>
     <details class="account">
@@ -29,7 +28,7 @@
 <main class="page">
   <div class="page-head">
     <h1>Approve</h1>
-    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear &middot; <span class="status ok">Review passed</span></p>
+    <p class="meta">Mara Sample &middot; Testing Legacy Code Without Fear &middot; <span class="status info">Materials review</span></p>
   </div>
   <div class="columns">
     <div>
@@ -43,12 +42,28 @@
           <dt>Meetup group</dt>
           <dd><a href="https://www.meetup.com/techexcellence/" target="_blank" rel="noopener">Tech Excellence meetup</a></dd>
         </dl>
+        <p>The details go to the speaker once every assignee has approved the materials. Your approval is the last one.</p>
         <div class="actions">
           <a class="button" href="organizer-publish.html">Approve and share</a>
         </div>
       </section>
     </div>
     <aside>
+      <section class="card" id="assignees">
+        <h2>Assignees</h2>
+        <ul class="tasks">
+          <li class="task">
+            <span class="task-body"><span class="task-title">You</span></span>
+            <span class="status info">Passes</span>
+          </li>
+          <li class="task">
+            <span class="task-body"><span class="task-title">Omar Example</span></span>
+            <span class="status ok">Approved</span>
+          </li>
+        </ul>
+        <p class="meta">Materials: 1 of 2 approved. Waiting for you.</p>
+        <p><a href="organizer-assignees.html">Change assignees</a></p>
+      </section>
       <section class="card">
         <h2>Speaker</h2>
         <dl class="facts">
@@ -63,8 +78,9 @@
         <ol class="phases">
           <li class="done">Date reservation</li>
           <li class="done">Event Agenda</li>
+          <li class="done">Agenda review</li>
           <li class="done">Event Materials</li>
-          <li class="current">Review</li>
+          <li class="current">Materials review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>
           <li>After the event</li>
@@ -72,8 +88,8 @@
       </section>
     </aside>
   </div>
-  <p class="cancel-link"><a href="organizer-cancel-event.html">Cancel event</a></p>
-  <p class="proto-next">Next in the flow: the speaker sees the event details, then <a href="organizer-publish.html">publish the next day</a></p>
+  <p class="event-links"><a href="organizer-materials-status.html">Agenda and materials</a> &middot; <a href="organizer-reschedule.html">Reschedule</a> &middot; <a href="organizer-cancel-event.html">Cancel event</a></p>
+  <p class="proto-next">Next in the flow: the speaker sees the event details, then <a href="organizer-publish.html">publish the next day</a>. If another assignee still had to approve, the details would go out when they do.</p>
 </main>
 <script src="../account.js"></script>
 </body>

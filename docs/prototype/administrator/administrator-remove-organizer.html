@@ -29,8 +29,13 @@
       <h1 id="remove-title">Remove organizer</h1>
       <p class="meta" id="remove-who">Omar Example &middot; omar.example@example.com</p>
     </div>
+    <section class="card" id="events-card" hidden>
+      <h2>Events they review</h2>
+      <p class="meta" id="events-intro"></p>
+      <ul class="tasks" id="events"></ul>
+    </section>
     <section class="card" id="remove-card">
-      <p id="remove-text">Omar won't be able to log in as an organizer any more. The events they worked on stay as they are, and you can add them again later.</p>
+      <p id="remove-text">Omar won't be able to log in as an organizer any more. Their past work stays, and you can add them again later.</p>
       <div class="actions">
         <a class="button danger" id="remove-button" href="administrator-organizers.html">Remove organizer</a>
         <a class="button secondary" id="keep-button" href="administrator-organizers.html">Keep organizer</a>
@@ -42,6 +47,7 @@
 <script>
 // Prototype only: ?who= picks the person, ?as=administrator removes an administrator,
 // and ?last shows the block for the last organizer or administrator.
+// Removing an organizer lists the events they're assigned to and what happens to each.
 (function () {
   var params = new URLSearchParams(location.search);
   var people = {
@@ -76,12 +82,42 @@
     ? 'You won\'t be able to use the ' + role + ' role any more. You keep your other roles, ' + others + ', and the same login.'
     : role === 'administrator'
       ? person.first + ' won\'t be able to log in as an administrator any more. You can add them again later.'
-      : person.first + ' won\'t be able to log in as an organizer any more. The events they worked on stay as they are, and you can add them again later.';
+      : person.first + ' won\'t be able to log in as an organizer any more. Their past work stays, and you can add them again later.';
+  // Removing an organizer takes them off the events they're assigned to.
+  var assigned = {
+    omar: [
+      ['Property-Based Testing', '25 February 2027', 'Omar is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
+      ['Testing Legacy Code Without Fear', '21 January 2027', 'Nina Example stays as assignee. Omar\'s pending approval of the agenda goes away.'],
+      ['Event Sourcing Without Tears', '4 February 2027', 'Nina Example has already approved the agenda, so it\'s approved once Omar is removed.']
+    ],
+    nina: [
+      ['Contract Tests in Practice', '18 February 2027', 'Nina is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
+      ['Testing Legacy Code Without Fear', '21 January 2027', 'Omar Example stays as assignee. Nina\'s pending approval of the agenda goes away.'],
+      ['Ports and Adapters by Example', '14 January 2027', 'Omar Example has already approved the materials, so they\'re approved once Nina is removed.']
+    ]
+  };
+  if (role === 'organizer') {
+    var events = assigned[who] || [];
+    byId('events-card').hidden = false;
+    byId('events-intro').textContent = events.length
+      ? (self ? 'You' : person.first) + ' will be taken off these events. Nothing else about them changes.'
+      : (self ? 'You aren\'t' : person.first + ' isn\'t') + ' assigned to any events, so no event changes.';
+    events.forEach(function (event) {
+      var row = document.createElement('li');
+      row.className = 'task';
+      row.innerHTML = '<span class="task-body"><span class="task-title"></span><span class="task-note"></span></span>' +
+        (event[3] ? '<span class="status warn">No assignees</span>' : '');
+      row.querySelector('.task-title').textContent = event[0] + ', ' + event[1];
+      row.querySelector('.task-note').textContent = event[2];
+      byId('events').appendChild(row);
+    });
+  }
+
   byId('remove-button').textContent = self ? 'Remove me' : 'Remove ' + role;
   byId('keep-button').textContent = self ? 'Keep my role' : 'Keep ' + role;
   if (self && role === 'administrator') {
-    byId('remove-button').href = '../organizer/organizer-home.html';
-    byId('remove-next').innerHTML = 'Next in the flow: you leave the administrator screens and land on <a href="../organizer/organizer-home.html">your organizer home</a>. Administrator is gone from your account menu.';
+    byId('remove-button').href = '../organizer/organizer-my-events.html';
+    byId('remove-next').innerHTML = 'Next in the flow: you leave the administrator screens and land on <a href="../organizer/organizer-my-events.html">My events, your organizer home</a>. Administrator is gone from your account menu.';
   } else {
     byId('remove-next').innerHTML = 'Next in the flow: <a href="administrator-organizers.html">back to organizers</a>, without this ' + role + ' on the list.';
   }

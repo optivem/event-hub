@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review materials | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Review materials</h1>
+    <p class="meta">Mara Sample &middot; Thursday 21 January 2027, 17:00&ndash;19:00 &middot; <span class="status info">Materials review</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Materials</h2>
+        <dl class="facts">
+          <dt>Title</dt>
+          <dd>Testing Legacy Code Without Fear</dd>
+          <dt>Approved agenda</dt>
+          <dd>Why legacy code feels risky. Writing the first test. Breaking dependencies safely. Live example.</dd>
+          <dt>Draft slides</dt>
+          <dd><a href="#">testing-legacy-code-draft</a></dd>
+          <dt>Repository</dt>
+          <dd><a href="#">legacy-code-sample</a></dd>
+          <dt>Other materials</dt>
+          <dd>None</dd>
+        </dl>
+      </section>
+      <section class="card" id="review">
+        <h2>Review</h2>
+        <p>Check against the <a href="https://docs.google.com/document/d/18PrO6Y9PH8AGCMCTLB83o6AV2YpJDofgh_bB6cVv0Gs/edit" target="_blank" rel="noopener">Speaker Guidelines</a>.</p>
+        <label class="check"><input type="checkbox"> <span>The title and agenda are reflected in the materials</span></label>
+        <label class="check"><input type="checkbox"> <span>Live coding shows both the start and end states</span></label>
+        <label class="check"><input type="checkbox"> <span>No NDA or copyright problems, and image sources are credited</span></label>
+        <div class="field">
+          <label for="feedback">What to update <span class="hint">Only if you send it back</span></label>
+          <textarea id="feedback" rows="3"></textarea>
+        </div>
+        <div class="actions">
+          <a class="button" href="organizer-approve.html">Passes</a>
+          <a class="button secondary" href="#what-next">Send back to speaker</a>
+        </div>
+      </section>
+      <section class="card" id="send-back">
+        <h2>If you send it back</h2>
+        <p>It goes back to the speaker straight away, even if another assignee has approved. The speaker has 1 week to update the materials, then you all review them again. A missed update <a href="organizer-cancel-event.html">cancels the event</a>.</p>
+      </section>
+    </div>
+    <aside>
+      <section class="card" id="assignees" data-task="Materials">
+        <h2>Assignees</h2>
+        <ul class="tasks">
+          <li class="task" data-person="you" data-approved="no">
+            <span class="task-body"><span class="task-title">You</span></span>
+            <span class="status warn">Not yet</span>
+          </li>
+          <li class="task" data-person="omar" data-approved="yes">
+            <span class="task-body"><span class="task-title">Omar Example</span></span>
+            <span class="status ok">Approved</span>
+          </li>
+        </ul>
+        <p class="meta" id="approval-count">Materials: 1 of 2 approved. Waiting for you.</p>
+        <p><a href="organizer-assignees.html">Change assignees</a></p>
+      </section>
+      <section class="card">
+        <h2>Speaker</h2>
+        <dl class="facts">
+          <dt>Name</dt>
+          <dd>Mara Sample</dd>
+          <dt>Email</dt>
+          <dd>mara.sample@example.com</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Where things stand</h2>
+        <ol class="phases">
+          <li class="done">Date reservation</li>
+          <li class="done">Event Agenda</li>
+          <li class="done">Agenda review</li>
+          <li class="done">Event Materials</li>
+          <li class="current">Materials review</li>
+          <li>Publish &amp; announce</li>
+          <li>Day of event</li>
+          <li>After the event</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+  <p class="event-links"><a href="organizer-materials-status.html">Agenda and materials</a> &middot; <a href="organizer-reschedule.html">Reschedule</a> &middot; <a href="organizer-cancel-event.html">Cancel event</a></p>
+  <p class="proto-next" id="what-next">Next in the flow: if it passes, <a href="organizer-approve.html">approve</a>. If you send it back, the speaker sees &ldquo;<a href="../speaker/speaker-update-materials.html">Update your materials</a>&rdquo; and has 1 week. Omar Example's approval is cleared, and you both review the update on this screen. Other states: <a href="organizer-review-materials.html?view=readonly">not assigned to you</a>.</p>
+</main>
+<script src="review.js"></script>
+<script src="../account.js"></script>
+</body>
+</html>

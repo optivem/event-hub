@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All events | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html" aria-current="page">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>All events</h1>
+    <p class="meta">Every event, with who reviews it</p>
+  </div>
+  <section class="card">
+    <div class="field filter">
+      <label for="assignee">Assignee</label>
+      <select id="assignee">
+        <option value="" selected>Everyone</option>
+        <option value="you">You</option>
+        <option value="omar">Omar Example</option>
+        <option value="none">No assignees</option>
+      </select>
+    </div>
+    <p class="meta" id="filter-count" aria-live="polite"></p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Speaker</th><th>Talk</th><th>Assignees</th><th>Status</th><th>Approvals</th><th>Screen</th></tr>
+        </thead>
+        <tbody id="events">
+          <tr data-assignees="you omar">
+            <td data-label="Date">10 December 2026</td>
+            <td data-label="Speaker">Alex Template</td>
+            <td data-label="Talk">Trunk-Based Development in Practice</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status ok">Approved</span></td>
+            <td data-label="Approvals">All approved</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-publish.html">Open</a></td>
+          </tr>
+          <tr data-assignees="you omar">
+            <td data-label="Date">7 January 2027</td>
+            <td data-label="Speaker">Robin Standin</td>
+            <td data-label="Talk">Mutation Testing Explained</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status bad">Deadline missed</span></td>
+            <td data-label="Approvals">Agenda: 2 of 2</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-cancel-event.html">Open</a></td>
+          </tr>
+          <tr data-assignees="you omar">
+            <td data-label="Date">14 January 2027</td>
+            <td data-label="Speaker">Kim Dummy</td>
+            <td data-label="Talk">Ports and Adapters by Example</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status info">Materials review</span></td>
+            <td data-label="Approvals">Materials: 1 of 2</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-review-materials.html">Open</a></td>
+          </tr>
+          <tr data-assignees="you omar">
+            <td data-label="Date">21 January 2027</td>
+            <td data-label="Speaker">Mara Sample</td>
+            <td data-label="Talk">Testing Legacy Code Without Fear</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status info">Agenda review</span></td>
+            <td data-label="Approvals">Agenda: 0 of 2</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-review-agenda.html">Open</a></td>
+          </tr>
+          <tr data-assignees="you omar">
+            <td data-label="Date">28 January 2027</td>
+            <td data-label="Speaker">Noor Dummy</td>
+            <td data-label="Talk">Feature Toggles Done Right</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status bad">Speaker can&#x27;t make it</span></td>
+            <td data-label="Approvals">All approved</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-speaker-dropped.html">Open</a></td>
+          </tr>
+          <tr data-assignees="you omar">
+            <td data-label="Date">4 February 2027</td>
+            <td data-label="Speaker">Lee Mockup</td>
+            <td data-label="Talk">Event Sourcing Without Tears</td>
+            <td data-label="Assignees">You, Omar Example</td>
+            <td data-label="Status"><span class="status info">Agenda review</span></td>
+            <td data-label="Approvals">Agenda: 1 of 2</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-review-agenda.html?view=approved">Open</a></td>
+          </tr>
+          <tr data-assignees="you">
+            <td data-label="Date">18 February 2027</td>
+            <td data-label="Speaker">Theo Placeholder</td>
+            <td data-label="Talk">Contract Tests in Practice</td>
+            <td data-label="Assignees">You</td>
+            <td data-label="Status"><span class="status">Event Agenda</span></td>
+            <td data-label="Approvals">Nothing in yet</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-materials-status.html">Open</a></td>
+          </tr>
+          <tr data-assignees="omar">
+            <td data-label="Date">25 February 2027</td>
+            <td data-label="Speaker">Jamie Stub</td>
+            <td data-label="Talk">Property-Based Testing</td>
+            <td data-label="Assignees">Omar Example</td>
+            <td data-label="Status"><span class="status info">Agenda review</span></td>
+            <td data-label="Approvals">Agenda: 0 of 1</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-review-agenda.html?view=readonly">Open</a></td>
+          </tr>
+          <tr data-assignees="none" class="unassigned">
+            <td data-label="Date">4 March 2027</td>
+            <td data-label="Speaker">Pat Stub</td>
+            <td data-label="Talk">Domain Modelling with Types</td>
+            <td data-label="Assignees"><span class="status warn">No assignees</span></td>
+            <td data-label="Status"><span class="status">Event Materials</span></td>
+            <td data-label="Approvals">Agenda: 1 of 1</td>
+            <td data-label="Screen"><a class="button" href="organizer-assignees.html?none">Add assignees</a></td>
+          </tr>
+          <tr data-assignees="">
+            <td data-label="Date">18 March 2027</td>
+            <td data-label="Speaker">Dana Testcase</td>
+            <td data-label="Talk">Event Storming for Beginners</td>
+            <td data-label="Assignees">Chosen when the date is confirmed</td>
+            <td data-label="Status"><span class="status warn">Waiting for reply</span></td>
+            <td data-label="Approvals">None yet</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-invitation-status.html">Open</a></td>
+          </tr>
+          <tr data-assignees="">
+            <td data-label="Date">15 April 2027</td>
+            <td data-label="Speaker">Chris Draft</td>
+            <td data-label="Talk">Small Steps with TDD</td>
+            <td data-label="Assignees">Chosen when the date is confirmed</td>
+            <td data-label="Status"><span class="status info">Date accepted</span></td>
+            <td data-label="Approvals">None yet</td>
+            <td data-label="Screen"><a class="button secondary" href="organizer-confirm-date.html">Open</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <p class="proto-next">Next in the flow: open any row. Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>. Pat Stub's event lost its last assignee, so it stands out until <a href="organizer-assignees.html?none">someone is added</a>.</p>
+</main>
+<script>
+// Prototype only: filter the rows by assignee.
+(function () {
+  var select = document.getElementById('assignee');
+  var rows = document.querySelectorAll('#events tr');
+  function filter() {
+    var shown = 0;
+    rows.forEach(function (row) {
+      var match = !select.value || row.dataset.assignees.split(' ').indexOf(select.value) !== -1;
+      row.hidden = !match;
+      if (match) { shown += 1; }
+    });
+    document.getElementById('filter-count').textContent = shown + ' of ' + rows.length + ' events';
+  }
+  select.addEventListener('change', filter);
+  filter();
+})();
+</script>
+<script src="../account.js"></script>
+</body>
+</html>

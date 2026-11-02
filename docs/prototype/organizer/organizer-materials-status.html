@@ -9,12 +9,11 @@
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="organizer-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
     <nav class="nav" aria-label="Organizer">
-      <a href="organizer-home.html">Home</a>
-      <a href="organizer-materials-status.html" aria-current="page">Materials</a>
-      <a href="organizer-publish.html">Publish</a>
-      <a href="organizer-reschedule.html">Reschedule</a>
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html">Potential speakers</a>
       <a href="organizer-settings.html">Settings</a>
     </nav>
     <details class="account">
@@ -100,10 +99,17 @@
         <ul class="tasks">
           <li class="task">
             <span class="task-body">
-              <span class="task-title">Agenda and materials in</span>
-              <span class="task-note">Review starts, by 7 January 2027 at the latest</span>
+              <span class="task-title">Agenda in</span>
+              <span class="task-note">The assignees review the agenda straight away</span>
             </span>
-            <a class="button" href="organizer-review.html">Start review</a>
+            <a class="button" href="organizer-review-agenda.html">Review agenda</a>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Materials in</span>
+              <span class="task-note">The assignees review the materials, by 7 January 2027 at the latest</span>
+            </span>
+            <a class="button" href="organizer-review-materials.html">Review materials</a>
           </li>
           <li class="task">
             <span class="task-body">
@@ -116,6 +122,12 @@
       </section>
     </div>
     <aside>
+      <section class="card">
+        <h2>Assignees</h2>
+        <p>You, Omar Example</p>
+        <p class="meta">They review and approve the agenda and the materials. Each is approved once they both approve it.</p>
+        <p><a href="organizer-assignees.html">Change assignees</a></p>
+      </section>
       <section class="card">
         <h2>Speaker</h2>
         <dl class="facts">
@@ -130,8 +142,9 @@
         <ol class="phases">
           <li class="done">Date reservation</li>
           <li class="current">Event Agenda</li>
+          <li>Agenda review</li>
           <li>Event Materials</li>
-          <li>Review</li>
+          <li>Materials review</li>
           <li>Publish &amp; announce</li>
           <li>Day of event</li>
           <li>After the event</li>
@@ -139,8 +152,8 @@
       </section>
     </aside>
   </div>
-  <p class="cancel-link"><a href="organizer-cancel-event.html">Cancel event</a></p>
-  <p class="proto-next">Next in the flow: <a href="organizer-review.html">review</a> once the speaker has handed everything in</p>
+  <p class="event-links"><a href="organizer-reschedule.html">Reschedule</a> &middot; <a href="organizer-cancel-event.html">Cancel event</a></p>
+  <p class="proto-next">Next in the flow: <a href="organizer-review-agenda.html">review the agenda</a> once it&rsquo;s in, then <a href="organizer-review-materials.html">the materials</a>. Only the assignees can approve, but every organizer can follow along here.</p>
 </main>
 <script src="../account.js"></script>
 </body>

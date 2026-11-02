@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potential speakers | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-my-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-my-events.html">My events</a>
+      <a href="organizer-all-events.html">All events</a>
+      <a href="organizer-potential-speakers.html" aria-current="page">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="page-head">
+    <h1>Potential speakers</h1>
+    <p class="meta">Proposals from the intake form and people the organizers asked</p>
+  </div>
+  <div class="columns">
+    <div>
+      <section class="card">
+        <h2>Proposals and ideas</h2>
+        <p class="meta">Technical topics are invited, practical talks first</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Speaker</th><th>Topic</th><th>From</th><th>Status</th><th>Screen</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Speaker">Mara Sample</td>
+                <td data-label="Topic">Testing Legacy Code Without Fear</td>
+                <td data-label="From">Intake form</td>
+                <td data-label="Status"><span class="status info">New proposal</span></td>
+                <td data-label="Screen"><a class="button secondary" href="organizer-speaker-detail.html">Open</a></td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Sam Mockup</td>
+                <td data-label="Topic">Refactoring Without a Net</td>
+                <td data-label="From">Organizers</td>
+                <td data-label="Status"><span class="status">Asking about topics</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Theo Placeholder</td>
+                <td data-label="Topic">Contract Tests in Practice</td>
+                <td data-label="From">Organizers</td>
+                <td data-label="Status"><span class="status ok">Invited</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr>
+                <td data-label="Speaker">Jo Fictional</td>
+                <td data-label="Topic">Better Team Conversations</td>
+                <td data-label="From">Intake form</td>
+                <td data-label="Status"><span class="status bad">Not invited</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <aside>
+      <section class="card">
+        <h2>Open slots</h2>
+        <ul class="tasks">
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Thursday 21 January 2027</span>
+              <span class="task-note">17:00&ndash;19:00</span>
+            </span>
+          </li>
+          <li class="task">
+            <span class="task-body">
+              <span class="task-title">Thursday 25 February 2027</span>
+              <span class="task-note">17:00&ndash;19:00</span>
+            </span>
+          </li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <p class="proto-next">Next in the flow: open <a href="organizer-speaker-detail.html">Mara Sample's new proposal</a>. Proposals don't belong to an event yet, so they have no assignees. Any organizer can invite.</p>
+</main>
+<script src="../account.js"></script>
+</body>
+</html>

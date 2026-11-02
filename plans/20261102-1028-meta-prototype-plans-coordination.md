@@ -15,13 +15,12 @@ When all waves are done:
 
 ## ▶ Next executable step (resume here)
 
-Do Step 5 of `## Steps`: execute `plans/20261031-2256-organizer-views-and-event-assignees.md`. Its open questions are answered. It builds on the role switcher (`docs/prototype/account.js`, run by every account-menu screen), the multi-role sample person Ada Example, and the last-organizer block on `administrator-remove-organizer.html`, all added by the role-switching plan.
+Do Step 6 of `## Steps`: run the manual test in `plans/20261031-1137-manual-test-html-prototype.md` in headless Chromium, covering every journey, including steps 2b–2e added by the role-switching and organizer-views plans. Record findings, fix them, and delete that plan. The organizer home is now `organizer-my-events.html`, and the review is split into `organizer-review-agenda.html` and `organizer-review-materials.html`.
 
 How to run this meta-plan: all questions were asked upfront, so steps run via subagents without stopping. Browser checks run in headless Chromium at desktop (1280) and phone (390) width, and the user reviews a list of pages at the end. A step is done when the plan it names is deleted because it's complete. Then delete the step here and point this block at the next one.
 
 ## Steps
 
-- [ ] Step 5 (Wave 2): `/execute-plan plans/20261031-2256-organizer-views-and-event-assignees.md`.
 - [ ] Step 6 (Wave 3, after Step 5): `plans/20261031-1137-manual-test-html-prototype.md` — the user clicks through every journey and records findings, then `/execute-plan` on it applies the corrections.
 
 **Plans analysed:** 4 in-scope, 0 referenced-only

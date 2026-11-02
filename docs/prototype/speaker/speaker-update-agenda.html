@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Update your agenda | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="speaker-home.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="button secondary help-link" href="speaker-help.html">Need help?</a>
+    <details class="account">
+      <summary aria-label="Account menu: Mara Sample"><img class="avatar" src="mara-sample-photo.svg" alt=""></summary>
+      <ul class="account-menu">
+        <li><a href="speaker-profile.html">Profile</a></li>
+        <li><a href="speaker-events.html">Events</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="2" data-reached="3" data-sent-back></nav>
+  <div class="page-head">
+    <h1>Update your agenda</h1>
+    <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status warn">Changes needed</span></p>
+  </div>
+  <div>
+    <div>
+      <div class="notice warn">Please send your updated agenda by <strong>17 December 2026</strong>, within 1 week. Without it, the event will be cancelled.</div>
+      <section class="card">
+        <h2>What to change</h2>
+        <p>Your agenda needs more detail on the second half of the talk.</p>
+        <p class="meta">Nina Example</p>
+      </section>
+      <section class="card">
+        <h2>Your update</h2>
+        <div class="field">
+          <label for="talk-title">Title
+            <span class="hint">Title plus your name: 80 characters at most.</span>
+          </label>
+          <input id="talk-title" type="text" value="Testing Legacy Code Without Fear">
+        </div>
+        <div class="field">
+          <label for="agenda">Agenda</label>
+          <textarea id="agenda" rows="6">Why legacy code feels risky
+Finding the seams
+Writing the first test</textarea>
+        </div>
+        <p class="meta">Already working on your materials? If they follow the old agenda, change them too. You can update your materials until the event.</p>
+        <div class="actions"><a class="button" href="speaker-home.html?reached=3">Submit update</a></div>
+      </section>
+    </div>
+  </div>
+  <p class="proto-next">Next in the flow: <a href="speaker-home.html?reached=3">your Overview</a> shows the agenda in review again, while the organizers check your update. You can keep working on <a href="speaker-materials.html">your materials</a>.</p>
+</main>
+<script src="phases.js"></script>
+<script src="../account.js"></script>
+</body>
+</html>
