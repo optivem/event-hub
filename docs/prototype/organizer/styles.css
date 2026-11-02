@@ -295,3 +295,7 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
 .event-list { max-width: 760px; }
 .assignee-note { display: none !important; }
 .show-assignees .assignee-note { display: block !important; }
+/* An event nobody looks after: warning colour, shown first under Unassigned and All */
+.warn-card { background: var(--warn-bg); border-color: var(--warn); }
+.warn-card h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.task-note .status { margin-right: 4px; }
