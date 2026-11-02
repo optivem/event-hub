@@ -109,16 +109,18 @@ echo ""
 echo "Step 3/3: Removing GitHub repo variables..."
 # Best-effort deletes — variable/secret may already be gone. Soft-fail but
 # surface any non-"not found" stderr so auth/scope issues stay visible.
+GH_DELETE_FAILED=0
 delete_gh_thing() {
   local kind="$1"  # "variable" or "secret"
   local name="$2"
   local err rc
-  err=$(gh "$kind" delete "$name" --yes 2>&1) && return 0
+  err=$(gh "$kind" delete "$name" 2>&1) && return 0
   rc=$?
   if [[ "$err" == *"could not find"* || "$err" == *"not found"* || "$err" == *"HTTP 404"* ]]; then
     echo "  (skipped $kind $name: not present)"
   else
     echo "  ⚠️  failed to delete $kind $name (exit $rc): $err" >&2
+    GH_DELETE_FAILED=1
   fi
 }
 delete_gh_thing variable GCP_PROJECT_ID
@@ -126,13 +128,25 @@ delete_gh_thing variable GCP_REGION
 delete_gh_thing variable GCP_WORKLOAD_IDENTITY_PROVIDER
 delete_gh_thing variable GCP_SERVICE_ACCOUNT
 delete_gh_thing variable SYSTEM_NAME
-echo "  ✅ GitHub variables removed"
+if [[ "$GH_DELETE_FAILED" == 1 ]]; then
+  echo "  ⚠️  Some GitHub variables were not removed (see above)"
+else
+  echo "  ✅ GitHub variables removed"
+fi
 echo ""
 
 echo "========================================="
-echo " Teardown Complete!"
+if [[ "$GH_DELETE_FAILED" == 1 ]]; then
+  echo " Teardown Complete — with warnings"
+else
+  echo " Teardown Complete!"
+fi
 echo "========================================="
 echo ""
 echo "  All GCP and Neon resources have been removed."
+if [[ "$GH_DELETE_FAILED" == 1 ]]; then
+  echo "  ⚠️  Some GitHub repo variables could not be removed — see the warnings above"
+  echo "     and delete them with: gh variable delete <name>"
+fi
 echo "  The shared Terraform state project ($STATE_PROJECT) is kept for other systems."
 echo ""
