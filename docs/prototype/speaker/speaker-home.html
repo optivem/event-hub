@@ -27,14 +27,42 @@
     <h1>Testing Legacy Code Without Fear</h1>
     <p class="meta">Tech Excellence meetup &middot; Thursday 21 January 2027, 17:00&ndash;19:00 &middot; <span class="status ok">Date confirmed</span></p>
   </div>
-  <div class="notice warn">Your agenda is due by <strong>10 December 2026</strong> and your materials by <strong>21 December 2026</strong>.</div>
+  <div class="notice warn" id="overview-notice">Your agenda is due by <strong>10 December 2026</strong> and your materials by <strong>21 December 2026</strong>.</div>
       <section class="card">
         <h2>Your progress</h2>
         <ul class="tasks" id="status-phases"></ul>
       </section>
-  <p class="cancel-link"><a href="speaker-cancel.html">Cancel my talk</a></p>
-  <p class="proto-next">Next in the flow: <a href="speaker-agenda.html">write your agenda</a>. Not in by the due date, <a href="email-reminder-agenda.html">reminder email</a></p>
+  <p class="cancel-link" id="cancel-link"><a href="speaker-cancel.html">Cancel my talk</a></p>
+  <p class="proto-next" id="overview-next">Next in the flow: <a href="speaker-agenda.html">write your agenda</a>. Not in by the due date, <a href="email-reminder-agenda.html">reminder email</a></p>
 </main>
+<script>
+// Prototype only: the Overview follows the stage the speaker has reached (see phases.js).
+(function () {
+  var reached = Number(new URLSearchParams(location.search).get('reached') || 2);
+  if (reached === 4) { location.replace('speaker-home-waiting.html' + location.search); return; }
+  var stages = {
+    3: ['info', 'Agenda in review',
+      'Thanks, your agenda is in review. Your materials are due by <strong>21 December 2026</strong>.',
+      'Next in the flow: <a href="speaker-materials.html?reached=3">share your materials</a>. If the agenda needs changes, you see <a href="speaker-update-agenda.html">Update your agenda</a>.'],
+    5: ['ok', 'Approved',
+      'Your agenda and materials are approved. Your event details are ready.',
+      'Next in the flow: <a href="speaker-event-details.html?reached=5">see the event details</a>.'],
+    6: ['ok', 'Event finished',
+      'Your event is over. Thank you for speaking at Tech Excellence!',
+      'Next in the flow: <a href="speaker-after-event.html">read the thank-you</a>.']
+  };
+  var stage = stages[reached];
+  if (!stage) { return; }
+  var status = document.querySelector('.page-head .status');
+  status.className = 'status ' + stage[0];
+  status.textContent = stage[1];
+  var notice = document.getElementById('overview-notice');
+  notice.className = 'notice';
+  notice.innerHTML = stage[2];
+  document.getElementById('overview-next').innerHTML = stage[3];
+  document.getElementById('cancel-link').hidden = reached >= 6;
+})();
+</script>
 <script src="phases.js"></script>
 <script src="../account.js"></script>
 </body>

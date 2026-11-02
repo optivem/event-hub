@@ -22,7 +22,6 @@
   </div>
 </header>
 <main class="page">
-  <nav class="phase-tabs" id="phase-tabs" aria-label="Event phases" data-phase="1" data-reached="2"></nav>
   <div class="page-head">
     <h1>Does this date work for you?</h1>
     <p class="meta">Testing Legacy Code Without Fear &middot; <span class="status info">Waiting for your answer</span></p>
@@ -37,7 +36,7 @@
           <dt>Event</dt>
           <dd>Tech Excellence meetup, online</dd>
         </dl>
-        <div class="actions"><a class="button" href="speaker-reservation.html">Accept this date</a></div>
+        <div class="actions"><a class="button" href="speaker-reservation.html?reached=1">Accept this date</a></div>
       </section>
       <section class="card">
         <h2>Can't make it?</h2>
@@ -60,9 +59,8 @@
       </section>
     </div>
   </div>
-  <p class="proto-next" id="what-next">Next in the flow: if you accept, an organizer confirms the date and sends a calendar invite, then <a href="speaker-reservation.html">your tasks open</a>. If you offer other months, an organizer looks for another date: you answer a new date on this screen, or <a href="speaker-date-closed.html">no date fits</a>.</p>
+  <p class="proto-next" id="what-next">Next in the flow: if you accept, an organizer confirms the date and sends a calendar invite, then <a href="speaker-reservation.html?reached=1">your tasks open</a>. If you offer other months, an organizer looks for another date: you answer a new date on this screen, or <a href="speaker-date-closed.html">no date fits</a>.</p>
 </main>
-<script src="phases.js"></script>
 <script src="../account.js"></script>
 </body>
 </html>

@@ -36,8 +36,16 @@
       </section>
     </div>
   </div>
-  <p class="proto-next">Next in the flow: the organizers approve your agenda and your materials separately. If the agenda needs changes, <a href="speaker-update-agenda.html">update your agenda</a>. If the materials need changes, <a href="speaker-update-materials.html">update your materials</a>. Once both are approved, <a href="speaker-event-details.html">see the event details</a>.</p>
+  <p class="cancel-link"><a href="speaker-cancel.html">Cancel my talk</a></p>
+  <p class="proto-next" id="waiting-next">Next in the flow: the organizers approve your agenda and your materials separately. If the agenda needs changes, <a href="speaker-update-agenda.html">update your agenda</a>. If the materials need changes, <a href="speaker-update-materials.html">update your materials</a>. Once both are approved, <a href="speaker-event-details.html">see the event details</a>.</p>
 </main>
+<script>
+// Prototype only: ?agenda=review is the moment both went in together, so the agenda is still in review.
+if (new URLSearchParams(location.search).get('agenda') === 'review') {
+  document.getElementById('waiting-next').insertAdjacentHTML('beforeend',
+    ' Your agenda shows In review until it&rsquo;s <a href="speaker-home-waiting.html">approved</a>.');
+}
+</script>
 <script src="phases.js"></script>
 <script src="../account.js"></script>
 </body>

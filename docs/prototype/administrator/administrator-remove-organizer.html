@@ -88,12 +88,16 @@
     omar: [
       ['Property-Based Testing', '25 February 2027', 'Omar is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
       ['Testing Legacy Code Without Fear', '21 January 2027', 'Nina Example stays as assignee. Omar\'s pending approval of the agenda goes away.'],
-      ['Event Sourcing Without Tears', '4 February 2027', 'Nina Example has already approved the agenda, so it\'s approved once Omar is removed.']
+      ['Event Sourcing Without Tears', '4 February 2027', 'Nina Example has already approved the agenda, so it\'s approved once Omar is removed.'],
+      ['Ports and Adapters by Example', '14 January 2027', 'Omar\'s approval of the materials goes away, so they wait for Nina Example.'],
+      ['3 more events', '', 'Trunk-Based Development in Practice, Mutation Testing Explained and Feature Toggles Done Right. Nothing is waiting for Omar there, and Nina Example stays as assignee.']
     ],
     nina: [
       ['Contract Tests in Practice', '18 February 2027', 'Nina is the only assignee, so the event will have no assignees. It stands out in All events until an organizer adds someone.', true],
       ['Testing Legacy Code Without Fear', '21 January 2027', 'Omar Example stays as assignee. Nina\'s pending approval of the agenda goes away.'],
-      ['Ports and Adapters by Example', '14 January 2027', 'Omar Example has already approved the materials, so they\'re approved once Nina is removed.']
+      ['Ports and Adapters by Example', '14 January 2027', 'Omar Example has already approved the materials, so they\'re approved once Nina is removed.'],
+      ['Event Sourcing Without Tears', '4 February 2027', 'Nina\'s approval of the agenda goes away, so it waits for Omar Example.'],
+      ['3 more events', '', 'Trunk-Based Development in Practice, Mutation Testing Explained and Feature Toggles Done Right. Nothing is waiting for Nina there, and Omar Example stays as assignee.']
     ]
   };
   if (role === 'organizer') {
@@ -107,7 +111,7 @@
       row.className = 'task';
       row.innerHTML = '<span class="task-body"><span class="task-title"></span><span class="task-note"></span></span>' +
         (event[3] ? '<span class="status warn">No assignees</span>' : '');
-      row.querySelector('.task-title').textContent = event[0] + ', ' + event[1];
+      row.querySelector('.task-title').textContent = event[1] ? event[0] + ', ' + event[1] : event[0];
       row.querySelector('.task-note').textContent = event[2];
       byId('events').appendChild(row);
     });

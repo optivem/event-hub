@@ -26,23 +26,31 @@
     <h1>Propose a talk</h1>
     <p class="meta">Spoken at Tech Excellence before? Tell us about your next talk.</p>
   </div>
-  <section class="card">
+  <div class="notice" id="propose-done" hidden>Thanks, your proposal is in. The organizers will look at it and get back to you by email.</div>
+  <section class="card" id="propose-form">
     <div class="field">
       <label for="title">Talk title</label>
-      <input id="title" type="text" value="Testing Legacy Code Without Fear">
+      <input id="title" type="text">
     </div>
     <div class="field">
       <label for="topic">What is the talk about?</label>
-      <textarea id="topic" rows="4">How to get legacy code under test safely, one small step at a time.</textarea>
+      <textarea id="topic" rows="4"></textarea>
     </div>
     <div class="field">
       <label for="practical">Anything practical we should know?</label>
       <textarea id="practical" rows="2"></textarea>
     </div>
-    <div class="actions"><a class="button" href="speaker-home.html">Send proposal</a></div>
+    <div class="actions"><a class="button" href="speaker-propose-talk.html?done">Send proposal</a></div>
   </section>
-  <p class="proto-next">Next in the flow: the organizers see your proposal in their potential speakers. <a href="speaker-home.html">Back to your event</a></p>
+  <p class="proto-next">Next in the flow: the organizers see your proposal in their <a href="../organizer/organizer-potential-speakers.html">potential speakers</a>. <a href="speaker-after-event.html">Back to your last event</a></p>
 </main>
+<script>
+// Prototype only: ?done shows the screen after the proposal is sent.
+if (new URLSearchParams(location.search).has('done')) {
+  document.getElementById('propose-form').hidden = true;
+  document.getElementById('propose-done').hidden = false;
+}
+</script>
 <script src="../account.js"></script>
 </body>
 </html>

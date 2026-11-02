@@ -32,7 +32,11 @@
   function isDone(phase) {
     return phase.opensAt > 0 && (reached > phase.opensAt || (phase.opensAt === 3 && materialsInEarly()));
   }
-  function link(phase) { return phase.href + '?reached=' + reached; }
+  function link(phase) {
+    // Once the event is over, Event Day shows the thank-you.
+    if (phase.opensAt === 5 && reached >= 6) { return 'speaker-after-event.html'; }
+    return phase.href + '?reached=' + reached;
+  }
 
   /* The next phase to complete. Event Day has nothing to do until the talk is approved. */
   var nextPhase = PHASES.filter(function (phase) {
@@ -108,7 +112,7 @@
       ['Font size increased', 'In your slides, code editor and terminal, so people can read them on a small screen'],
       ['I know how to increase the font while live', 'Try the shortcut in each app you will show, in case someone asks'],
       ['Charger plugged in', 'So your laptop lasts the whole session'],
-      ['Microphone and camera tested', 'Check them in StreamYard when you join at 16:30']
+      ['Microphone and camera tested', 'Check them in StreamYard when you join at 17:00']
     ].forEach(function (item) {
       var row = document.createElement('li');
       row.className = 'task';
@@ -155,7 +159,12 @@
   }
 
   if (nothingYet) {
-    document.querySelectorAll('main .card, main .proto-next, .page-head .status').forEach(function (block) { block.hidden = true; });
+    document.querySelectorAll('main .card, main .proto-next').forEach(function (block) { block.hidden = true; });
+    var status = document.querySelector('.page-head .status');
+    if (status) {
+      status.className = 'status';
+      status.textContent = 'Not approved yet';
+    }
     showNotice('Your event details will appear here once your talk is approved.');
   }
 

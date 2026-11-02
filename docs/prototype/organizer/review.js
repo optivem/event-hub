@@ -7,7 +7,16 @@
   var task = card.dataset.task;
   var you = card.querySelector('[data-person="you"]');
 
-  if (view === 'readonly') { you.remove(); }
+  // The event shown read-only waits for its only assignee, so nobody has approved it yet.
+  if (view === 'readonly') {
+    you.remove();
+    card.querySelectorAll('li').forEach(function (row) {
+      delete row.dataset.approved;
+      var status = row.querySelector('.status');
+      status.className = 'status warn';
+      status.textContent = 'Not yet';
+    });
+  }
   if (view === 'approved') {
     you.dataset.approved = 'yes';
     var badge = you.querySelector('.status');
