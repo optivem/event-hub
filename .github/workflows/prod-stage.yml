@@ -191,8 +191,11 @@ jobs:
           kept='[]'
           while IFS= read -r entry; do
             version="$(jq -r .version <<< "$entry")"
-            tag="v${version}"
-            [[ "$(jq -r .key <<< "$entry")" != */backend:* ]] || tag="backend-v${version}"
+            case "$(jq -r .key <<< "$entry")" in
+              */backend:*)  tag="backend-v${version}" ;;
+              */frontend:*) tag="frontend-v${version}" ;;
+              *)            tag="v${version}" ;;
+            esac
             existing="$(git ls-remote --tags origin "refs/tags/${tag}" | cut -f1)"
             if [[ -n "$existing" && "$existing" != "$head" ]]; then
               echo "::warning::${tag} already exists at ${existing}; leaving it and its image tag as they are."
@@ -236,7 +239,7 @@ jobs:
         if: steps.component-tag-versions.outputs.frontend != ''
         uses: optivem/actions/publish-tag@v1
         with:
-          tag: v${{ steps.component-tag-versions.outputs.frontend }}
+          tag: frontend-v${{ steps.component-tag-versions.outputs.frontend }}
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Generate Release Notes

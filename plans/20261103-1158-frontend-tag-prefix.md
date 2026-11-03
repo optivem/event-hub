@@ -14,7 +14,7 @@
 
 ## ▶ Next executable step (resume here)
 
-Step 1: change the frontend prefix in `.github/workflows/prod-stage.yml` (lines ~194–195 "Drop Components Already Released at Another Commit", and "Publish Frontend Component Release Tag" ~line 236) and in `.github/workflows/bump-patch-version.yml` line 38 (`"value": "v"` → `"value": "frontend-v"`). Do this before the U4 rebuild, so U4's prod run proves it.
+Step 2 (user): the `frontend-v1.3.212`–`frontend-v1.3.214` tags exist. Delete the bare tags: `git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214` (and `git tag -d v1.3.212 v1.3.213 v1.3.214` locally). Step 3 follows on the next prod release (U4).
 
 ## Findings (2026-11-03)
 
@@ -22,7 +22,9 @@ Step 1: change the frontend prefix in `.github/workflows/prod-stage.yml` (lines 
 - `prod-stage.yml:194–195` builds the "already released?" tag as `v${version}` for everything but the backend. `prod-stage.yml:236` publishes `v${frontend}`.
 - `qa-stage.yml:49` and `prod-stage.yml:55` resolve with `tag-prefix: v`, so they see the frontend tags.
 - Only three frontend tags exist: `v1.3.212`, `v1.3.213`, `v1.3.214`.
-- GHCR image tags are a separate matter: `compose-tags` / `tag-docker-images` tag the images. Check in Step 1 whether the frontend image tag also uses the prefix. If it does, keep the image tag as it is unless something resolves it by prefix.
+- GHCR image tags are a separate matter: `compose-tags` defaults to `v{version}` for both component images (`backend:v1.5.x`, `frontend:v1.3.x`). Each image has its own tag namespace and nothing resolves them by prefix, so they stay `v`.
+- `optivem/actions/bump-patch-versions` probes the exact tag `{value}{current-version}` with `git ls-remote`; it does not search by prefix. `frontend-v` works the same as `backend-v`.
+- Done: `prod-stage.yml` now checks and publishes `frontend-v<version>`; `bump-patch-version.yml` uses `frontend-v` for `frontend/VERSION`.
 
 ## Open questions
 
@@ -32,8 +34,7 @@ All resolved before execution (2026-11-03):
 
 ## Steps
 
-- [ ] Step 1: Change the prefix in `prod-stage.yml` and `bump-patch-version.yml` (see the ▶ block). Check whether `optivem/actions/bump-patch-versions` resolves the latest tag per prefix: if it treats `frontend-v` like `backend-v`, nothing else changes.
-- [ ] Step 2 (pre-approved 2026-11-03): after Step 1 is pushed, for each of `v1.3.212`, `v1.3.213`, `v1.3.214`, run `git push origin <commit>:refs/tags/frontend-v1.3.x`, then `git push origin :refs/tags/v1.3.x`.
+- [ ] Step 2 (pre-approved 2026-11-03): `frontend-v1.3.212`, `frontend-v1.3.213` and `frontend-v1.3.214` exist on the same commits as the bare tags. Only the deletion of the bare tags remains; the user runs `git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214`.
 - [ ] Step 3: Verify on the next prod release (U4 in the meta-plan): it publishes `frontend-v1.3.215`, no `v1.3.215` appears, and the bump commit says `post frontend-v1.3.215`. Then run `qa-stage.yml` once **without** `-f version=` after the RC cleanup, and check that it resolves a system tag.
 
 ## Note (out of scope)

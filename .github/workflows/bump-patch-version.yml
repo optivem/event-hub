@@ -35,7 +35,7 @@ jobs:
             [
               {"path": "VERSION",            "value": "v"},
               {"path": "backend/VERSION",    "value": "backend-v"},
-              {"path": "frontend/VERSION",  "value": "v"}
+              {"path": "frontend/VERSION",   "value": "frontend-v"}
             ]
 
       - name: Build Commit Payload
