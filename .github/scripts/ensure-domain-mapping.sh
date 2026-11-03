@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Maps a custom domain to a Cloud Run service (Cloud Run domain mapping: free, Google-managed TLS).
-# Idempotent: a domain already mapped to SERVICE is left alone; one mapped to another service fails.
+# Idempotent: a domain already mapped to SERVICE is left alone; one mapped to another service in this
+# project fails; one held by another project (e.g. a torn-down one) is taken over.
 # A new project gets its mappings on the first deploy, because the deploy runs this script.
 #
 # Prerequisites (one-time, see README "Custom domains"):
@@ -16,17 +17,19 @@ set -euo pipefail
 gcloud_mapping() { gcloud beta run domain-mappings "$@" --region "$REGION" --project "$PROJECT"; }
 
 route="$(gcloud_mapping describe --domain "$DOMAIN" --format='value(spec.routeName)' 2> /dev/null || true)"
+# A mapping created while another project still held the domain stays stuck on MappingAlreadyExists
+# (GCP doesn't re-check it), so recreate it
+if [[ -n "$route" ]] && gcloud_mapping describe --domain "$DOMAIN" --format=json \
+  | jq -e '.status.conditions[]? | select(.reason == "MappingAlreadyExists")' > /dev/null; then
+  echo "${DOMAIN} is stuck (held by another project when it was created); recreating it..."
+  gcloud_mapping delete --domain "$DOMAIN" --quiet
+  route=""
+fi
 if [[ -z "$route" ]]; then
   echo "Mapping ${DOMAIN} to ${SERVICE}..."
-  if ! out="$(gcloud_mapping create --service "$SERVICE" --domain "$DOMAIN" 2>&1)"; then
-    echo "$out"
-    if grep -q "already in use elsewhere" <<< "$out"; then
-      # Typically a torn-down project (pending deletion for 30 days) that still holds the mapping
-      echo "::error::${DOMAIN} is mapped in another GCP project. Delete it there: gcloud projects undelete <old-project> (if pending deletion), then gcloud beta run domain-mappings delete --domain ${DOMAIN} --region ${REGION} --project <old-project>, then delete the project again. ./teardown-gcp.sh deletes the mappings before the project, so this only happens after a teardown without that step."
-    fi
-    exit 1
-  fi
-  echo "$out"
+  # --force-override takes the domain from a mapping in another project, typically a torn-down
+  # project still pending deletion (30 days). Only verified owners of the domain can map it.
+  gcloud_mapping create --service "$SERVICE" --domain "$DOMAIN" --force-override
 elif [[ "$route" != "$SERVICE" ]]; then
   echo "::error::${DOMAIN} is mapped to ${route}, not ${SERVICE}. Delete that mapping first."
   exit 1
