@@ -293,8 +293,8 @@ th { font-size: 0.8rem; color: var(--muted); border-top: 0; }
 .segmented .count { font-size: 0.8rem; opacity: 0.85; }
 @media (min-width: 768px) { .segmented { display: inline-flex; } .segmented a { flex: none; padding: 4px 18px; } }
 .event-list { max-width: 760px; }
-.assignee-note { display: none !important; }
-.show-assignees .assignee-note { display: block !important; }
+.assignee-note, .waiting-note { display: none !important; }
+.show-assignees .assignee-note, .show-assignees .waiting-note { display: block !important; }
 /* An event nobody looks after: warning colour, shown first under Unassigned and All */
 .warn-card { background: var(--warn-bg); border-color: var(--warn); }
 .warn-card h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }

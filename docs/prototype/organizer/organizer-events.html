@@ -39,8 +39,9 @@
 
   <div class="event-list">
     <div id="by-group">
-    <section class="card" data-group="mine">
-      <h2>Waiting for your approval</h2>
+    <section class="card" data-group="mine" data-waiting="you">
+      <h2>Your turn</h2>
+      <p class="meta">Approvals, publishing, cancelling and reservations that need you. It moves to another card once the next step is with someone else.</p>
       <ul class="tasks">
         <li class="task" data-date="2027-01-14" data-stage="Materials review" data-tone="info">
           <span class="task-body">
@@ -60,12 +61,6 @@
           </span>
           <a class="button" href="organizer-review-agenda.html">Review agenda</a>
         </li>
-      </ul>
-    </section>
-
-    <section class="card" data-group="mine">
-      <h2>Other things to do</h2>
-      <ul class="tasks">
         <li class="task" data-date="2026-12-10" data-stage="Ready to publish" data-tone="ok">
           <span class="task-body">
             <span class="task-title">Trunk-Based Development in Practice</span>
@@ -93,37 +88,6 @@
           </span>
           <a class="button secondary" href="organizer-speaker-dropped.html">Open</a>
         </li>
-      </ul>
-    </section>
-
-    <section class="card warn-card" data-group="unassigned" id="no-assignees">
-      <h2><span class="status warn">No assignees</span> Nobody is looking after this event</h2>
-      <p class="meta">The last assignee was removed. Every organizer sees this until someone is added.</p>
-      <ul class="tasks">
-        <li class="task" data-date="2027-03-04" data-stage="No assignees" data-tone="warn">
-          <span class="task-body">
-            <span class="task-title">Domain Modelling with Types</span>
-            <span class="task-note">Pat Stub &middot; Thursday 4 March 2027</span>
-            <span class="task-note">Agenda approved. Materials due next.</span>
-            <span class="task-note assignee-note">Assignees: none</span>
-          </span>
-          <a class="button" href="organizer-assignees.html?none">Add assignees</a>
-        </li>
-      </ul>
-    </section>
-
-    <section class="card" data-group="mine">
-      <h2>Date reservation</h2>
-      <p class="meta">Assignees are chosen when the invitation is sent, so someone always looks after the reply.</p>
-      <ul class="tasks">
-        <li class="task" data-date="2027-03-18" data-stage="Waiting for reply" data-tone="warn">
-          <span class="task-body">
-            <span class="task-title">Dana Testcase hasn't replied</span>
-            <span class="task-note">Event Storming for Beginners &middot; invited for Thursday 18 March 2027</span>
-            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
-          </span>
-          <a class="button secondary" href="organizer-invitation-status.html">Open</a>
-        </li>
         <li class="task" data-date="2027-04-15" data-stage="Date accepted" data-tone="info">
           <span class="task-body">
             <span class="task-title">Chris Draft accepted the date</span>
@@ -144,10 +108,27 @@
       </ul>
     </section>
 
-    <section class="card" data-group="mine">
-      <h2>Waiting for another assignee</h2>
+    <section class="card warn-card" data-group="unassigned" id="no-assignees" data-waiting="someone to be assigned">
+      <h2><span class="status warn">No assignees</span> Nobody is looking after this event</h2>
+      <p class="meta">The last assignee was removed. Every organizer sees this until someone is added.</p>
       <ul class="tasks">
-        <li class="task" data-date="2027-02-04" data-stage="Agenda review" data-tone="info">
+        <li class="task" data-date="2027-03-04" data-stage="No assignees" data-tone="warn">
+          <span class="task-body">
+            <span class="task-title">Domain Modelling with Types</span>
+            <span class="task-note">Pat Stub &middot; Thursday 4 March 2027</span>
+            <span class="task-note">Agenda approved. Materials due next.</span>
+            <span class="task-note assignee-note">Assignees: none</span>
+          </span>
+          <a class="button" href="organizer-assignees.html?none">Add assignees</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card" data-group="mine">
+      <h2>Waiting on others</h2>
+      <p class="meta">Nothing for you to do until they move. The event comes back to Your turn when they have.</p>
+      <ul class="tasks">
+        <li class="task" data-date="2027-02-04" data-stage="Agenda review" data-tone="info" data-waiting="Omar Example">
           <span class="task-body">
             <span class="task-title">Event Sourcing Without Tears</span>
             <span class="task-note">Lee Mockup &middot; Thursday 4 February 2027</span>
@@ -156,13 +137,7 @@
           </span>
           <a class="button secondary" href="organizer-review-agenda.html?view=approved">Open</a>
         </li>
-      </ul>
-    </section>
-
-    <section class="card" data-group="mine">
-      <h2>Waiting for the speaker</h2>
-      <ul class="tasks">
-        <li class="task" data-date="2027-02-18" data-stage="Waiting for agenda" data-tone="">
+        <li class="task" data-date="2027-02-18" data-stage="Waiting for agenda" data-tone="" data-waiting="the speaker">
           <span class="task-body">
             <span class="task-title">Contract Tests in Practice</span>
             <span class="task-note">Theo Placeholder &middot; Thursday 18 February 2027</span>
@@ -171,10 +146,19 @@
           </span>
           <a class="button secondary" href="organizer-materials-status.html">Track materials</a>
         </li>
+        <li class="task" data-date="2027-03-18" data-stage="Waiting for reply" data-tone="warn" data-waiting="the speaker">
+          <span class="task-body">
+            <span class="task-title">Dana Testcase hasn't replied</span>
+            <span class="task-note">Event Storming for Beginners &middot; invited for Thursday 18 March 2027</span>
+            <span class="task-note">Reminder sent. Last day to reply 16 November 2026.</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
+          </span>
+          <a class="button secondary" href="organizer-invitation-status.html">Open</a>
+        </li>
       </ul>
     </section>
 
-    <section class="card" data-group="others">
+    <section class="card" data-group="others" data-waiting="Omar Example">
       <h2>Assigned to other organizers</h2>
       <p class="meta">You can follow these, but only their assignees can approve.</p>
       <ul class="tasks">
@@ -229,7 +213,7 @@
 
   </div>
 
-  <p class="proto-next">Next in the flow: start with <a href="organizer-potential-speakers.html">potential speakers</a> and Mara Sample's new proposal. Each group lists the soonest event first. Each button opens the event at the step that needs work. In the prototype they all open Mara's event at that stage, so each step and every exception is one click away. <a href="#unassigned">Unassigned</a> is only for an event whose assignees were all removed. Assignees are chosen when the invitation is sent, so reservations show under Assigned to me. <a href="#all">All</a> shows every upcoming event by month, and <a href="#past">Past</a> the finished and cancelled ones. Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>.</p>
+  <p class="proto-next">Next in the flow: start with <a href="organizer-potential-speakers.html">potential speakers</a> and Mara Sample's new proposal. Each group lists the soonest event first. Each button opens the event at the step that needs work. In the prototype they all open Mara's event at that stage, so each step and every exception is one click away. <a href="#unassigned">Unassigned</a> is only for an event whose assignees were all removed. Assignees are chosen when the invitation is sent, so reservations show under Assigned to me. That tab is grouped by whose turn it is, yours or someone else's, and an event moves between the two as the ball goes back and forth. <a href="#all">All</a> shows every upcoming event by month, and <a href="#past">Past</a> the finished and cancelled ones. Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>.</p>
 </main>
 <script>
 // Prototype only: one list of events with four filters. The filter lives in the URL hash
@@ -267,6 +251,17 @@
     row.querySelector('.task-body').insertBefore(badge, row.querySelector('.task-title').nextSibling);
     return row;
   }
+
+  // Who the ball is with. Set on the card, or on a row when the card mixes people. It is shown
+  // only in the All view, where there are no cards to say it.
+  byGroup.querySelectorAll('.task').forEach(function (li) {
+    var who = li.dataset.waiting || li.closest('[data-waiting]').dataset.waiting;
+    var note = document.createElement('span');
+    note.className = 'task-note waiting-note';
+    note.textContent = 'Waiting on: ' + who;
+    var body = li.querySelector('.task-body');
+    body.insertBefore(note, body.querySelector('.assignee-note'));
+  });
 
   // Build the All view once from the same rows.
   var pinned = document.getElementById('no-assignees');
