@@ -5,6 +5,10 @@ set -euo pipefail
 sudo chown -R "$(id -u):$(id -g)" "$HOME/.config/gcloud" "$HOME/.config/gh"
 # ~/.claude/commands is a read-only bind mount from the host; skip it
 sudo find "$HOME/.claude" -path "$HOME/.claude/commands" -prune -o -exec chown "$(id -u):$(id -g)" {} +
+# The claude-code feature installs as root; vscode must own it so Claude Code's auto-update can replace it
+NPM_PREFIX="$(npm config get prefix)"
+sudo chown -R "$(id -u):$(id -g)" "$NPM_PREFIX/lib/node_modules/@anthropic-ai"
+sudo chown -h "$(id -u):$(id -g)" "$NPM_PREFIX/bin/claude"
 
 # npm's global prefix is nvm's, which vscode can write to, so this needs no sudo
 # shellcheck source=terraform/neon.sh
