@@ -21,11 +21,12 @@ What we get out of this — the goals and deliverables:
 
 All user steps are done (2026-11-03). The deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`), and all three serve HTTPS with Google-managed certificates (prod `v1.0.228`). The main site (`techexcellence.io`, `www`) is never mapped.
 
-Next is Step 5 (agent): Keycloak client URLs through the admin API, plus the decoupling (drop `RUN_APP_SUFFIX` from `docker/keycloak/Dockerfile.cloud`, `cloud-realm.jq`, `prod-realm.jq` and `.github/actions/build-cloud-images`). Then Step 6: switch the URLs in `_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud`. Prove each with an acceptance run.
+Step 5 is done (2026-11-03): the Keycloak image bakes in no frontend URLs, and the deploy sets the `shop-frontend` client's URLs in both realms through the admin API (`.github/scripts/set-keycloak-client-urls.sh`, run by `.github/actions/deploy-keycloak-cloud`): the `run.app` URLs computed at deploy time plus `events-qa.` (realm `shop`) and `events.` (realm `shop-prod`).
+
+Next is Step 6 (agent): switch the URLs in `_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud`, proven with an acceptance run.
 
 ## Steps
 
-- [ ] Step 5: Keycloak clients: add `https://events.<domain>` (realm `shop-prod`) and `https://events-qa.<domain>` (realm `shop`) to redirect URIs, web origins and post-logout redirect URIs. Keep the `run.app` entries until the switch is proven. **Decoupling (decided):** stop baking frontend URLs into the image. Drop `RUN_APP_SUFFIX` from `docker/keycloak/Dockerfile.cloud`, `cloud-realm.jq` and `prod-realm.jq` and from `.github/actions/build-cloud-images`. Have the deploy set the `shop-frontend` client's URLs idempotently through the Keycloak admin API after Keycloak is up, computing the acceptance `run.app` URLs at deploy time. A project rebuild then needs no Keycloak image rebuild, which simplifies Step 10 of `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md`
 - [ ] Step 6: Switch the URLs, all in `.github/workflows/_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud` (see the inventory below). System tests follow automatically, because `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml` read the deploy outputs
 - [ ] Step 7: Run acceptance → QA → prod and confirm that the suites pass and a real login works on `events.techexcellence.io`
 - [ ] Step 8: Remove the `run.app` entries from the Keycloak clients and config (optional; keep them if they help debugging). Document the domain setup and the Firebase Hosting / load balancer fallback in the README or the deploy docs
