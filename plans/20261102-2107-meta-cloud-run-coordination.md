@@ -4,12 +4,18 @@
 
 **Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it is not yet a Search Console owner (C Step 1).
 
+## ▶ Next executable step (resume here)
+
+User track (blocks everything in event-hub): C Step 1, add `github-deployer@event-hub-686953.iam.gserviceaccount.com` as an owner of `techexcellence.io` in Webmaster Central. Then C Step 4: CNAMEs `events`, `events-qa`, `auth` → `ghs.googlehosted.com.` at Namecheap, run QA and prod once, and wait for `✅ … is ready`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
+
+In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches only shop and blocks nothing in event-hub until Wave 5.
+
 ## Per-plan status snapshot
 
 | Plan | Status | Items done / total | Touched files (primary) | Notes |
 |---|---|---|---|---|
 | `20261030-1931-deploy-pipeline-to-gcp-cloud-run` (**A**) | refined; only Step 10 left | 9 / 10 | none planned; `setup-gcp.sh` only if `ACCOUNT_STATE_INVALID` recurs | Step 10 is explicitly after **C** Step 6. User runs teardown → setup → acceptance |
-| `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | **not refined**: 3 open questions | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Next step says to `/refine-plan` first |
+| `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | refined (2026-11-03); gated on U4 | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Open questions resolved; executes after U4 |
 | `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 2–3 done | 2 / 9 (Step 1 partly done: `CUSTOM_DOMAIN` set, domain verified) | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 1 and 4 are user steps (Search Console, DNS) |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | refined, ready | 0 / 5 | `optivem/shop`: `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` | Runs from a shop checkout; doesn't need event-hub's live environment |
 
@@ -72,7 +78,6 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 |---|---|---|---|
 | U0 | none (environment) | user pre-step | none; runs `./setup-gcp.sh` |
 | U1 | **D** (all) | standalone, in `optivem/shop` | shop `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` |
-| U2 | **B** (refine only) | standalone, plan-only | `plans/20261102-1953-…` |
 | U3 | **C** Steps 1, 4 (user), 5, 6 (agent) | standalone | `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `build-cloud-images/action.yml`, `docker/keycloak/*` |
 | U4 | **A** Step 10 + **C** Step 7 | atomic single session | none planned (pipeline runs); `setup-gcp.sh` only if a service-account wait turns out to be needed |
 | U5 | **C** Step 8 | standalone | Keycloak realm config, `README.md` / deploy docs |
@@ -80,20 +85,18 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 | U7 | **C** Step 9 | standalone, in `optivem/shop` | shop scripts, deploy workflow, Keycloak config |
 | U8 | **B** Step 6 | standalone, in `optivem/shop` | shop `backend/Dockerfile`, deploy workflow, Keycloak action |
 
-## Needs-decision (genuine ambiguity only)
+## Needs-decision (all resolved 2026-11-03)
 
 ### 1. Does B (cold-start latency) wait until after U4?
 - B declares no ordering, but it measures the live stacks, and U4's rebuild plus the URL switch (custom-domain mapping is preview and itself adds latency) change what it would measure. It also shares three files with C.
-- **Default used in the waves (recommended):** yes. Refine B now (U2), and execute it only after U4. **Why:** measuring before the switch would mean measuring again afterwards anyway.
-- **Question for the user:** keep that default, or measure today's `run.app` baseline first? The baseline would be thrown away by the teardown in U4.
+- **Decided (2026-11-03):** yes. B is refined now (U2) and executes only after U4. **Why:** measuring before the switch would mean measuring again afterwards anyway.
 
 ## Execution waves
 
 ### Wave 1 — can start now
 
-**Batch A (parallel-safe, 2 agent sessions + 1 user track):**
+**Batch A (parallel-safe, 1 agent session + 1 user track):**
 - **U1:** plan **D**, all steps. Agent session in an `optivem/shop` checkout: `/execute-plan` with the plan's path (it lives in event-hub: `../event-hub/plans/20261102-2015-sync-gcp-scripts-to-shop.md`, or copy it into shop's `plans/`). Touches only shop files.
-- **U2:** `/refine-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md` to resolve its 3 open questions. Plan-only edit.
 - **U0 + C Step 1 (user):** ~~`./setup-gcp.sh`~~ (done 2026-11-02, project `event-hub-686953`), then add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
 
 ### Wave 2 — after the user track of Wave 1
