@@ -46,6 +46,8 @@ All resolved before execution (2026-11-03):
 
 ## Apply to optivem/shop
 
+**Two-way merge (user rule, 2026-11-03):** don't copy files from one repo to the other. For each shared file, compare shop's and event-hub's versions hunk by hunk and keep the best combination: event-hub's fixes go into shop, and anything shop does better (handling, messages, checks) comes back into event-hub. Keep only real project differences apart (names, database list, shop's `deploy-config.yml` step). When a unit finishes, both repos have the same logic, and each repo's commit message names what came from the other.
+
 `optivem/shop` has the same Cloud Run + Neon + Keycloak setup, so it has the same cold starts. Once Steps 1–5 are done here:
 
 - [ ] Step 6: In `optivem/shop`, create `plans/<timestamp>-reduce-cloud-run-cold-start-latency.md` that lists the event-hub commits from Steps 1–4 and the min-instances decision. Use shop's service and secret names (`shop-*` instead of `event-hub-*`), and check shop's equivalents of `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml` and `.github/actions/deploy-keycloak-cloud/action.yml` before editing. Then execute it there: port the changes, run one acceptance dispatch, and re-measure with the ported `scripts/measure-latency.sh`.

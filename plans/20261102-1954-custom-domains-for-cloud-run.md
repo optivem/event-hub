@@ -64,6 +64,8 @@ All resolved before execution (2026-11-02):
 
 ## Apply to optivem/shop
 
+**Two-way merge (user rule, 2026-11-03):** don't copy files from one repo to the other. For each shared file, compare shop's and event-hub's versions hunk by hunk and keep the best combination: event-hub's fixes go into shop, and anything shop does better (handling, messages, checks) comes back into event-hub. Keep only real project differences apart (names, database list, shop's `deploy-config.yml` step). When a unit finishes, both repos have the same logic, and each repo's commit message names what came from the other.
+
 `optivem/shop` is also served only at `*.run.app` URLs. The same principles from **Decisions** apply there: a subdomain of an existing site, not a whole site; one subdomain per stage (`<name>.`, `<name>-qa.`, `<name>-acc.`); and free Cloud Run domain mapping. Once Steps 1 and 4–8 work here:
 
 - [ ] Step 9: In `optivem/shop`, create `plans/<timestamp>-custom-domains-for-cloud-run.md` that lists the event-hub commits from Steps 2–8. Ask the user which domain and subdomains shop should use; it is not `techexcellence.io`. Then execute it there: Search Console verification and CNAMEs (user steps), domain mappings in its `setup-gcp.sh` / `teardown-gcp.sh`, Keycloak redirect URIs and web origins, and app and system-test URLs. Finish with one acceptance → QA → prod run.

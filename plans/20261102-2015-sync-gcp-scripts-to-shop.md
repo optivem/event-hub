@@ -14,9 +14,11 @@
 - A fresh `./setup-gcp.sh` doesn't stop to ask for a Keycloak admin password: it generates one unless `KC_ADMIN_PASSWORD` is set
 - Shop-specific behaviour is kept: step 4 still removes `deploy-config.yml`
 
+**Two-way merge (user rule, 2026-11-03):** don't copy files from one repo to the other. For each shared file, compare shop's and event-hub's versions hunk by hunk and keep the best combination: event-hub's fixes go into shop, and anything shop does better (handling, messages, checks) comes back into event-hub. Keep only real project differences apart (names, database list, shop's `deploy-config.yml` step). When a unit finishes, both repos have the same logic, and each repo's commit message names what came from the other.
+
 ## ▶ Next executable step (resume here)
 
-Step 1, in a checkout of `optivem/shop`: port the event-hub teardown commits `dd19381`, `e1e1269` and `1d4d5b4` into shop's `teardown-gcp.sh` by hand. Don't copy the file over; shop has an extra step 4 (see the Findings below).
+Step 1, in a checkout of `optivem/shop`: port the event-hub teardown commits `dd19381`, `e1e1269` and `1d4d5b4` into shop's `teardown-gcp.sh` as a two-way merge: compare the two scripts hunk by hunk, bring event-hub's fixes into shop, and bring anything shop does better back into event-hub. Don't copy the file over; shop has an extra step 4 (see the Findings below).
 
 ## Findings (2026-11-02, compared with shop `main`)
 

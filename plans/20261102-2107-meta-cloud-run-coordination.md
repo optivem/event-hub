@@ -82,7 +82,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 | Unit | Plans | Type | Touched files (primary) |
 |---|---|---|---|
 | U0 | none (environment) | user pre-step | none; runs `./setup-gcp.sh` |
-| U1 | **D** (all) | standalone, in `optivem/shop` | shop `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` |
+| U1 | **D** (all) | standalone, two-way merge shop ↔ event-hub | shop and event-hub `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` |
 | U3 | **C** Steps 5, 6 (agent; user Steps 1, 4 done 2026-11-03) | standalone | `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `build-cloud-images/action.yml`, `docker/keycloak/*` |
 | U4 | **A** Step 10 + **C** Step 7 | atomic single session | none planned (pipeline runs); `setup-gcp.sh` only if a service-account wait turns out to be needed |
 | U9 | **E** Steps 1–2 (Step 3 rides on U4) | standalone | `prod-stage.yml`, `bump-patch-version.yml`, remote tags |
@@ -152,6 +152,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 - Anything outside the pre-authorized list that is destructive, spends money beyond the known Cloud Run idle cost, or deletes remote state.
 
 **Run rules:**
+- **Shop units (U1, U7, U8) are a two-way merge (user rule, 2026-11-03):** don't copy files from one repo to the other. For each shared file, compare shop's and event-hub's versions hunk by hunk and keep the best combination: event-hub's fixes go into shop, and anything shop does better (handling, messages, checks) comes back into event-hub. Keep only real project differences apart (names, database list, shop's `deploy-config.yml` step). When a unit finishes, both repos have the same logic, and each repo's commit message names what came from the other. A unit can therefore also commit to event-hub.
 - Until plan E lands and its tags are renamed, always pass `-f version=<rc>` to `qa-stage.yml` and `prod-stage.yml`. The default resolution can pick a frontend `v1.3.x` tag.
 - Only one stage workflow at a time (QA and prod share the Keycloak instance).
 - Prod's `bump-patch-version` pushes to `main`: run `git pull --rebase` before every push.
