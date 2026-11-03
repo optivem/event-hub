@@ -14,7 +14,7 @@ What we get out of this — the goals and deliverables:
 - Keycloak login and logout work on each custom domain: redirect URIs and web origins accept it
 - System tests in each stage run against the custom domain, not the `run.app` URL
 - Idle cost stays ~$0: no load balancer; only the domain registration (~$10–15/year) and DNS are paid
-- The deploy creates the domain mappings (idempotent), and deleting the project removes them. `./setup-gcp.sh` prints the one-time DNS and owner steps. The DNS records stay valid across a project rebuild, because they are CNAMEs to `ghs.googlehosted.com`
+- The deploy creates the domain mappings (idempotent, taking a hostname over from a stale project with `--force-override`), and `./teardown-gcp.sh` deletes them before the project. `./setup-gcp.sh` prints the one-time DNS and owner steps. The DNS records stay valid across a project rebuild, because they are CNAMEs to `ghs.googlehosted.com`
 - If preview latency ever becomes a problem, there is a documented way to move to Firebase Hosting or a load balancer
 
 ## ▶ Next executable step (resume here)
@@ -25,11 +25,12 @@ Step 5 is done (2026-11-03): the Keycloak image bakes in no frontend URLs, and t
 
 Step 6 is done (2026-11-03, `c976257`, acceptance run 41652268692 green): when `CUSTOM_DOMAIN` is set, Keycloak runs at `auth.` for every stack (issuer `https://auth.techexcellence.io/realms/shop`), prod's frontend URL is `events.` and QA's is `events-qa.`; acceptance stays on `run.app`. The deploy waits on `run.app` first, then up to 30 min for each custom domain's certificate.
 
-Next is Step 7, run as unit **U4** of `plans/20261102-2107-meta-cloud-run-coordination.md` together with Step 10 of the Cloud Run plan: teardown → setup → re-add the deployer as Search Console owner → acceptance → QA → prod → real login on `events.techexcellence.io`.
+Step 7 is done (2026-11-03, unit U4): after teardown → setup on the new project `event-hub-ef289c`, acceptance 41673649275, QA 41680237722 and prod 41690401282 (`v1.0.229`) passed, and a real login as `prod-check` works on `events.techexcellence.io`.
+
+Next is **Step 8** (unit U5, Wave 4 of the meta-plan): drop the `run.app` entries from the Keycloak client URLs if they no longer help (`.github/scripts/set-keycloak-client-urls.sh`), and document the domain setup in `README.md`: Search Console owner after every setup, the CNAMEs, `--force-override` / teardown ordering, the cold-start note, and the Firebase Hosting / load balancer fallback.
 
 ## Steps
 
-- [ ] Step 7: Run acceptance → QA → prod and confirm that the suites pass and a real login works on `events.techexcellence.io`
 - [ ] Step 8: Remove the `run.app` entries from the Keycloak clients and config (optional; keep them if they help debugging). Document the domain setup and the Firebase Hosting / load balancer fallback in the README or the deploy docs
 
 ## Decisions
