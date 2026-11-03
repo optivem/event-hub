@@ -14,7 +14,7 @@
 
 ## ▶ Next executable step (resume here)
 
-Step 2 (user): the `frontend-v1.3.212`–`frontend-v1.3.214` tags exist. Delete the bare tags: `git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214` (and `git tag -d v1.3.212 v1.3.213 v1.3.214` locally). Step 3 follows on the next prod release (U4).
+Step 2 is done (2026-11-03): only `frontend-v1.3.212`–`214` exist; the bare `v1.3.x` tags are deleted. Next is Step 3, verified on the next prod release (unit U4 of `plans/20261102-2107-meta-cloud-run-coordination.md`).
 
 ## Findings (2026-11-03)
 
@@ -34,7 +34,6 @@ All resolved before execution (2026-11-03):
 
 ## Steps
 
-- [ ] Step 2 (pre-approved 2026-11-03): `frontend-v1.3.212`, `frontend-v1.3.213` and `frontend-v1.3.214` exist on the same commits as the bare tags. Only the deletion of the bare tags remains; the user runs `git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214`.
 - [ ] Step 3: Verify on the next prod release (U4 in the meta-plan): it publishes `frontend-v1.3.215`, no `v1.3.215` appears, and the bump commit says `post frontend-v1.3.215`. Then run `qa-stage.yml` once **without** `-f version=` after the RC cleanup, and check that it resolves a system tag.
 
 ## Note (out of scope)

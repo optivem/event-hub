@@ -8,8 +8,7 @@
 
 Wave 2 is done (2026-11-03): **U3** (C Steps 5–6, acceptance 41652268692 green, `auth.` issuer live), **U9** (E Step 1 + `frontend-v1.3.212`–`214` tags pushed) and **U1** (plan D deleted: shop already had the merge, shop `ef3eeba1`).
 
-Before U4, the user runs `gcloud auth login` (the token expired on 2026-11-03 and the agent can't re-authenticate non-interactively), and deletes the bare frontend tags (the agent's permission check refuses remote tag deletion):
-`git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214 && git tag -d v1.3.212 v1.3.213 v1.3.214`
+The bare `v1.3.212`–`214` tags are deleted (E Step 2 done) and gcloud is re-authenticated (2026-11-03).
 
 Next is **U4** (Wave 3): A Step 10 + C Step 7, atomic — `./teardown-gcp.sh` → `./setup-gcp.sh` → user re-adds the new `GCP_SERVICE_ACCOUNT` as a Search Console owner of `techexcellence.io` → wait ~5 min → acceptance → QA (with `-f version=<rc>`) → user QA sign-off → prod → login on `events.techexcellence.io`; also verify E Step 3 on that prod release.
 
@@ -21,7 +20,7 @@ Next is **U4** (Wave 3): A Step 10 + C Step 7, atomic — `./teardown-gcp.sh` �
 | `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | refined (2026-11-03); gated on U4 | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Open questions resolved; executes after U4 |
 | `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–6 done | 6 / 9 | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 5–6 landed 2026-11-03 (`235f7eb`, `c976257`); Keycloak issuer is `auth.` |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | done, deleted 2026-11-03 (`db0a68c`) | — | — | shop already carried the merge (shop `33c832c8`, `ef3eeba1`); shop checkout is at `/home/vscode/shop` |
-| `20261103-1158-frontend-tag-prefix` (**E**) | Step 1 done (`6a1ccae`); Step 2 half done | 1 / 3 | `.github/workflows/prod-stage.yml`, `.github/workflows/bump-patch-version.yml`; remote tags `v1.3.212`–`214` | `frontend-v` tags pushed; user deletes the bare `v1.3.212`–`214`. Step 3 is verified by U4's prod release |
+| `20261103-1158-frontend-tag-prefix` (**E**) | Steps 1–2 done | 2 / 3 | `.github/workflows/prod-stage.yml`, `.github/workflows/bump-patch-version.yml`; remote tags `v1.3.212`–`214` | Tags renamed to `frontend-v1.3.212`–`214`. Step 3 is verified by U4's prod release |
 
 ## Dependency graph
 
