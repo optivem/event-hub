@@ -1,9 +1,11 @@
 name: 'Deploy Keycloak to Cloud Run'
 description: >-
-  Deploys the one Keycloak every stack shares, waits for the realm the stack uses, and sets the
-  shop-frontend client's URLs in both realms (.github/scripts/set-keycloak-client-urls.sh).
+  Deploys the one Keycloak every stack shares, maps auth.<custom-domain> to it when a domain is
+  given, waits for the realm the stack uses, and sets the shop-frontend client's URLs in both
+  realms (.github/scripts/set-keycloak-client-urls.sh).
   Redeploys only when the image, a setting or the db credentials changed, so one workflow
-  doesn't restart Keycloak under another's tests. Needs gcloud authenticated.
+  doesn't restart Keycloak under another's tests. Needs gcloud authenticated, with the beta
+  component when a custom domain is given.
 
 inputs:
   image:
@@ -26,13 +28,27 @@ inputs:
     required: false
     default: 'shop'
   custom-domain:
-    description: 'Domain the frontends are also served at (events., events-qa.); empty for run.app only'
+    description: >-
+      Custom domain: Keycloak is served at auth.<domain> (its hostname and issuer), and the
+      frontends at events. and events-qa.<domain>. Empty for run.app only
     required: false
     default: ''
 
 runs:
   using: 'composite'
   steps:
+    - name: Resolve URLs
+      id: urls
+      shell: bash
+      env:
+        SERVICE_URL: https://${{ inputs.system }}-keycloak-${{ inputs.project-number }}.${{ inputs.region }}.run.app
+        CUSTOM_DOMAIN: ${{ inputs.custom-domain }}
+      # public is Keycloak's hostname (and so its issuer); service is where the container answers first
+      run: |
+        public="$SERVICE_URL"
+        [[ -z "$CUSTOM_DOMAIN" ]] || public="https://auth.${CUSTOM_DOMAIN}"
+        { echo "service=${SERVICE_URL}"; echo "public=${public}"; } >> "$GITHUB_OUTPUT"
+
     - name: Deploy
       shell: bash
       env:
@@ -41,16 +57,16 @@ runs:
         PROJECT: ${{ inputs.project }}
         PROJECT_NUMBER: ${{ inputs.project-number }}
         REGION: ${{ inputs.region }}
+        HOSTNAME_URL: ${{ steps.urls.outputs.public }}
       run: |
         set -euo pipefail
-        url() { echo "https://$1-${PROJECT_NUMBER}.${REGION}.run.app"; }
         db="$(gcloud secrets versions access latest --secret="${SYSTEM}-db")"
         db_host="$(jq -r .host <<< "$db")"; db_port="$(jq -r .port <<< "$db")"
         db_user="$(jq -r .user <<< "$db")"; db_password="$(jq -r .password <<< "$db")"
         echo "::add-mask::${db_password}"
         env_file="${RUNNER_TEMP}/keycloak-env.json"
         jq -n \
-          --arg host "$(url "${SYSTEM}-keycloak")" \
+          --arg host "$HOSTNAME_URL" \
           --arg dburl "jdbc:postgresql://${db_host}:${db_port}/${SYSTEM//-/_}_keycloak?sslmode=require" \
           --arg dbuser "$db_user" --arg dbpass "$db_password" \
           '{KC_HOSTNAME:$host, KC_DB_URL:$dburl, KC_DB_USERNAME:$dbuser, KC_DB_PASSWORD:$dbpass,
@@ -71,21 +87,45 @@ runs:
         fi
         rm -f "$env_file"
 
+    # Before the waits: the hostname is auth.<domain>, so it must be mapped for the realm to be reachable there.
+    - name: Map Custom Domain (auth.${{ inputs.custom-domain }})
+      if: inputs.custom-domain != ''
+      shell: bash
+      env:
+        SERVICE: ${{ inputs.system }}-keycloak
+        DOMAIN: auth.${{ inputs.custom-domain }}
+        REGION: ${{ inputs.region }}
+        PROJECT: ${{ inputs.project }}
+      run: ${{ github.action_path }}/../../scripts/ensure-domain-mapping.sh
+
     - name: Wait for Keycloak (cold start + realm import)
       uses: optivem/actions/wait-for-endpoints@v1
       with:
         endpoints: |
           [
-            {"name": "Keycloak ${{ inputs.realm }}", "url": "https://${{ inputs.system }}-keycloak-${{ inputs.project-number }}.${{ inputs.region }}.run.app/realms/${{ inputs.realm }}/.well-known/openid-configuration"}
+            {"name": "Keycloak ${{ inputs.realm }}", "url": "${{ steps.urls.outputs.service }}/realms/${{ inputs.realm }}/.well-known/openid-configuration"}
           ]
         max-attempts: '60'
         wait-seconds: '10'
         timeout-seconds: '900'
 
+    # A new mapping's certificate takes ~15 minutes, so this waits longer than the cold start.
+    - name: Wait for Keycloak at auth.${{ inputs.custom-domain }}
+      if: inputs.custom-domain != ''
+      uses: optivem/actions/wait-for-endpoints@v1
+      with:
+        endpoints: |
+          [
+            {"name": "Keycloak ${{ inputs.realm }} (custom domain)", "url": "${{ steps.urls.outputs.public }}/realms/${{ inputs.realm }}/.well-known/openid-configuration"}
+          ]
+        max-attempts: '180'
+        wait-seconds: '10'
+        timeout-seconds: '1800'
+
     - name: Set Frontend Client URLs
       shell: bash
       env:
-        KEYCLOAK_URL: https://${{ inputs.system }}-keycloak-${{ inputs.project-number }}.${{ inputs.region }}.run.app
+        KEYCLOAK_URL: ${{ steps.urls.outputs.public }}
         SYSTEM: ${{ inputs.system }}
         PROJECT: ${{ inputs.project }}
         PROJECT_NUMBER: ${{ inputs.project-number }}

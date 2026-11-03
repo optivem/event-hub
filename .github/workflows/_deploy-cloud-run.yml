@@ -194,7 +194,8 @@ jobs:
   deploy-keycloak:
     needs: promote-images
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Up to 30 minutes of it is the wait for a new auth. certificate
+    timeout-minutes: 60
     permissions:
       contents: read
       id-token: write
@@ -224,20 +225,12 @@ jobs:
           realm: ${{ inputs.realm }}
           custom-domain: ${{ vars.CUSTOM_DOMAIN }}
 
-      - name: Map Custom Domain (auth.${{ vars.CUSTOM_DOMAIN }})
-        if: vars.CUSTOM_DOMAIN != ''
-        env:
-          SERVICE: ${{ vars.SYSTEM_NAME }}-keycloak
-          DOMAIN: auth.${{ vars.CUSTOM_DOMAIN }}
-          REGION: ${{ vars.GCP_REGION }}
-          PROJECT: ${{ vars.GCP_PROJECT_ID }}
-        run: ./.github/scripts/ensure-domain-mapping.sh
-
   # === Deploy: Stack ===
   deploy-stack:
     needs: [promote-images, deploy-keycloak]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # Up to 30 minutes of it is the wait for a new events./events-qa. certificate
+    timeout-minutes: 60
     permissions:
       contents: read
       id-token: write
@@ -276,12 +269,26 @@ jobs:
         with:
           install_components: beta
 
+      # With CUSTOM_DOMAIN, Keycloak is at auth. for every stack (one shared instance, one
+      # hostname), and prod and QA are at events. and events-qa.; acceptance stays on run.app.
+      # FRONTEND_SERVICE_URL is the run.app URL, which answers before a new mapping's certificate.
       - name: Resolve Stack Settings
         id: stack
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
         run: |
           set -euo pipefail
           url() { echo "https://$1-${PROJECT_NUMBER}.${REGION}.run.app"; }
           p="${SYSTEM}-${STACK}"
+          frontend_url="$(url "${p}-frontend")"
+          keycloak_url="$(url "${SYSTEM}-keycloak")"
+          if [[ -n "$CUSTOM_DOMAIN" ]]; then
+            keycloak_url="https://auth.${CUSTOM_DOMAIN}"
+            case "$STACK" in
+              prod) frontend_url="https://events.${CUSTOM_DOMAIN}" ;;
+              qa) frontend_url="https://events-qa.${CUSTOM_DOMAIN}" ;;
+            esac
+          fi
           {
             echo "DB_NAME=${SYSTEM//-/_}_${STACK//-/_}"
             echo "SA=runtime@${PROJECT}.iam.gserviceaccount.com"
@@ -291,8 +298,9 @@ jobs:
             echo "FRONTEND_NAME=${p}-frontend"
             echo "EXT_URL=$(url "${p}-${EXT_SERVICE}")"
             echo "BACKEND_URL=$(url "${p}-backend")"
-            echo "FRONTEND_URL=$(url "${p}-frontend")"
-            echo "KEYCLOAK_URL=$(url "${SYSTEM}-keycloak")"
+            echo "FRONTEND_SERVICE_URL=$(url "${p}-frontend")"
+            echo "FRONTEND_URL=${frontend_url}"
+            echo "KEYCLOAK_URL=${keycloak_url}"
           } | tee -a "$GITHUB_OUTPUT" >> "$GITHUB_ENV"
 
       - name: Deploy External Systems (${{ env.EXTERNAL_SYSTEMS }})
@@ -335,12 +343,15 @@ jobs:
       - name: Deploy Backend
         run: |
           set -euo pipefail
+          # Both frontend URLs, so the run.app one keeps working next to the custom domain
+          origins="$FRONTEND_URL"
+          [[ "$FRONTEND_SERVICE_URL" == "$FRONTEND_URL" ]] || origins="${FRONTEND_URL},${FRONTEND_SERVICE_URL}"
           env_file="${RUNNER_TEMP}/backend-env.json"
           jq -n \
             --arg host "$DB_HOST" --arg port "$DB_PORT" --arg name "$DB_NAME" \
             --arg user "$DB_USER" --arg pass "$DB_PASSWORD" \
             --arg ext "$EXT_URL" --arg mode "$EXTERNAL_SYSTEM_MODE" \
-            --arg origin "$FRONTEND_URL" --arg issuer "${KEYCLOAK_URL}/realms/${REALM}" \
+            --arg origin "$origins" --arg issuer "${KEYCLOAK_URL}/realms/${REALM}" \
             '{POSTGRES_DB_HOST:$host, POSTGRES_DB_PORT:$port, POSTGRES_DB_NAME:$name,
               POSTGRES_DB_USER:$user, POSTGRES_DB_PASSWORD:$pass,
               ERP_API_URL:($ext + "/erp"), CLOCK_API_URL:($ext + "/clock"), TAX_API_URL:($ext + "/tax"),
@@ -369,7 +380,7 @@ jobs:
         with:
           endpoints: |
             [
-              { "name": "Eventhub UI", "url": "${{ env.FRONTEND_URL }}/" },
+              { "name": "Eventhub UI", "url": "${{ env.FRONTEND_SERVICE_URL }}/" },
               { "name": "Eventhub API", "url": "${{ env.BACKEND_URL }}/health" },
               { "name": "ERP", "url": "${{ env.EXT_URL }}/erp/health" },
               { "name": "Clock", "url": "${{ env.EXT_URL }}/clock/health" }
@@ -385,3 +396,16 @@ jobs:
           SERVICE: ${{ env.FRONTEND_NAME }}
           DOMAIN: ${{ inputs.stack == 'prod' && 'events' || 'events-qa' }}.${{ vars.CUSTOM_DOMAIN }}
         run: ./.github/scripts/ensure-domain-mapping.sh
+
+      # A new mapping's certificate takes ~15 minutes; the system tests use this URL.
+      - name: Wait for Custom Domain
+        if: env.FRONTEND_URL != env.FRONTEND_SERVICE_URL
+        uses: optivem/actions/wait-for-endpoints@v1
+        with:
+          endpoints: |
+            [
+              { "name": "Eventhub UI (custom domain)", "url": "${{ env.FRONTEND_URL }}/" }
+            ]
+          max-attempts: '180'
+          wait-seconds: '10'
+          timeout-seconds: '1800'
