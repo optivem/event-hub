@@ -1,14 +1,16 @@
 # 2026-11-02 21:07 UTC — Plan coordination meta-plan: Cloud Run follow-ups
 
-**Plans analysed:** 4 in-scope, 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
+**Plans analysed:** 5 in-scope (plan **E** added 2026-11-03), 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
 **Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it has been a Search Console owner of `techexcellence.io` since 2026-11-03 (C Step 1 done).
 
 ## ▶ Next executable step (resume here)
 
-The Wave 1 and Wave 2 user tracks are done (2026-11-03): C Steps 1 and 4 are complete, and `events.`, `events-qa.` and `auth.techexcellence.io` serve HTTPS (prod `v1.0.228`). Next is U3, agent only: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (C Steps 5–6).
+The Wave 1 and Wave 2 user tracks are done (2026-11-03): C Steps 1 and 4 are complete, and `events.`, `events-qa.` and `auth.techexcellence.io` serve HTTPS (prod `v1.0.228`). Next is Wave 2, agent only, two disjoint units that can run in parallel:
+- **U3:** C Steps 5–6 in `plans/20261102-1954-custom-domains-for-cloud-run.md`.
+- **U9:** plan **E** Steps 1–2 in `plans/20261103-1158-frontend-tag-prefix.md`.
 
-In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches only shop and blocks nothing in event-hub until Wave 5.
+Also ready any time: **U1** (plan D) in `/workspaces/shop`. Running `/execute-plan` on this meta-plan does all three (see Autonomous execution).
 
 ## Per-plan status snapshot
 
@@ -16,8 +18,9 @@ In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches onl
 |---|---|---|---|---|
 | `20261030-1931-deploy-pipeline-to-gcp-cloud-run` (**A**) | refined; only Step 10 left | 9 / 10 | none planned; `setup-gcp.sh` only if `ACCOUNT_STATE_INVALID` recurs | Step 10 is explicitly after **C** Step 6. User runs teardown → setup → acceptance |
 | `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | refined (2026-11-03); gated on U4 | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Open questions resolved; executes after U4 |
-| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 2–3 done | 2 / 9 (Step 1 partly done: `CUSTOM_DOMAIN` set, domain verified) | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 1 and 4 are user steps (Search Console, DNS) |
+| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–4 done | 4 / 9 | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | All user steps done 2026-11-03; three domains serve HTTPS |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | refined, ready | 0 / 5 | `optivem/shop`: `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` | Runs from a shop checkout; doesn't need event-hub's live environment |
+| `20261103-1158-frontend-tag-prefix` (**E**) | refined, ready | 0 / 3 | `.github/workflows/prod-stage.yml`, `.github/workflows/bump-patch-version.yml`; remote tags `v1.3.212`–`214` | Step 3 is verified by U4's prod release |
 
 ## Dependency graph
 
@@ -26,6 +29,8 @@ C Steps 1,4 (user) ─► C Steps 5,6 ─► A Step 10 ─┐
                                                 ├─► C Step 7 ─► C Step 8 ─► C Step 9 (shop)
                                                 │
              (needs-decision #1, default edge)  └─► B Steps 1–5 ─► B Step 6 (shop)
+
+E Steps 1,2 ─────────────────────────────────────► E Step 3 (verified inside U4's prod run)
 
 D (shop) ─────────────────────────────────────────► C Step 9 (shop), B Step 6 (shop)   [file order, not a declared edge]
 ```
@@ -80,6 +85,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 | U1 | **D** (all) | standalone, in `optivem/shop` | shop `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` |
 | U3 | **C** Steps 5, 6 (agent; user Steps 1, 4 done 2026-11-03) | standalone | `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `build-cloud-images/action.yml`, `docker/keycloak/*` |
 | U4 | **A** Step 10 + **C** Step 7 | atomic single session | none planned (pipeline runs); `setup-gcp.sh` only if a service-account wait turns out to be needed |
+| U9 | **E** Steps 1–2 (Step 3 rides on U4) | standalone | `prod-stage.yml`, `bump-patch-version.yml`, remote tags |
 | U5 | **C** Step 8 | standalone | Keycloak realm config, `README.md` / deploy docs |
 | U6 | **B** Steps 1–5 | standalone | `scripts/measure-latency.sh`, `backend/Dockerfile`, `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `README.md` |
 | U7 | **C** Step 9 | standalone, in `optivem/shop` | shop scripts, deploy workflow, Keycloak config |
@@ -104,10 +110,13 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 **Batch A (serial, 1 session):**
 - **U3:** C Steps 5 and 6 (agent). C Step 4 was done on 2026-11-03. `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`.
 
+**Batch B (parallel-safe with A: disjoint files):**
+- **U9:** plan **E** Steps 1–2. Must land before U4, so U4's prod release proves it (E Step 3).
+
 ### Wave 3 — after C Step 6 lands
 
 **Batch A (serial, 1 session, user and agent together):**
-- **U4:** A Step 10 + C Step 7, atomic (Consolidation #1): `./teardown-gcp.sh` → `./setup-gcp.sh` → re-add the new deployer service account as a Search Console owner → wait about 5 min → `gh workflow run acceptance-stage.yml` → QA → prod → login on `events.techexcellence.io`. If `ACCOUNT_STATE_INVALID` comes back, add the service-account wait to `setup-gcp.sh` and a matching step to plan **D**, or to shop directly if D has already landed.
+- **U4:** A Step 10 + C Step 7, atomic (Consolidation #1): `./teardown-gcp.sh` → `./setup-gcp.sh` → re-add the new deployer service account as a Search Console owner → wait about 5 min → `gh workflow run acceptance-stage.yml` → QA → prod → login on `events.techexcellence.io`; also check E Step 3 on that prod release. If `ACCOUNT_STATE_INVALID` comes back, add the service-account wait to `setup-gcp.sh` and a matching step to plan **D**, or to shop directly if D has already landed.
 
 ### Wave 4 — after Wave 3 passes
 
@@ -126,8 +135,29 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 - `gh variable list`: confirm the `GCP_*` variables exist before any pipeline run (they're missing right now).
 - Only one session at a time runs `./setup-gcp.sh`, `./teardown-gcp.sh` or a stage workflow.
 
+## Autonomous execution (decided 2026-11-03)
+
+`/execute-plan` on this meta-plan executes the units in wave order, not just the coordination. The main session orchestrates. Each unit runs in a subagent with the child plan's path, the unit's steps, this section's rules and its touched files. Independent units in one batch run in parallel. After each unit: verify (build, tests, pipeline run), delete the done steps from the child plan, refresh both ▶ blocks, commit and push.
+
+**Pre-authorized by the user:**
+- Running `./teardown-gcp.sh` and `./setup-gcp.sh` for U4, unattended, once U3 and U9 are green. Prod is down while it rebuilds. Answer the teardown confirmation with the project ID from `gh variable get GCP_PROJECT_ID`.
+- Triggering `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml`.
+- Cloning `optivem/shop` to `/workspaces/shop` and pushing to its `main` (U1, U7, U8).
+- Plan E Step 2: re-creating `v1.3.212`–`214` as `frontend-v1.3.x` and deleting the bare tags.
+
+**User gates (stop, give the exact command or step, and wait):**
+- **QA sign-off:** `gh workflow run qa-signoff.yml -f version=<rc> -f result=approved` is the release decision and is always the user's. Before a prod run, stop here.
+- **Search Console owner** after every `./setup-gcp.sh`: a web-only step. Give the user the new `GCP_SERVICE_ACCOUNT` email and the owners link `https://www.google.com/webmasters/verification/details?hl=en&domain=techexcellence.io`.
+- **U7:** which domain shop uses.
+- Anything outside the pre-authorized list that is destructive, spends money beyond the known Cloud Run idle cost, or deletes remote state.
+
+**Run rules:**
+- Until plan E lands and its tags are renamed, always pass `-f version=<rc>` to `qa-stage.yml` and `prod-stage.yml`. The default resolution can pick a frontend `v1.3.x` tag.
+- Only one stage workflow at a time (QA and prod share the Keycloak instance).
+- Prod's `bump-patch-version` pushes to `main`: run `git pull --rebase` before every push.
+- After a mapping is created, poll `curl https://<domain>/` for up to 30 min before calling a certificate stuck.
+
 ## Out of scope of this meta-plan
 
 - Whether each plan's content is correct (use the plan's own refine cycle).
-- Actual execution (use `/execute-plan` against each plan in turn).
 - `plans/deferred/*` (CLA activation, AGPL in the gh-optivem config, import/export of all data): none of them is gated by or gates the plans above.
