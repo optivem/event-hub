@@ -1,7 +1,5 @@
 # 2026-11-02 21:07 UTC — Plan coordination meta-plan: Cloud Run follow-ups
 
-> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-11-03T12:22:09Z`
-
 **Plans analysed:** 5 in-scope (plan **E** added 2026-11-03), 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
 **Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it has been a Search Console owner of `techexcellence.io` since 2026-11-03 (C Step 1 done).
@@ -10,7 +8,7 @@
 
 Wave 2 is done (2026-11-03): **U3** (C Steps 5–6, acceptance 41652268692 green, `auth.` issuer live), **U9** (E Step 1 + `frontend-v1.3.212`–`214` tags pushed) and **U1** (plan D deleted: shop already had the merge, shop `ef3eeba1`).
 
-Before U4, one user action remains: delete the bare frontend tags (the agent's permission check refuses remote tag deletion):
+Before U4, the user runs `gcloud auth login` (the token expired on 2026-11-03 and the agent can't re-authenticate non-interactively), and deletes the bare frontend tags (the agent's permission check refuses remote tag deletion):
 `git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214 && git tag -d v1.3.212 v1.3.213 v1.3.214`
 
 Next is **U4** (Wave 3): A Step 10 + C Step 7, atomic — `./teardown-gcp.sh` → `./setup-gcp.sh` → user re-adds the new `GCP_SERVICE_ACCOUNT` as a Search Console owner of `techexcellence.io` → wait ~5 min → acceptance → QA (with `-f version=<rc>`) → user QA sign-off → prod → login on `events.techexcellence.io`; also verify E Step 3 on that prod release.
