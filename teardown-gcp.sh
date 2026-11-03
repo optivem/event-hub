@@ -44,12 +44,14 @@ source ./state-backend.sh
 STATE_PROJECT=$(find_state_project)
 PROJECT_ID=""
 SYSTEM=""
+REGION=""
 if [[ -n "$STATE_PROJECT" ]]; then
   init_state_backend "${STATE_PROJECT}-tfstate" "$REPO" > /dev/null
   # -json, not -raw: with no outputs, -raw prints a warning to stdout and still exits 0
   OUTPUTS=$(terraform output -json 2> /dev/null) || OUTPUTS="{}"
   PROJECT_ID=$(jq -r '.project_id.value // empty' <<< "$OUTPUTS")
   SYSTEM=$(jq -r '.system_name.value // empty' <<< "$OUTPUTS")
+  REGION=$(jq -r '.region.value // empty' <<< "$OUTPUTS")
 fi
 cd - > /dev/null
 
@@ -80,7 +82,7 @@ if [[ -z "$PROJECT_ID" && -z "$NEON_PROJECT_ID" && ${#LEFTOVER_VARIABLES[@]} -eq
 fi
 
 echo "⚠️  This will permanently delete:"
-[[ -n "$PROJECT_ID" ]] && echo "     - GCP project '$PROJECT_ID' and ALL its resources"
+[[ -n "$PROJECT_ID" ]] && echo "     - GCP project '$PROJECT_ID' and ALL its resources (domain mappings first, so the domains are free for the next setup)"
 [[ -n "$NEON_PROJECT_ID" ]] && echo "     - Neon project '$SYSTEM' ($NEON_PROJECT_ID) and ALL its databases"
 [[ ${#LEFTOVER_VARIABLES[@]} -gt 0 ]] && echo "     - GitHub repo variables: ${LEFTOVER_VARIABLES[*]}"
 echo ""
@@ -100,6 +102,19 @@ echo ""
 
 echo "Step 1/3: Destroying infrastructure with Terraform..."
 if [[ -n "$PROJECT_ID" ]]; then
+  # Domain mappings first: a deleted project stays pending deletion for 30 days, and its mappings
+  # keep their hostnames reserved, so the next project's deploy fails with "already in use
+  # elsewhere". The DNS CNAMEs and the Search Console verification stay; the next deploy re-maps.
+  # Best-effort: a project without Cloud Run (or a failed setup) has no mappings to delete.
+  if [[ -n "$REGION" ]]; then
+    MAPPINGS=$(gcloud beta run domain-mappings list --project="$PROJECT_ID" --region="$REGION" \
+      --format='value(metadata.name)' 2> /dev/null) || MAPPINGS=""
+    for domain in $MAPPINGS; do
+      gcloud beta run domain-mappings delete --domain="$domain" --project="$PROJECT_ID" --region="$REGION" --quiet > /dev/null
+      echo "  ✅ Domain mapping $domain deleted"
+    done
+  fi
+
   # Billing account (needed for terraform destroy)
   use_state_project_for_quota "$STATE_PROJECT"
   BILLING_ACCOUNT=$(gcloud billing accounts list --billing-project="$STATE_PROJECT" --format="value(name)" --limit=1) || {

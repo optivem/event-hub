@@ -18,7 +18,15 @@ gcloud_mapping() { gcloud beta run domain-mappings "$@" --region "$REGION" --pro
 route="$(gcloud_mapping describe --domain "$DOMAIN" --format='value(spec.routeName)' 2> /dev/null || true)"
 if [[ -z "$route" ]]; then
   echo "Mapping ${DOMAIN} to ${SERVICE}..."
-  gcloud_mapping create --service "$SERVICE" --domain "$DOMAIN"
+  if ! out="$(gcloud_mapping create --service "$SERVICE" --domain "$DOMAIN" 2>&1)"; then
+    echo "$out"
+    if grep -q "already in use elsewhere" <<< "$out"; then
+      # Typically a torn-down project (pending deletion for 30 days) that still holds the mapping
+      echo "::error::${DOMAIN} is mapped in another GCP project. Delete it there: gcloud projects undelete <old-project> (if pending deletion), then gcloud beta run domain-mappings delete --domain ${DOMAIN} --region ${REGION} --project <old-project>, then delete the project again. ./teardown-gcp.sh deletes the mappings before the project, so this only happens after a teardown without that step."
+    fi
+    exit 1
+  fi
+  echo "$out"
 elif [[ "$route" != "$SERVICE" ]]; then
   echo "::error::${DOMAIN} is mapped to ${route}, not ${SERVICE}. Delete that mapping first."
   exit 1
