@@ -2,11 +2,11 @@
 
 **Plans analysed:** 4 in-scope, 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
-**Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it is not yet a Search Console owner (C Step 1).
+**Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it has been a Search Console owner of `techexcellence.io` since 2026-11-03 (C Step 1 done).
 
 ## ▶ Next executable step (resume here)
 
-User track (blocks everything in event-hub): C Step 1, add `github-deployer@event-hub-686953.iam.gserviceaccount.com` as an owner of `techexcellence.io` in Webmaster Central. Then C Step 4: CNAMEs `events`, `events-qa`, `auth` → `ghs.googlehosted.com.` at Namecheap, run QA and prod once, and wait for `✅ … is ready`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
+User track (blocks everything in event-hub): C Step 1 is done (2026-11-03). Next is C Step 4: CNAMEs `events`, `events-qa`, `auth` → `ghs.googlehosted.com.` at Namecheap, run QA and prod once, and wait for `✅ … is ready`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
 
 In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches only shop and blocks nothing in event-hub until Wave 5.
 
@@ -97,7 +97,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 
 **Batch A (parallel-safe, 1 agent session + 1 user track):**
 - **U1:** plan **D**, all steps. Agent session in an `optivem/shop` checkout: `/execute-plan` with the plan's path (it lives in event-hub: `../event-hub/plans/20261102-2015-sync-gcp-scripts-to-shop.md`, or copy it into shop's `plans/`). Touches only shop files.
-- **U0 + C Step 1 (user):** ~~`./setup-gcp.sh`~~ (done 2026-11-02, project `event-hub-686953`), then add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner in Webmaster Central. `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
+- **U0 + C Step 1 (user):** ~~`./setup-gcp.sh`~~ (done 2026-11-02, project `event-hub-686953`), then ~~add `$(gh variable get GCP_SERVICE_ACCOUNT)` as an owner~~ (done 2026-11-03). `CUSTOM_DOMAIN` is already set and `techexcellence.io` is verified (2026-11-02).
 
 ### Wave 2 — after the user track of Wave 1
 
