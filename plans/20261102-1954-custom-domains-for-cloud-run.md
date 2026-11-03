@@ -25,8 +25,8 @@ Done on 2026-11-02: the TXT record `google-site-verification=…` is at Namechea
 
 1. ~~**Finish `./setup-gcp.sh`.**~~ Done on 2026-11-02: setup succeeded and created project `event-hub-686953` (us-central1), the Neon project `event-hub` with all five databases, both Secret Manager secrets and the `GCP_*` / `SYSTEM_NAME` repo variables.
 2. ~~**Add the deployer as an owner.**~~ Done on 2026-11-03: `github-deployer@event-hub-686953.iam.gserviceaccount.com` is an owner of `techexcellence.io` in Search Console.
-3. **Add the CNAMEs** at Namecheap (Advanced DNS → Add New Record → CNAME Record): `events`, `events-qa` and `auth`, each → `ghs.googlehosted.com.`. Leave the existing `A @`, `www`, `airline`, `conf` and `kb` records alone.
-4. **Run QA and prod once,** so the deploy creates the mappings. Wait until the "Map Custom Domain" step logs `✅ https://… is ready` (usually about 15 minutes after the CNAME, up to 24 hours). Before it's ready, the deploy only logs a warning.
+3. ~~**Add the CNAMEs**~~ Done on 2026-11-03: `events`, `events-qa` and `auth` → `ghs.googlehosted.com.` are live in public DNS.
+4. **Run QA and prod once** (2026-11-03: acceptance passed and published `v1.0.228-rc.20`; QA passed on it and mapped `events-qa.` (certificate pending); `auth.` is ready. Left: `qa-signoff` for `v1.0.228-rc.20` (user), then prod), so the deploy creates the mappings. Wait until the "Map Custom Domain" step logs `✅ https://… is ready` (usually about 15 minutes after the CNAME, up to 24 hours). Before it's ready, the deploy only logs a warning.
 5. `/clear`, then `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`. The agent does Step 5 (Keycloak client URLs plus decoupling) and Step 6 (switching the URLs).
 
 ## Steps

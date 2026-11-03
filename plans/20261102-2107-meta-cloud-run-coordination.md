@@ -6,7 +6,7 @@
 
 ## ▶ Next executable step (resume here)
 
-User track (blocks everything in event-hub): C Step 1 is done (2026-11-03). Next is C Step 4: CNAMEs `events`, `events-qa`, `auth` → `ghs.googlehosted.com.` at Namecheap, run QA and prod once, and wait for `✅ … is ready`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
+User track (blocks everything in event-hub): C Steps 1 and the CNAMEs of Step 4 are done (2026-11-03), QA ran on `v1.0.228-rc.20`. Left in C Step 4: user runs `qa-signoff` for `v1.0.228-rc.20`, then prod, and waits for `✅ … is ready` on `events.` and `events-qa.`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
 
 In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches only shop and blocks nothing in event-hub until Wave 5.
 
