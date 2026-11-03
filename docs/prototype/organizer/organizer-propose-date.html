@@ -47,6 +47,14 @@
           <dt>Send to</dt>
           <dd>mara.sample@example.com</dd>
         </dl>
+        <fieldset class="field" data-assignee-picker>
+          <legend>Assignees
+            <span class="hint">They follow this invitation, chase the reply, and later review the agenda and the materials. You are ticked by default. Choose at least one. Any organizer can change them later.</span>
+          </legend>
+          <label class="check"><input type="checkbox" value="Ada Example"> <span>Ada Example</span></label>
+          <label class="check"><input type="checkbox" value="Nina Example" data-you checked> <span>Nina Example (you)</span></label>
+          <label class="check"><input type="checkbox" value="Omar Example"> <span>Omar Example</span></label>
+        </fieldset>
         <div class="actions">
           <a class="button" href="organizer-invitation-status.html">Send invitation</a>
           <a class="button secondary" href="organizer-speaker-detail.html">Back</a>
@@ -59,6 +67,7 @@
         <p>Sending the invitation creates the speaker's account. Speakers can't create their own.</p>
         <p>The speaker gets an email with a link to set their password and has 1 week to reply.</p>
         <p>A reminder goes out if they don't reply. After 1 more week, the slot goes back to potential speakers.</p>
+        <p>The event shows under Assigned to me for each assignee straight away, so someone is always looking after the reply.</p>
       </section>
       <section class="card">
         <h2>Where things stand</h2>
@@ -78,5 +87,6 @@
   <p class="proto-next">Next in the flow: <a href="organizer-invitation-status.html">invitation status</a>. Speaker receives this email: &ldquo;Would you like to speak at Tech Excellence?&rdquo;</p>
 </main>
 <script src="../account.js"></script>
+<script src="assignees.js"></script>
 </body>
 </html>

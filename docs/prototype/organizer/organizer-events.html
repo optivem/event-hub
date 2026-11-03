@@ -112,15 +112,15 @@
       </ul>
     </section>
 
-    <section class="card" data-group="unassigned">
-      <h2>Before a date is confirmed</h2>
-      <p class="meta">Assignees are chosen when the date is confirmed, so every organizer sees these.</p>
+    <section class="card" data-group="mine">
+      <h2>Date reservation</h2>
+      <p class="meta">Assignees are chosen when the invitation is sent, so someone always looks after the reply.</p>
       <ul class="tasks">
         <li class="task" data-date="2027-03-18" data-stage="Waiting for reply" data-tone="warn">
           <span class="task-body">
             <span class="task-title">Dana Testcase hasn't replied</span>
             <span class="task-note">Event Storming for Beginners &middot; invited for Thursday 18 March 2027</span>
-            <span class="task-note assignee-note">Assignees: chosen when the date is confirmed</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
           </span>
           <a class="button secondary" href="organizer-invitation-status.html">Open</a>
         </li>
@@ -128,8 +128,8 @@
           <span class="task-body">
             <span class="task-title">Chris Draft accepted the date</span>
             <span class="task-note">Small Steps with TDD &middot; Thursday 15 April 2027</span>
-            <span class="task-note">Confirm it and choose the assignees.</span>
-            <span class="task-note assignee-note">Assignees: chosen when the date is confirmed</span>
+            <span class="task-note">Confirm it. You can still change the assignees.</span>
+            <span class="task-note assignee-note">Assignees: you</span>
           </span>
           <a class="button" href="organizer-confirm-date.html">Confirm date</a>
         </li>
@@ -137,7 +137,7 @@
           <span class="task-body">
             <span class="task-title">Ali Testcase offered other months</span>
             <span class="task-note">No date yet. Propose another one.</span>
-            <span class="task-note assignee-note">Assignees: chosen when the date is confirmed</span>
+            <span class="task-note assignee-note">Assignees: you, Omar Example</span>
           </span>
           <a class="button secondary" href="organizer-other-date.html">Propose date</a>
         </li>
@@ -229,7 +229,7 @@
 
   </div>
 
-  <p class="proto-next">Next in the flow: start with <a href="organizer-potential-speakers.html">potential speakers</a> and Mara Sample's new proposal. Each group lists the soonest event first. Each button opens the event at the step that needs work. In the prototype they all open Mara's event at that stage, so each step and every exception is one click away. <a href="#unassigned">Unassigned</a> is where an organizer picks up new events. <a href="#all">All</a> shows every upcoming event by month, and <a href="#past">Past</a> the finished and cancelled ones. Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>.</p>
+  <p class="proto-next">Next in the flow: start with <a href="organizer-potential-speakers.html">potential speakers</a> and Mara Sample's new proposal. Each group lists the soonest event first. Each button opens the event at the step that needs work. In the prototype they all open Mara's event at that stage, so each step and every exception is one click away. <a href="#unassigned">Unassigned</a> is only for an event whose assignees were all removed. Assignees are chosen when the invitation is sent, so reservations show under Assigned to me. <a href="#all">All</a> shows every upcoming event by month, and <a href="#past">Past</a> the finished and cancelled ones. Jamie Stub's event is assigned to Omar Example only, so you <a href="organizer-review-agenda.html?view=readonly">can read its review but not act on it</a>.</p>
 </main>
 <script>
 // Prototype only: one list of events with four filters. The filter lives in the URL hash
