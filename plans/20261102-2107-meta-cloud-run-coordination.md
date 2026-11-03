@@ -6,7 +6,7 @@
 
 ## ▶ Next executable step (resume here)
 
-User track (blocks everything in event-hub): C Steps 1 and the CNAMEs of Step 4 are done (2026-11-03), QA ran on `v1.0.228-rc.20`. Left in C Step 4: user runs `qa-signoff` for `v1.0.228-rc.20`, then prod, and waits for `✅ … is ready` on `events.` and `events-qa.`. Then U3: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (agent does C Steps 5–6).
+The Wave 1 and Wave 2 user tracks are done (2026-11-03): C Steps 1 and 4 are complete, and `events.`, `events-qa.` and `auth.techexcellence.io` serve HTTPS (prod `v1.0.228`). Next is U3, agent only: `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md` (C Steps 5–6).
 
 In parallel, any time: U1 (plan D) in an `optivem/shop` checkout. It touches only shop and blocks nothing in event-hub until Wave 5.
 
@@ -78,7 +78,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 |---|---|---|---|
 | U0 | none (environment) | user pre-step | none; runs `./setup-gcp.sh` |
 | U1 | **D** (all) | standalone, in `optivem/shop` | shop `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` |
-| U3 | **C** Steps 1, 4 (user), 5, 6 (agent) | standalone | `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `build-cloud-images/action.yml`, `docker/keycloak/*` |
+| U3 | **C** Steps 5, 6 (agent; user Steps 1, 4 done 2026-11-03) | standalone | `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `build-cloud-images/action.yml`, `docker/keycloak/*` |
 | U4 | **A** Step 10 + **C** Step 7 | atomic single session | none planned (pipeline runs); `setup-gcp.sh` only if a service-account wait turns out to be needed |
 | U5 | **C** Step 8 | standalone | Keycloak realm config, `README.md` / deploy docs |
 | U6 | **B** Steps 1–5 | standalone | `scripts/measure-latency.sh`, `backend/Dockerfile`, `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `README.md` |
@@ -102,7 +102,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 ### Wave 2 — after the user track of Wave 1
 
 **Batch A (serial, 1 session):**
-- **U3:** C Step 4 (user: CNAMEs `events`, `events-qa`, `auth` → `ghs.googlehosted.com.`, run QA and prod once, wait for `✅ … is ready`), then C Steps 5 and 6 (agent). `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`.
+- **U3:** C Steps 5 and 6 (agent). C Step 4 was done on 2026-11-03. `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`.
 
 ### Wave 3 — after C Step 6 lands
 

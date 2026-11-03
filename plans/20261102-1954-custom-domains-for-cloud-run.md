@@ -19,19 +19,12 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Your steps for 2026-11-03, in this order. `./setup-gcp.sh` is done. Then the agent continues at Step 5. Already in place: the deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`). The main site (`techexcellence.io`, `www`) is never mapped.
+All user steps are done (2026-11-03). The deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`), and all three serve HTTPS with Google-managed certificates (prod `v1.0.228`). The main site (`techexcellence.io`, `www`) is never mapped.
 
-Done on 2026-11-02: the TXT record `google-site-verification=…` is at Namecheap and live, the `CUSTOM_DOMAIN=techexcellence.io` repo variable is set, and `techexcellence.io` is verified in Search Console.
-
-1. ~~**Finish `./setup-gcp.sh`.**~~ Done on 2026-11-02: setup succeeded and created project `event-hub-686953` (us-central1), the Neon project `event-hub` with all five databases, both Secret Manager secrets and the `GCP_*` / `SYSTEM_NAME` repo variables.
-2. ~~**Add the deployer as an owner.**~~ Done on 2026-11-03: `github-deployer@event-hub-686953.iam.gserviceaccount.com` is an owner of `techexcellence.io` in Search Console.
-3. ~~**Add the CNAMEs**~~ Done on 2026-11-03: `events`, `events-qa` and `auth` → `ghs.googlehosted.com.` are live in public DNS.
-4. **Run QA and prod once** (2026-11-03: acceptance passed and published `v1.0.228-rc.20`; QA passed on it and mapped `events-qa.` (certificate pending); `auth.` is ready. Left: `qa-signoff` for `v1.0.228-rc.20` (user), then prod), so the deploy creates the mappings. Wait until the "Map Custom Domain" step logs `✅ https://… is ready` (usually about 15 minutes after the CNAME, up to 24 hours). Before it's ready, the deploy only logs a warning.
-5. `/clear`, then `/execute-plan plans/20261102-1954-custom-domains-for-cloud-run.md`. The agent does Step 5 (Keycloak client URLs plus decoupling) and Step 6 (switching the URLs).
+Next is Step 5 (agent): Keycloak client URLs through the admin API, plus the decoupling (drop `RUN_APP_SUFFIX` from `docker/keycloak/Dockerfile.cloud`, `cloud-realm.jq`, `prod-realm.jq` and `.github/actions/build-cloud-images`). Then Step 6: switch the URLs in `_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud`. Prove each with an acceptance run.
 
 ## Steps
 
-- [ ] Step 4 (user): Add the CNAME records `events`, `events-qa` and `auth` → `ghs.googlehosted.com.` at the DNS provider. Run QA and prod once, so the deploy creates the mappings. Wait for the certificates (usually about 15 minutes, up to 24 hours); the deploy log and `gcloud beta run domain-mappings describe` show when they are ready
 - [ ] Step 5: Keycloak clients: add `https://events.<domain>` (realm `shop-prod`) and `https://events-qa.<domain>` (realm `shop`) to redirect URIs, web origins and post-logout redirect URIs. Keep the `run.app` entries until the switch is proven. **Decoupling (decided):** stop baking frontend URLs into the image. Drop `RUN_APP_SUFFIX` from `docker/keycloak/Dockerfile.cloud`, `cloud-realm.jq` and `prod-realm.jq` and from `.github/actions/build-cloud-images`. Have the deploy set the `shop-frontend` client's URLs idempotently through the Keycloak admin API after Keycloak is up, computing the acceptance `run.app` URLs at deploy time. A project rebuild then needs no Keycloak image rebuild, which simplifies Step 10 of `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md`
 - [ ] Step 6: Switch the URLs, all in `.github/workflows/_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud` (see the inventory below). System tests follow automatically, because `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml` read the deploy outputs
 - [ ] Step 7: Run acceptance → QA → prod and confirm that the suites pass and a real login works on `events.techexcellence.io`
