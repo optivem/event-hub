@@ -23,11 +23,12 @@ All user steps are done (2026-11-03). The deploy maps `events.`, `events-qa.` an
 
 Step 5 is done (2026-11-03): the Keycloak image bakes in no frontend URLs, and the deploy sets the `shop-frontend` client's URLs in both realms through the admin API (`.github/scripts/set-keycloak-client-urls.sh`, run by `.github/actions/deploy-keycloak-cloud`): the `run.app` URLs computed at deploy time plus `events-qa.` (realm `shop`) and `events.` (realm `shop-prod`).
 
-Next is Step 6 (agent): switch the URLs in `_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud`, proven with an acceptance run.
+Step 6 is done (2026-11-03, `c976257`, acceptance run 41652268692 green): when `CUSTOM_DOMAIN` is set, Keycloak runs at `auth.` for every stack (issuer `https://auth.techexcellence.io/realms/shop`), prod's frontend URL is `events.` and QA's is `events-qa.`; acceptance stays on `run.app`. The deploy waits on `run.app` first, then up to 30 min for each custom domain's certificate.
+
+Next is Step 7, run as unit **U4** of `plans/20261102-2107-meta-cloud-run-coordination.md` together with Step 10 of the Cloud Run plan: teardown → setup → re-add the deployer as Search Console owner → acceptance → QA → prod → real login on `events.techexcellence.io`.
 
 ## Steps
 
-- [ ] Step 6: Switch the URLs, all in `.github/workflows/_deploy-cloud-run.yml` "Resolve Stack Settings" and `.github/actions/deploy-keycloak-cloud` (see the inventory below). System tests follow automatically, because `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml` read the deploy outputs
 - [ ] Step 7: Run acceptance → QA → prod and confirm that the suites pass and a real login works on `events.techexcellence.io`
 - [ ] Step 8: Remove the `run.app` entries from the Keycloak clients and config (optional; keep them if they help debugging). Document the domain setup and the Firebase Hosting / load balancer fallback in the README or the deploy docs
 

@@ -1,16 +1,19 @@
 # 2026-11-02 21:07 UTC — Plan coordination meta-plan: Cloud Run follow-ups
 
+> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-11-03T12:22:09Z`
+
 **Plans analysed:** 5 in-scope (plan **E** added 2026-11-03), 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
 **Live environment (updated 2026-11-02, after U0):** `./setup-gcp.sh` succeeded and created GCP project `event-hub-686953` (us-central1), the Neon project `event-hub` (5 databases), both secrets and the `GCP_*` / `SYSTEM_NAME` repo variables. `CUSTOM_DOMAIN=techexcellence.io` is set. The deployer is `github-deployer@event-hub-686953.iam.gserviceaccount.com`; it has been a Search Console owner of `techexcellence.io` since 2026-11-03 (C Step 1 done).
 
 ## ▶ Next executable step (resume here)
 
-The Wave 1 and Wave 2 user tracks are done (2026-11-03): C Steps 1 and 4 are complete, and `events.`, `events-qa.` and `auth.techexcellence.io` serve HTTPS (prod `v1.0.228`). Next is Wave 2, agent only, two disjoint units that can run in parallel:
-- **U3:** C Steps 5–6 in `plans/20261102-1954-custom-domains-for-cloud-run.md`.
-- **U9:** plan **E** Steps 1–2 in `plans/20261103-1158-frontend-tag-prefix.md`.
+Wave 2 is done (2026-11-03): **U3** (C Steps 5–6, acceptance 41652268692 green, `auth.` issuer live), **U9** (E Step 1 + `frontend-v1.3.212`–`214` tags pushed) and **U1** (plan D deleted: shop already had the merge, shop `ef3eeba1`).
 
-Also ready any time: **U1** (plan D) in `/workspaces/shop`. Running `/execute-plan` on this meta-plan does all three (see Autonomous execution).
+Before U4, one user action remains: delete the bare frontend tags (the agent's permission check refuses remote tag deletion):
+`git push origin :refs/tags/v1.3.212 :refs/tags/v1.3.213 :refs/tags/v1.3.214 && git tag -d v1.3.212 v1.3.213 v1.3.214`
+
+Next is **U4** (Wave 3): A Step 10 + C Step 7, atomic — `./teardown-gcp.sh` → `./setup-gcp.sh` → user re-adds the new `GCP_SERVICE_ACCOUNT` as a Search Console owner of `techexcellence.io` → wait ~5 min → acceptance → QA (with `-f version=<rc>`) → user QA sign-off → prod → login on `events.techexcellence.io`; also verify E Step 3 on that prod release.
 
 ## Per-plan status snapshot
 
@@ -18,9 +21,9 @@ Also ready any time: **U1** (plan D) in `/workspaces/shop`. Running `/execute-pl
 |---|---|---|---|---|
 | `20261030-1931-deploy-pipeline-to-gcp-cloud-run` (**A**) | refined; only Step 10 left | 9 / 10 | none planned; `setup-gcp.sh` only if `ACCOUNT_STATE_INVALID` recurs | Step 10 is explicitly after **C** Step 6. User runs teardown → setup → acceptance |
 | `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | refined (2026-11-03); gated on U4 | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | Open questions resolved; executes after U4 |
-| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–4 done | 4 / 9 | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | All user steps done 2026-11-03; three domains serve HTTPS |
-| `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | refined, ready | 0 / 5 | `optivem/shop`: `teardown-gcp.sh`, `setup-gcp.sh`, `terraform/state-backend.sh` | Runs from a shop checkout; doesn't need event-hub's live environment |
-| `20261103-1158-frontend-tag-prefix` (**E**) | refined, ready | 0 / 3 | `.github/workflows/prod-stage.yml`, `.github/workflows/bump-patch-version.yml`; remote tags `v1.3.212`–`214` | Step 3 is verified by U4's prod release |
+| `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–6 done | 6 / 9 | `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/actions/build-cloud-images/action.yml`, `docker/keycloak/Dockerfile.cloud`, `docker/keycloak/{cloud,prod}-realm.jq`, `README.md` / deploy docs; Step 9 in `optivem/shop` | Steps 5–6 landed 2026-11-03 (`235f7eb`, `c976257`); Keycloak issuer is `auth.` |
+| `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | done, deleted 2026-11-03 (`db0a68c`) | — | — | shop already carried the merge (shop `33c832c8`, `ef3eeba1`); shop checkout is at `/home/vscode/shop` |
+| `20261103-1158-frontend-tag-prefix` (**E**) | Step 1 done (`6a1ccae`); Step 2 half done | 1 / 3 | `.github/workflows/prod-stage.yml`, `.github/workflows/bump-patch-version.yml`; remote tags `v1.3.212`–`214` | `frontend-v` tags pushed; user deletes the bare `v1.3.212`–`214`. Step 3 is verified by U4's prod release |
 
 ## Dependency graph
 
@@ -142,16 +145,17 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 **Pre-authorized by the user:**
 - Running `./teardown-gcp.sh` and `./setup-gcp.sh` for U4, unattended, once U3 and U9 are green. Prod is down while it rebuilds. Answer the teardown confirmation with the project ID from `gh variable get GCP_PROJECT_ID`.
 - Triggering `acceptance-stage.yml`, `qa-stage.yml` and `prod-stage.yml`.
-- Cloning `optivem/shop` to `/workspaces/shop` and pushing to its `main` (U1, U7, U8).
+- Cloning `optivem/shop` (it lives at `/home/vscode/shop`: `/workspaces` is root-owned) and pushing to its `main` (U1, U7, U8).
 - Plan E Step 2: re-creating `v1.3.212`–`214` as `frontend-v1.3.x` and deleting the bare tags.
 
 **User gates (stop, give the exact command or step, and wait):**
 - **QA sign-off:** `gh workflow run qa-signoff.yml -f version=<rc> -f result=approved` is the release decision and is always the user's. Before a prod run, stop here.
 - **Search Console owner** after every `./setup-gcp.sh`: a web-only step. Give the user the new `GCP_SERVICE_ACCOUNT` email and the owners link `https://www.google.com/webmasters/verification/details?hl=en&domain=techexcellence.io`.
-- **U7:** which domain shop uses.
+- ~~**U7:** which domain shop uses.~~ Decided 2026-11-03: `shop.optivem.com` (`shop.`, `shop-qa.`; acceptance stays on `run.app`).
 - Anything outside the pre-authorized list that is destructive, spends money beyond the known Cloud Run idle cost, or deletes remote state.
 
 **Run rules:**
+- **Parallel agents in one checkout:** stage only your own paths and check `git diff --cached --name-only` before committing; on 2026-11-03 a parallel commit (`6a1ccae`) swept in another unit's staged deletions.
 - **Shop units (U1, U7, U8) are a two-way merge (user rule, 2026-11-03):** don't copy files from one repo to the other. For each shared file, compare shop's and event-hub's versions hunk by hunk and keep the best combination: event-hub's fixes go into shop, and anything shop does better (handling, messages, checks) comes back into event-hub. Keep only real project differences apart (names, database list, shop's `deploy-config.yml` step). When a unit finishes, both repos have the same logic, and each repo's commit message names what came from the other. A unit can therefore also commit to event-hub.
 - Until plan E lands and its tags are renamed, always pass `-f version=<rc>` to `qa-stage.yml` and `prod-stage.yml`. The default resolution can pick a frontend `v1.3.x` tag.
 - Only one stage workflow at a time (QA and prod share the Keycloak instance).
