@@ -1,6 +1,7 @@
 name: 'Deploy Keycloak to Cloud Run'
 description: >-
-  Deploys the one Keycloak every stack shares, and waits for the realm the stack uses.
+  Deploys the one Keycloak every stack shares, waits for the realm the stack uses, and sets the
+  shop-frontend client's URLs in both realms (.github/scripts/set-keycloak-client-urls.sh).
   Redeploys only when the image, a setting or the db credentials changed, so one workflow
   doesn't restart Keycloak under another's tests. Needs gcloud authenticated.
 
@@ -24,6 +25,10 @@ inputs:
     description: 'Realm to wait for'
     required: false
     default: 'shop'
+  custom-domain:
+    description: 'Domain the frontends are also served at (events., events-qa.); empty for run.app only'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -76,3 +81,14 @@ runs:
         max-attempts: '60'
         wait-seconds: '10'
         timeout-seconds: '900'
+
+    - name: Set Frontend Client URLs
+      shell: bash
+      env:
+        KEYCLOAK_URL: https://${{ inputs.system }}-keycloak-${{ inputs.project-number }}.${{ inputs.region }}.run.app
+        SYSTEM: ${{ inputs.system }}
+        PROJECT: ${{ inputs.project }}
+        PROJECT_NUMBER: ${{ inputs.project-number }}
+        REGION: ${{ inputs.region }}
+        CUSTOM_DOMAIN: ${{ inputs.custom-domain }}
+      run: ${{ github.action_path }}/../../scripts/set-keycloak-client-urls.sh

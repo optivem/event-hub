@@ -172,9 +172,6 @@ jobs:
         uses: ./.github/actions/build-cloud-images
         with:
           registry: ${{ steps.registry.outputs.registry }}
-          system: ${{ vars.SYSTEM_NAME }}
-          region: ${{ vars.GCP_REGION }}
-          project-number: ${{ steps.registry.outputs.project-number }}
           external-systems: ${{ env.EXTERNAL_SYSTEMS }}
           source-path: source
 
@@ -225,6 +222,7 @@ jobs:
           project-number: ${{ needs.promote-images.outputs.project-number }}
           region: ${{ vars.GCP_REGION }}
           realm: ${{ inputs.realm }}
+          custom-domain: ${{ vars.CUSTOM_DOMAIN }}
 
       - name: Map Custom Domain (auth.${{ vars.CUSTOM_DOMAIN }})
         if: vars.CUSTOM_DOMAIN != ''

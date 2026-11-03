@@ -9,15 +9,6 @@ inputs:
   registry:
     description: 'Artifact Registry path: <region>-docker.pkg.dev/<project>/app-images'
     required: true
-  system:
-    description: 'System name, baked into the Keycloak realm'
-    required: true
-  region:
-    description: 'GCP region, baked into the Keycloak realm'
-    required: true
-  project-number:
-    description: 'GCP project number, baked into the Keycloak realm'
-    required: true
   external-systems:
     description: 'Which external systems image to build: simulators or stubs'
     required: true
@@ -45,8 +36,6 @@ runs:
       shell: bash
       env:
         REGISTRY: ${{ inputs.registry }}
-        SYSTEM: ${{ inputs.system }}
-        RUN_APP_SUFFIX: ${{ inputs.project-number }}.${{ inputs.region }}.run.app
         EXTERNAL_SYSTEMS: ${{ inputs.external-systems }}
         SOURCE: ${{ inputs.source-path }}
       run: |
@@ -64,6 +53,5 @@ runs:
           echo "${output}=${ref}" >> "$GITHUB_OUTPUT"
         }
         build db-migrate db-migrate "$SOURCE" db
-        build keycloak keycloak . docker/keycloak -f docker/keycloak/Dockerfile.cloud \
-          --build-arg "SYSTEM=${SYSTEM}" --build-arg "RUN_APP_SUFFIX=${RUN_APP_SUFFIX}"
+        build keycloak keycloak . docker/keycloak -f docker/keycloak/Dockerfile.cloud
         build external-systems "$EXTERNAL_SYSTEMS" "$SOURCE" "external-systems/${EXTERNAL_SYSTEMS}"
