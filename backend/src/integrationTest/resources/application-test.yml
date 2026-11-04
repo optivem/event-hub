@@ -23,9 +23,9 @@ tax:
   url: http://localhost:9999/tax
 
 auth:
-  issuer-uri: http://localhost:8191/realms/shop
-  jwk-set-uri: http://localhost:8191/realms/shop/protocol/openid-connect/certs
-  audience: shop-backend
+  issuer-uri: http://localhost:8191/realms/event-hub-acceptance
+  jwk-set-uri: http://localhost:8191/realms/event-hub-acceptance/protocol/openid-connect/certs
+  audience: event-hub-backend
 
 error:
   types:

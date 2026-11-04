@@ -35,8 +35,8 @@ export function getAuthConfig(
   if (keycloakUrl === '') return undefined;
   return {
     keycloakUrl: keycloakUrl.replace(/\/+$/, ''),
-    realm: valueOrDefault(runtime?.keycloakRealm, 'shop'),
-    clientId: valueOrDefault(runtime?.keycloakClientId, 'shop-frontend'),
+    realm: valueOrDefault(runtime?.keycloakRealm, 'event-hub-acceptance'),
+    clientId: valueOrDefault(runtime?.keycloakClientId, 'event-hub-frontend'),
   };
 }
 

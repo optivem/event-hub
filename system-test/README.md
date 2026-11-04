@@ -79,7 +79,7 @@ You can also pass a **group alias** to `--suite`: `acceptance` runs every accept
 
 ## Authentication
 
-The API client acquires Keycloak access tokens (password grant, client `shop-system-test`, realm `shop`) and sends them as the `Authorization` header. The UI drivers log in through the Keycloak login form when the app redirects there: as `customer1` by default, switching to a fresh browser session as `admin1` for admin-only operations (deliver order, publish and browse coupons).
+The API client acquires Keycloak access tokens (password grant, client `event-hub-system-test`, realm `event-hub-acceptance`) and sends them as the `Authorization` header. The UI drivers log in through the Keycloak login form when the app redirects there: as `customer1` by default, switching to a fresh browser session as `admin1` for admin-only operations (deliver order, publish and browse coupons).
 
 Required for the latest acceptance suites (a missing URL fails them with a configuration error); set `KEYCLOAK_URL_REAL` / `KEYCLOAK_URL_STUB` (per external-system mode) or `KEYCLOAK_URL` (fallback), e.g. `KEYCLOAK_URL_REAL=http://localhost:8391` and `KEYCLOAK_URL_STUB=http://localhost:8392` for the local TypeScript multitier stack. The authorization tests (`api-authorization-test.spec.ts`).
 

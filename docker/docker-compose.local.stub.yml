@@ -11,8 +11,8 @@ services:
     environment:
       - BACKEND_API_URL=http://backend:8081
       - KEYCLOAK_URL=http://localhost:8392
-      - KEYCLOAK_REALM=shop
-      - KEYCLOAK_CLIENT_ID=shop-frontend
+      - KEYCLOAK_REALM=event-hub-acceptance
+      - KEYCLOAK_CLIENT_ID=event-hub-frontend
     depends_on:
       backend:
         condition: service_healthy
@@ -36,9 +36,9 @@ services:
       - CLOCK_API_URL=http://external-system-stubs:8080/clock
       - TAX_API_URL=http://external-system-stubs:8080/tax
       - EXTERNAL_SYSTEM_MODE=stub
-      - AUTH_ISSUER_URI=http://localhost:8392/realms/shop
-      - AUTH_JWK_SET_URI=http://keycloak:8080/realms/shop/protocol/openid-connect/certs
-      - AUTH_AUDIENCE=shop-backend
+      - AUTH_ISSUER_URI=http://localhost:8392/realms/event-hub-acceptance
+      - AUTH_JWK_SET_URI=http://keycloak:8080/realms/event-hub-acceptance/protocol/openid-connect/certs
+      - AUTH_AUDIENCE=event-hub-backend
     depends_on:
       db-migrate:
         condition: service_completed_successfully
@@ -59,10 +59,13 @@ services:
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
       - KC_HTTP_ENABLED=true
       - KC_HEALTH_ENABLED=true
+      # Fill in realm-template.json's placeholders: the realm is event-hub-acceptance, as in the cloud
+      - SYSTEM_NAME=event-hub
+      - STAGE=acceptance
     ports:
       - "8392:8080"
     volumes:
-      - ./keycloak/shop-realm.json:/opt/keycloak/data/import/shop-realm.json:ro
+      - ./keycloak/realm-template.json:/opt/keycloak/data/import/realm-template.json:ro
     healthcheck:
       test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\": \"UP\"' <&3"]
       interval: 10s

@@ -1,5 +1,5 @@
 {
-  "realm": "shop",
+  "realm": "${SYSTEM_NAME}-${STAGE}",
   "enabled": true,
   "sslRequired": "none",
   "registrationAllowed": false,
@@ -8,14 +8,14 @@
   "passwordPolicy": "hashIterations(1)",
   "roles": {
     "realm": [
-      { "name": "CUSTOMER", "description": "Regular shop customer" },
-      { "name": "ADMIN", "description": "Shop administrator" }
+      { "name": "CUSTOMER", "description": "Regular user" },
+      { "name": "ADMIN", "description": "Administrator" }
     ]
   },
   "clients": [
     {
-      "clientId": "shop-frontend",
-      "name": "Shop Frontend (React SPA)",
+      "clientId": "${SYSTEM_NAME}-frontend",
+      "name": "Frontend (React SPA)",
       "enabled": true,
       "publicClient": true,
       "standardFlowEnabled": true,
@@ -47,11 +47,11 @@
       },
       "protocolMappers": [
         {
-          "name": "shop-backend-audience",
+          "name": "${SYSTEM_NAME}-backend-audience",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.custom.audience": "shop-backend",
+            "included.custom.audience": "${SYSTEM_NAME}-backend",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
@@ -59,52 +59,8 @@
       ]
     },
     {
-      "clientId": "shop-monolith",
-      "name": "Shop Monolith (server-side OIDC login)",
-      "enabled": true,
-      "publicClient": false,
-      "secret": "shop-monolith-test-secret",
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
-      "protocol": "openid-connect",
-      "redirectUris": [
-        "http://localhost:3111/*",
-        "http://localhost:3112/*",
-        "http://localhost:8111/*",
-        "http://localhost:8112/*",
-        "http://localhost:3211/*",
-        "http://localhost:3212/*",
-        "http://localhost:8211/*",
-        "http://localhost:8212/*",
-        "http://localhost:3311/*",
-        "http://localhost:3312/*",
-        "http://localhost:8311/*",
-        "http://localhost:8312/*"
-      ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:3111/*##http://localhost:3112/*##http://localhost:8111/*##http://localhost:8112/*##http://localhost:3211/*##http://localhost:3212/*##http://localhost:8211/*##http://localhost:8212/*##http://localhost:3311/*##http://localhost:3312/*##http://localhost:8311/*##http://localhost:8312/*"
-      },
-      "protocolMappers": [
-        {
-          "name": "realm-roles-in-id-token",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "config": {
-            "claim.name": "realm_access.roles",
-            "jsonType.label": "String",
-            "multivalued": "true",
-            "id.token.claim": "true",
-            "access.token.claim": "true"
-          }
-        }
-      ]
-    },
-    {
-      "clientId": "shop-system-test",
-      "name": "Shop System Tests (TEST REALM ONLY - password grant)",
+      "clientId": "${SYSTEM_NAME}-system-test",
+      "name": "System Tests (TEST REALM ONLY - password grant)",
       "enabled": true,
       "publicClient": true,
       "standardFlowEnabled": false,
@@ -114,11 +70,11 @@
       "protocol": "openid-connect",
       "protocolMappers": [
         {
-          "name": "shop-backend-audience",
+          "name": "${SYSTEM_NAME}-backend-audience",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.custom.audience": "shop-backend",
+            "included.custom.audience": "${SYSTEM_NAME}-backend",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }

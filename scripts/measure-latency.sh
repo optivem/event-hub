@@ -13,8 +13,9 @@ set -euo pipefail
 #   DOMAIN          custom domain (default techexcellence.io)
 #   PROJECT_NUMBER  GCP project number, for the backend's run.app URL (default: the current project)
 #   REGION          default us-central1
-#   ACCESS_TOKEN    token for the DB hop. Without it, the test realm (shop) gets one by password
-#                   grant for customer1; prod's realm has no password grant, so prod skips the hop.
+#   SYSTEM          system name, prefixes the services and realms (default event-hub)
+#   ACCESS_TOKEN    token for the DB hop. Without it, the test realms (acceptance, qa) get one by
+#                   password grant for customer1; prod's realm has no password grant, so prod skips the hop.
 #
 # Columns are curl -w timings in seconds: connect (TCP), tls (TCP + TLS), ttfb, total.
 # On a warm request, ttfb - tls is roughly one network round trip plus the app's own time.
@@ -24,17 +25,18 @@ warm="${2:-3}"
 domain="${DOMAIN:-techexcellence.io}"
 project_number="${PROJECT_NUMBER:-412402326524}"
 region="${REGION:-us-central1}"
+system="${SYSTEM:-event-hub}"
 
 case "$stack" in
-  prod) host=events realm=shop-prod ;;
-  qa) host=events-qa realm=shop ;;
-  acceptance-stub) host=events-acc realm=shop ;;
-  acceptance-real) host=events-e2e realm=shop ;;
+  prod) host=events realm="${system}-prod" ;;
+  qa) host=events-qa realm="${system}-qa" ;;
+  acceptance-stub) host=events-acc realm="${system}-acceptance" ;;
+  acceptance-real) host=events-e2e realm="${system}-acceptance" ;;
   *) echo "Unknown stack: $stack" >&2; exit 1 ;;
 esac
 frontend="https://${host}.${domain}"
 keycloak="https://auth.${domain}"
-backend="https://event-hub-${stack}-backend-${project_number}.${region}.run.app"
+backend="https://${system}-${stack}-backend-${project_number}.${region}.run.app"
 
 fmt='%{http_code} %{time_connect} %{time_appconnect} %{time_starttransfer} %{time_total}'
 
@@ -55,9 +57,9 @@ measure keycloak "${keycloak}/realms/${realm}/.well-known/openid-configuration"
 measure health "${backend}/health"
 
 token="${ACCESS_TOKEN:-}"
-if [[ -z "$token" && "$realm" == shop ]]; then
-  token="$(curl -s --max-time 120 "${keycloak}/realms/shop/protocol/openid-connect/token" \
-    -d grant_type=password -d client_id=shop-system-test \
+if [[ -z "$token" && "$stack" != prod ]]; then
+  token="$(curl -s --max-time 120 "${keycloak}/realms/${realm}/protocol/openid-connect/token" \
+    -d grant_type=password -d client_id="${system}-system-test" \
     -d username=customer1 -d password=customer1-test-password | jq -r .access_token)"
 fi
 if [[ -n "$token" && "$token" != null ]]; then

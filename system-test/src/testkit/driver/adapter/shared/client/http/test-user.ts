@@ -1,4 +1,4 @@
-// Users of the test realm (docker/keycloak/shop-realm.json). Test credentials only.
+// Users of the test realm (docker/keycloak/realm-template.json, realm event-hub-acceptance). Test credentials only.
 export interface TestUser {
   readonly username: string;
   readonly password: string;

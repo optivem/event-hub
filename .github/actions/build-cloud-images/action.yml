@@ -4,8 +4,12 @@ description: >-
   build context and only built when that tag is missing. Needs a registry login and a checkout.
   Keycloak always comes from the checkout at the workspace root, never from source-path: every
   stack shares one instance, so an older source must not roll its realm back.
+  The Keycloak realms and clients are named after the system (docker/keycloak/Dockerfile.cloud).
 
 inputs:
+  system:
+    description: 'System name: names the Keycloak realms and clients'
+    required: true
   registry:
     description: 'Artifact Registry path: <region>-docker.pkg.dev/<project>/app-images'
     required: true
@@ -36,6 +40,7 @@ runs:
       shell: bash
       env:
         REGISTRY: ${{ inputs.registry }}
+        SYSTEM: ${{ inputs.system }}
         EXTERNAL_SYSTEMS: ${{ inputs.external-systems }}
         SOURCE: ${{ inputs.source-path }}
       run: |
@@ -53,5 +58,5 @@ runs:
           echo "${output}=${ref}" >> "$GITHUB_OUTPUT"
         }
         build db-migrate db-migrate "$SOURCE" db
-        build keycloak keycloak . docker/keycloak -f docker/keycloak/Dockerfile.cloud
+        build keycloak keycloak . docker/keycloak -f docker/keycloak/Dockerfile.cloud --build-arg "SYSTEM_NAME=${SYSTEM}"
         build external-systems "$EXTERNAL_SYSTEMS" "$SOURCE" "external-systems/${EXTERNAL_SYSTEMS}"

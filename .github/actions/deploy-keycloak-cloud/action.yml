@@ -1,8 +1,8 @@
 name: 'Deploy Keycloak to Cloud Run'
 description: >-
   Deploys the one Keycloak every stack shares, maps auth.<custom-domain> to it when a domain is
-  given, waits for the realm the stack uses, and sets the shop-frontend client's URLs in both
-  realms (.github/scripts/set-keycloak-client-urls.sh).
+  given, waits for the stage's realm (<system>-<stage>), and sets that realm's <system>-frontend
+  client URLs (.github/scripts/set-keycloak-client-urls.sh). Other stages' realms are not touched.
   Redeploys only when the image, a setting or the db credentials changed, so one workflow
   doesn't restart Keycloak under another's tests. Needs gcloud authenticated, with the beta
   component when a custom domain is given.
@@ -23,10 +23,9 @@ inputs:
   region:
     description: 'GCP region'
     required: true
-  realm:
-    description: 'Realm to wait for'
-    required: false
-    default: 'shop'
+  stage:
+    description: 'Stage whose realm to wait for and configure: acceptance, qa or prod'
+    required: true
   custom-domain:
     description: >-
       Custom domain: Keycloak is served at auth.<domain> (its hostname and issuer), and the
@@ -103,7 +102,7 @@ runs:
       with:
         endpoints: |
           [
-            {"name": "Keycloak ${{ inputs.realm }}", "url": "${{ steps.urls.outputs.service }}/realms/${{ inputs.realm }}/.well-known/openid-configuration"}
+            {"name": "Keycloak realm ${{ inputs.system }}-${{ inputs.stage }}", "url": "${{ steps.urls.outputs.service }}/realms/${{ inputs.system }}-${{ inputs.stage }}/.well-known/openid-configuration"}
           ]
         max-attempts: '60'
         wait-seconds: '10'
@@ -116,7 +115,7 @@ runs:
       with:
         endpoints: |
           [
-            {"name": "Keycloak ${{ inputs.realm }} (custom domain)", "url": "${{ steps.urls.outputs.public }}/realms/${{ inputs.realm }}/.well-known/openid-configuration"}
+            {"name": "Keycloak realm ${{ inputs.system }}-${{ inputs.stage }} (custom domain)", "url": "${{ steps.urls.outputs.public }}/realms/${{ inputs.system }}-${{ inputs.stage }}/.well-known/openid-configuration"}
           ]
         max-attempts: '180'
         wait-seconds: '10'
@@ -127,6 +126,7 @@ runs:
       env:
         KEYCLOAK_URL: ${{ steps.urls.outputs.public }}
         SYSTEM: ${{ inputs.system }}
+        STAGE: ${{ inputs.stage }}
         PROJECT: ${{ inputs.project }}
         PROJECT_NUMBER: ${{ inputs.project-number }}
         REGION: ${{ inputs.region }}

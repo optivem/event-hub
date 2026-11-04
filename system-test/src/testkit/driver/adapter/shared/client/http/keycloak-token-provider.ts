@@ -1,6 +1,7 @@
 import type { TestUser } from './test-user.js';
 
-const CLIENT_ID = 'shop-system-test';
+const REALM = 'event-hub-acceptance';
+const CLIENT_ID = 'event-hub-system-test';
 const EXPIRY_MARGIN_MS = 30_000;
 const DEFAULT_EXPIRES_IN_SECONDS = 60;
 
@@ -20,7 +21,7 @@ export class KeycloakTokenProvider {
   private readonly cache = new Map<string, Promise<CachedToken>>();
 
   private constructor(keycloakBaseUrl: string) {
-    this.tokenUrl = `${keycloakBaseUrl.replace(/\/+$/, '')}/realms/shop/protocol/openid-connect/token`;
+    this.tokenUrl = `${keycloakBaseUrl.replace(/\/+$/, '')}/realms/${REALM}/protocol/openid-connect/token`;
   }
 
   static forBaseUrl(keycloakBaseUrl: string): KeycloakTokenProvider {

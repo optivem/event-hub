@@ -104,7 +104,7 @@ describe('Navbar user menu', () => {
 
 describe('auth config', () => {
   it('uses local defaults when no runtime config is present', () => {
-    expect(getAuthority(getAuthConfig({}, true)!)).toBe('http://localhost:8191/realms/shop');
+    expect(getAuthority(getAuthConfig({}, true)!)).toBe('http://localhost:8191/realms/event-hub-acceptance');
   });
 
   it('builds the authority from runtime values', () => {
