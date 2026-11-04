@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import { ErrorBoundary } from './components';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { useNotificationContext } from './contexts/useNotificationContext';
+import { RequireAuthRoute } from './auth/AuthGate';
 import { RequireAdmin } from './auth/RequireAdmin';
 import { RequireCanPlaceOrder } from './auth/RequireCanPlaceOrder';
-import { Home, NewOrder, OrderHistory, OrderDetails, AdminCoupons } from './pages';
+import { Home, NewOrder, OrderHistory, OrderDetails, AdminCoupons, Privacy } from './pages';
 
 /**
  * Component that clears notifications on route change
@@ -33,11 +34,15 @@ export function App() {
         <BrowserRouter>
           <RouteChangeHandler />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/new-order" element={<RequireCanPlaceOrder><NewOrder /></RequireCanPlaceOrder>} />
-            <Route path="/order-history" element={<OrderHistory />} />
-            <Route path="/order-details/:orderNumber" element={<OrderDetails />} />
-            <Route path="/admin-coupons" element={<RequireAdmin><AdminCoupons /></RequireAdmin>} />
+            {/* Public: no login required */}
+            <Route path="/privacy" element={<Privacy />} />
+            <Route element={<RequireAuthRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/new-order" element={<RequireCanPlaceOrder><NewOrder /></RequireCanPlaceOrder>} />
+              <Route path="/order-history" element={<OrderHistory />} />
+              <Route path="/order-details/:orderNumber" element={<OrderDetails />} />
+              <Route path="/admin-coupons" element={<RequireAdmin><AdminCoupons /></RequireAdmin>} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </NotificationProvider>

@@ -4,3 +4,4 @@ export { NewOrder } from './NewOrder';
 export { OrderHistory } from './OrderHistory';
 export { OrderDetails } from './OrderDetails';
 export { AdminCoupons } from './AdminCoupons';
+export { Privacy } from './Privacy';

@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useContext, useEffect, useRef, type ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import { AuthProvider, hasAuthParams, useAuth } from 'react-oidc-context';
 import { AuthDisabledContext } from './auth-disabled';
 import { userManager } from './user-manager';
@@ -51,14 +52,31 @@ export function RequireAuth({ children }: Readonly<{ children: ReactNode }>) {
   return <>{children}</>;
 }
 
-/** Wraps the app in OIDC login, or renders it as-is (no login, no token) when no Keycloak is configured. */
+/**
+ * Layout route for pages that need a signed-in user. Public pages (such as /privacy) sit outside it,
+ * so they render without a login redirect. Lets everything through when authentication is disabled.
+ */
+export function RequireAuthRoute() {
+  const authDisabled = useContext(AuthDisabledContext);
+  if (authDisabled) return <Outlet />;
+  return (
+    <RequireAuth>
+      <Outlet />
+    </RequireAuth>
+  );
+}
+
+/**
+ * Provides the OIDC login context, or marks authentication as disabled (no login, no token) when no Keycloak
+ * is configured. The login redirect itself happens per route, in RequireAuthRoute.
+ */
 export function AuthGate({ children }: Readonly<{ children: ReactNode }>) {
   if (!userManager) {
     return <AuthDisabledContext.Provider value={true}>{children}</AuthDisabledContext.Provider>;
   }
   return (
     <AuthProvider userManager={userManager} onSigninCallback={onSigninCallback}>
-      <RequireAuth>{children}</RequireAuth>
+      {children}
     </AuthProvider>
   );
 }
