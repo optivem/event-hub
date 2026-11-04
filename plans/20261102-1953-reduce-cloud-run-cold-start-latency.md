@@ -5,7 +5,7 @@
 **Why:** After the Cloud Run deployment, prod works (login and order creation succeeded on 2026-11-02) but feels slow. Every service scales to zero, so the first request after idle waits on several cold starts in a row: Keycloak (JVM), the Spring Boot backend (JVM), and a suspended Neon database.
 **End result:** We have measured cold and warm latency for each hop, applied the free startup fixes, and made an explicit cost decision on keeping prod warm. The first prod interaction after idle is fast enough to demo, and idle cost stays known and accepted.
 
-**Ordering gate (decided 2026-11-03):** execute only after the U4 rebuild, that is after Step 10 of `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md` plus Step 7 of `plans/20261102-1954-custom-domains-for-cloud-run.md` (teardown → setup → custom-domain switch). The rebuild and the URL switch change what we would measure, so no `run.app` baseline is taken before that. See `plans/20261102-2107-meta-cloud-run-coordination.md`.
+**Ordering gate (decided 2026-11-03):** execute only after the U4 rebuild, that is after Step 10 of `plans/20261030-1931-deploy-pipeline-to-gcp-cloud-run.md` plus Step 7 of `plans/20261102-1954-custom-domains-for-cloud-run.md` (teardown → setup → custom-domain switch). The rebuild and the URL switch change what we would measure, so no `run.app` baseline is taken before that. See `plans/20261104-1928-meta-cloud-run-coordination.md`.
 
 ## Outcomes
 
@@ -16,7 +16,7 @@
 
 ## ▶ Next executable step (resume here)
 
-Steps 1–5 are done in event-hub. The only unit left is Step 6, the shop port (Wave 5, U8 in `plans/20261102-2107-meta-cloud-run-coordination.md`). Per the meta-plan it runs after Wave 4 (the Keycloak realms plan) and after U1, so check the meta-plan's order before you start. Shop lives at `/home/vscode/shop`.
+Steps 1–5 are done in event-hub. The only unit left is Step 6, the shop port (Wave 5, U8 in `plans/20261104-1928-meta-cloud-run-coordination.md`). Per the meta-plan it runs after Wave 4 (the Keycloak realms plan) and after U1, so check the meta-plan's order before you start. Shop lives at `/home/vscode/shop`.
 
 ## Findings so far (2026-11-02)
 

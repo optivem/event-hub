@@ -21,7 +21,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Planning: resolve the **Open questions** below with `/refine-plan plans/20261103-1951-keycloak-realms-clients-google-login.md` before executing. After that, Step 1 is the first executable unit. Per the meta-plan (`plans/20261102-2107-meta-cloud-run-coordination.md`), this plan runs in Wave 4 **after** C Step 8, one session at a time, because both touch the Keycloak config and `README.md`.
+Planning: resolve the **Open questions** below with `/refine-plan plans/20261103-1951-keycloak-realms-clients-google-login.md` before executing. After that, Step 1 is the first executable unit. Per the meta-plan (`plans/20261104-1928-meta-cloud-run-coordination.md`), this plan is unit U10, Wave 4 batch C. C Step 8 (U5) and B Steps 1–5 (U6) are done, so it is next once refined. The shop ports (U7, U8) wait for it.
 
 ## Steps
 
@@ -30,7 +30,7 @@ Planning: resolve the **Open questions** below with `/refine-plan plans/20261103
 - [ ] Step 3: **Deploy service account.** Add a confidential client in the `master` realm with only the service-account roles the deploy needs (manage the per-stage realms' clients). Store its secret in Secret Manager (`${SYSTEM}-keycloak-deployer-secret`). Switch `set-keycloak-client-urls.sh` to the client-credentials grant. Make it work on a fresh Keycloak database: see the open question on bootstrap
 - [ ] Step 4: **Sign in with Google.** User step: create a Google OAuth client (OAuth consent screen, web client) with redirect URIs `https://auth.techexcellence.io/realms/<realm>/broker/google/endpoint` for each realm that enables it. Store the client ID and secret in Secret Manager. Add a `google` identity provider to those realms; the deploy configures it through the admin API, like the client URLs, so secrets stay out of the image. Set the first-login behaviour (see open questions)
 - [ ] Step 5: **Roll out.** Run acceptance → QA → prod. Delete the old realms `shop` and `shop-prod`. Re-create the prod users in `event-hub-prod`. Check password and Google login on `events-qa.` and `events.`. Then delete the temporary `admin` user in the console, and run one more acceptance to prove the deploy no longer needs it
-- [ ] Step 6: **Docs and coordination.** README: realms per stage, the deploy client, the Google setup (user steps). Update the meta-plan: add this plan as a unit in Wave 4 after U5, and add to C Step 9 / B Step 6 notes that shop's port includes these changes (two-way merge)
+- [ ] Step 6: **Docs.** README: realms per stage, the deploy client, the Google setup (user steps). (The meta-plan already lists this plan as U10 and tells the shop ports to include it.)
 
 ## Open questions
 
@@ -40,4 +40,4 @@ Planning: resolve the **Open questions** below with `/refine-plan plans/20261103
 4. **Existing account with the same email as a Google login.** Recommended: Keycloak's default first-broker-login flow, which asks the user to confirm linking by signing in with their password once. Alternative: trust Google's verified email and auto-link (less friction, weaker if an email was registered by someone else)
 5. **OAuth consent screen.** Google needs an app name, support email, home page and privacy policy URL for a public ("In production") app; with only `openid email profile` scopes no Google verification review is needed. Is there a privacy policy page for `events.techexcellence.io`, or does this plan need one? (It also matters for GDPR: names and emails from Google are personal data.)
 6. **Which Google Cloud project owns the OAuth client?** Recommended: the shared, long-lived Terraform state project (`tfstate-995925`) or a small dedicated one, *not* `event-hub-*`, because teardown deletes that project and the OAuth client with it
-7. **Ordering against plan B (cold start).** Recommended: this plan before B Steps 1–5, so B measures the final Keycloak setup. Both touch `.github/actions/deploy-keycloak-cloud/action.yml`
+7. ~~**Ordering against plan B (cold start).**~~ Settled 2026-11-04: B Steps 1–5 already landed, so this plan runs after them. Rebase onto B's changes in `.github/actions/deploy-keycloak-cloud/action.yml`

@@ -19,7 +19,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Steps 1–8 are done (2026-11-04): all stages serve on their custom domains, and the setup is documented in `terraform/README.md` → Custom domains. Only **Step 9** remains: the port to `optivem/shop` (unit U7, Wave 5 of `plans/20261102-2107-meta-cloud-run-coordination.md`), with the domain decided as `shop.optivem.com`. See **Apply to optivem/shop**.
+Steps 1–8 are done (2026-11-04): all stages serve on their custom domains, and the setup is documented in `terraform/README.md` → Custom domains. Only **Step 9** remains: the port to `optivem/shop` (unit U7, Wave 5 of `plans/20261104-1928-meta-cloud-run-coordination.md`), with the domain decided as `shop.optivem.com`. See **Apply to optivem/shop**.
 
 ## Decisions
 
