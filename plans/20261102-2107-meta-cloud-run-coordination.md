@@ -1,7 +1,5 @@
 # 2026-11-02 21:07 UTC — Plan coordination meta-plan: Cloud Run follow-ups
 
-> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-11-04T08:46:32Z`
-
 **Plans analysed:** 5 in-scope (plan **E** added 2026-11-03), 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
 
 **Live environment (updated 2026-11-03, after U4):** GCP project `event-hub-ef289c` (us-central1), rebuilt by `./teardown-gcp.sh` → `./setup-gcp.sh`; Neon project `event-hub` (`noisy-wildflower-82769848`). The deployer `github-deployer@event-hub-ef289c.iam.gserviceaccount.com` is a Search Console owner of `techexcellence.io`. Prod is `v1.0.229` at `events.techexcellence.io`; prod test user `prod-check` (`CUSTOMER`, realm `shop-prod`), password in Secret Manager `event-hub-prod-check-password`. The old project `event-hub-686953` is pending deletion with its domain mappings removed.
@@ -10,14 +8,14 @@
 
 U5 (C Step 8) is done (2026-11-04, `aeb2317`): the domain setup, the teardown ordering, certificates and the latency fallback are documented in `terraform/README.md#custom-domains`. The run.app entries stay in the Keycloak client (user decision).
 
-Next is **U6** = B Steps 1–5 (`/execute-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`). Pre-authorized by the user on 2026-11-04: `--min-instances 1` on prod Keycloak if its cold start is still over ~10 s. Since `882e758`, acceptance is also on custom domains (`events-acc.`, `events-e2e.`).
+U6 is partly done (2026-11-04): B Steps 1–3 landed (`73a655d`, `997ba59`, `f5112ef`, `8e10d3f`), and acceptance 41812494001 is green. Next: the Cloud Run re-measure, then B Steps 4–5 (`/execute-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`; its ▶ block has the details). This needs `gcloud auth login` first, so the startup lines can be read from the Cloud Run logs. After U6 come the Keycloak realms plan (`plans/20261103-1951-keycloak-realms-clients-google-login.md`, refine first) and Wave 5 (U7, U8 in `optivem/shop`).
 
 ## Per-plan status snapshot
 
 | Plan | Status | Items done / total | Touched files (primary) | Notes |
 |---|---|---|---|---|
 | `20261030-1931-deploy-pipeline-to-gcp-cloud-run` (**A**) | done, deleted 2026-11-03 | — | — | Step 10 proven by U4 (teardown → setup → acceptance 41673649275) |
-| `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | refined; next after U5 | 0 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | U4 done, so B is unblocked (Wave 4 batch B) |
+| `20261102-1953-reduce-cloud-run-cold-start-latency` (**B**) | Steps 1–3 done; re-measure next | 3 / 6 | `scripts/measure-latency.sh` (new), `backend/Dockerfile`, `.github/workflows/_deploy-cloud-run.yml`, `.github/actions/deploy-keycloak-cloud/action.yml`, `README.md`; Step 6 in `optivem/shop` | U4 done, so B is unblocked (Wave 4 batch B) |
 | `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–8 done | 8 / 9 | `README.md`, `.github/scripts/set-keycloak-client-urls.sh`; Step 9 in `optivem/shop` | Step 7 passed in U4; Step 9 must port the teardown ordering and `--force-override` |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | done, deleted 2026-11-03 (`db0a68c`) | — | — | shop already carried the merge (shop `33c832c8`, `ef3eeba1`); shop checkout is at `/home/vscode/shop` |
 | `20261103-1158-frontend-tag-prefix` (**E**) | done, deleted 2026-11-03 | — | — | prod `v1.0.229` published `frontend-v1.3.215`; QA without `-f version=` resolved `v1.0.229-rc.27` |
