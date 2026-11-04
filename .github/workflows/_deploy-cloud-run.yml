@@ -270,7 +270,8 @@ jobs:
           install_components: beta
 
       # With CUSTOM_DOMAIN, Keycloak is at auth. for every stack (one shared instance, one
-      # hostname), and prod and QA are at events. and events-qa.; acceptance stays on run.app.
+      # hostname), and the frontends are at events. (prod), events-qa. (QA), events-acc.
+      # (acceptance-stub) and events-e2e. (acceptance-real).
       # FRONTEND_SERVICE_URL is the run.app URL, which answers before a new mapping's certificate.
       - name: Resolve Stack Settings
         id: stack
@@ -287,6 +288,8 @@ jobs:
             case "$STACK" in
               prod) frontend_url="https://events.${CUSTOM_DOMAIN}" ;;
               qa) frontend_url="https://events-qa.${CUSTOM_DOMAIN}" ;;
+              acceptance-stub) frontend_url="https://events-acc.${CUSTOM_DOMAIN}" ;;
+              acceptance-real) frontend_url="https://events-e2e.${CUSTOM_DOMAIN}" ;;
             esac
           fi
           {
@@ -389,12 +392,11 @@ jobs:
           wait-seconds: '10'
           timeout-seconds: '900'
 
-      # Prod and QA only: acceptance stacks are short-lived and test-only, so they stay on run.app.
       - name: Map Custom Domain
-        if: vars.CUSTOM_DOMAIN != '' && (inputs.stack == 'prod' || inputs.stack == 'qa')
+        if: vars.CUSTOM_DOMAIN != ''
         env:
           SERVICE: ${{ env.FRONTEND_NAME }}
-          DOMAIN: ${{ inputs.stack == 'prod' && 'events' || 'events-qa' }}.${{ vars.CUSTOM_DOMAIN }}
+          DOMAIN: ${{ inputs.stack == 'prod' && 'events' || inputs.stack == 'qa' && 'events-qa' || inputs.stack == 'acceptance-stub' && 'events-acc' || 'events-e2e' }}.${{ vars.CUSTOM_DOMAIN }}
         run: ./.github/scripts/ensure-domain-mapping.sh
 
       # A new mapping's certificate takes ~15 minutes; the system tests use this URL.

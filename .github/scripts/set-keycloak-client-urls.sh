@@ -4,7 +4,8 @@ set -euo pipefail
 # Sets the shop-frontend client's redirect URIs, web origins and post-logout redirect URIs in both
 # realms of the shared Keycloak, through the admin API. The image bakes no URLs in (see
 # docker/keycloak/Dockerfile.cloud), so the deploy sets them here, computed from the GCP project:
-#   shop       the acceptance-real, acceptance-stub and qa frontends, plus https://events-qa.<CUSTOM_DOMAIN>
+#   shop       the acceptance-real, acceptance-stub and qa frontends, plus https://events-qa.,
+#              https://events-acc. and https://events-e2e.<CUSTOM_DOMAIN>
 #   shop-prod  the prod frontend, plus https://events.<CUSTOM_DOMAIN>
 # The deploy owns every https:// entry: they are replaced, so URLs of an old project don't pile up.
 # Other entries (the http://localhost ones of local development) are kept. Idempotent: an
@@ -52,7 +53,7 @@ set_urls() {
 shop=("$(frontend acceptance-real)" "$(frontend acceptance-stub)" "$(frontend qa)")
 prod=("$(frontend prod)")
 if [[ -n "$CUSTOM_DOMAIN" ]]; then
-  shop+=("https://events-qa.${CUSTOM_DOMAIN}")
+  shop+=("https://events-qa.${CUSTOM_DOMAIN}" "https://events-acc.${CUSTOM_DOMAIN}" "https://events-e2e.${CUSTOM_DOMAIN}")
   prod+=("https://events.${CUSTOM_DOMAIN}")
 fi
 set_urls shop "${shop[@]}"

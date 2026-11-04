@@ -149,14 +149,14 @@ Google Cloud Project
 
 ## Custom domains
 
-Optional. With the GitHub repo variable `CUSTOM_DOMAIN` set (e.g. `techexcellence.io`), each deploy maps prod to `events.<domain>`, QA to `events-qa.<domain>` and the shared Keycloak to `auth.<domain>` ([Cloud Run domain mapping](https://cloud.google.com/run/docs/mapping-custom-domains): free, Google-managed TLS, no load balancer). Acceptance stays on `*.run.app`: its stacks are short-lived and test-only. Unset, nothing is mapped. The mapping is done by `.github/scripts/ensure-domain-mapping.sh`, which is idempotent.
+Optional. With the GitHub repo variable `CUSTOM_DOMAIN` set (e.g. `techexcellence.io`), each deploy maps prod to `events.<domain>`, QA to `events-qa.<domain>`, the acceptance stacks to `events-acc.<domain>` (stub) and `events-e2e.<domain>` (real), and the shared Keycloak to `auth.<domain>` ([Cloud Run domain mapping](https://cloud.google.com/run/docs/mapping-custom-domains): free, Google-managed TLS, no load balancer). Unset, nothing is mapped. The mapping is done by `.github/scripts/ensure-domain-mapping.sh`, which is idempotent.
 
 One-time setup (`./setup-gcp.sh` prints these with the actual values):
 
 1. Verify the domain in [Google Search Console](https://search.google.com/search-console) (a TXT record at the DNS provider).
 2. In [Webmaster Central](https://www.google.com/webmasters/verification), add the deployer service account (`GCP_SERVICE_ACCOUNT`) as an owner of the domain. Without this, the deploy can't create the mappings.
 3. `gh variable set CUSTOM_DOMAIN --body <domain>`
-4. At the DNS provider, add `CNAME events`, `events-qa` and `auth` → `ghs.googlehosted.com.`. The certificate is provisioned about 15 minutes (up to 24 hours) after the CNAME exists. Until then the deploy logs a warning, not an error.
+4. At the DNS provider, add `CNAME events`, `events-qa`, `events-acc`, `events-e2e` and `auth` → `ghs.googlehosted.com.`. The certificate is provisioned about 15 minutes (up to 24 hours) after the CNAME exists. Until then the deploy logs a warning, not an error.
 
 After a teardown and setup, only step 2 has to be repeated, because the new project has a new deployer service account. Deleting the project deletes its mappings. `CUSTOM_DOMAIN`, the verification and the CNAMEs belong to the domain, not the project, so the teardown keeps them.
 

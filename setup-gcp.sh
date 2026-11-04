@@ -119,7 +119,7 @@ echo "  📦 GitHub repo: $REPO"
 # Repo variable, set once by hand (see terraform/README.md "Custom domains"); the teardown keeps it
 CUSTOM_DOMAIN=$(gh variable get CUSTOM_DOMAIN 2> /dev/null) || CUSTOM_DOMAIN=""
 if [[ -n "$CUSTOM_DOMAIN" ]]; then
-  echo "  🌐 Custom domains: events.$CUSTOM_DOMAIN (prod), events-qa.$CUSTOM_DOMAIN (QA), auth.$CUSTOM_DOMAIN (Keycloak)"
+  echo "  🌐 Custom domains: events.$CUSTOM_DOMAIN (prod), events-qa.$CUSTOM_DOMAIN (QA), events-acc.$CUSTOM_DOMAIN (acceptance-stub), events-e2e.$CUSTOM_DOMAIN (acceptance-real), auth.$CUSTOM_DOMAIN (Keycloak)"
 else
   echo "  🌐 Custom domains: none (stages use *.run.app)"
 fi
@@ -331,12 +331,12 @@ fi
 # one-time steps outside GCP. The CNAMEs survive a project rebuild; the owner entry does not,
 # because a new project has a new deployer service account.
 if [[ -n "$CUSTOM_DOMAIN" ]]; then
-  echo "  Custom domain: $CUSTOM_DOMAIN (prod events., QA events-qa., Keycloak auth.)"
+  echo "  Custom domain: $CUSTOM_DOMAIN (prod events., QA events-qa., acceptance-stub events-acc., acceptance-real events-e2e., Keycloak auth.)"
   echo "    1. In Webmaster Central (https://www.google.com/webmasters/verification), add this as an"
   echo "       owner of $CUSTOM_DOMAIN, or the deploy can't create the mappings:"
   echo "         $SA_EMAIL"
   echo "    2. At the DNS provider for $CUSTOM_DOMAIN (once; they stay valid across rebuilds):"
-  for sub in events events-qa auth; do
+  for sub in events events-qa events-acc events-e2e auth; do
     echo "         CNAME  $sub  ->  ghs.googlehosted.com."
   done
   echo ""

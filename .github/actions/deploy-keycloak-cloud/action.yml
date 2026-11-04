@@ -30,7 +30,7 @@ inputs:
   custom-domain:
     description: >-
       Custom domain: Keycloak is served at auth.<domain> (its hostname and issuer), and the
-      frontends at events. and events-qa.<domain>. Empty for run.app only
+      frontends at events., events-qa., events-acc. and events-e2e.<domain>. Empty for run.app only
     required: false
     default: ''
 
