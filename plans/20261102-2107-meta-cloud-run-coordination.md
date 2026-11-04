@@ -8,7 +8,7 @@
 
 U5 (C Step 8) is done (2026-11-04, `aeb2317`): the domain setup, the teardown ordering, certificates and the latency fallback are documented in `terraform/README.md#custom-domains`. The run.app entries stay in the Keycloak client (user decision).
 
-U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, `3283903`). Backend cold start went from ~20 s to 7–11 s. Keycloak's stayed at 22 s, so it now runs with `--min-instances 1` (~$13/month). Acceptance 41821351077 is green. After U6 come the Keycloak realms plan (`plans/20261103-1951-keycloak-realms-clients-google-login.md`, refine first) and Wave 5 (U7, U8 in `optivem/shop`).
+U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, `3283903`). Backend cold start went from ~20 s to 7–11 s. Keycloak's stayed at 22 s. `--min-instances 1` (~$13/month) was tried and reverted the same day so the project stays at $0. Acceptance 41821351077 is green. After U6 come the Keycloak realms plan (`plans/20261103-1951-keycloak-realms-clients-google-login.md`, refine first) and Wave 5 (U7, U8 in `optivem/shop`).
 
 ## Per-plan status snapshot
 

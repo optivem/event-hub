@@ -74,7 +74,7 @@ runs:
         args=(--image "$IMAGE" --region "$REGION" --project "$PROJECT"
           --service-account "runtime@${PROJECT}.iam.gserviceaccount.com"
           --port 8080 --memory 1Gi --cpu 1 --cpu-boost
-          --min-instances 1 --max-instances 2 --allow-unauthenticated
+          --min-instances 0 --max-instances 2 --allow-unauthenticated
           --set-secrets "KC_BOOTSTRAP_ADMIN_PASSWORD=${SYSTEM}-keycloak-admin-password:latest")
         fingerprint="$(printf '%s\n' "${args[@]}" | cat - "$env_file" | sha256sum | cut -c1-32)"
         deployed="$(gcloud run services describe "${SYSTEM}-keycloak" --region "$REGION" --project "$PROJECT" \
