@@ -166,9 +166,15 @@ resource "google_service_account" "runtime" {
 # the temporary bootstrap client and the permanent deploy client (ensure-keycloak-deployer.sh).
 # keycloak-admin-password is legacy: only a Keycloak database created before the bootstrap client
 # needs it, once, to create the deploy client; remove it once no such database is left.
+# google-oauth-client-id/-secret: the "Sign in with Google" OAuth client, which lives in its own
+# long-lived project (teardown doesn't delete it); setup-gcp.sh copies the values from there, and
+# the deploy reads them (set-keycloak-google-idp.sh).
 # Secret versions are added out of band (gcloud secrets versions add) so values stay out of state
 resource "google_secret_manager_secret" "runtime" {
-  for_each  = toset([for s in ["db", "keycloak-bootstrap-secret", "keycloak-deployer-secret", "keycloak-admin-password"] : "${local.system_name}-${s}"])
+  for_each = toset([for s in [
+    "db", "keycloak-bootstrap-secret", "keycloak-deployer-secret", "keycloak-admin-password",
+    "google-oauth-client-id", "google-oauth-client-secret",
+  ] : "${local.system_name}-${s}"])
   project   = google_project.this.project_id
   secret_id = each.value
 

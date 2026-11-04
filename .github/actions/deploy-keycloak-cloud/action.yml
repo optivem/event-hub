@@ -2,7 +2,8 @@ name: 'Deploy Keycloak to Cloud Run'
 description: >-
   Deploys the one Keycloak every stack shares, maps auth.<custom-domain> to it when a domain is
   given, waits for the stage's realm (<system>-<stage>), and sets that realm's <system>-frontend
-  client URLs (.github/scripts/set-keycloak-client-urls.sh). Other stages' realms are not touched.
+  client URLs (.github/scripts/set-keycloak-client-urls.sh). On qa and prod it also sets up "Sign in
+  with Google" (.github/scripts/set-keycloak-google-idp.sh). Other stages' realms are not touched.
   The admin API calls use the deploy client <system>-deployer
   (.github/scripts/ensure-keycloak-deployer.sh), not an admin user.
   Redeploys only when the image, a setting or the db credentials changed, so one workflow
@@ -147,3 +148,14 @@ runs:
         REGION: ${{ inputs.region }}
         CUSTOM_DOMAIN: ${{ inputs.custom-domain }}
       run: ${{ github.action_path }}/../../scripts/set-keycloak-client-urls.sh
+
+    # qa and prod only; skipped with a warning while the OAuth client's secrets aren't in the project
+    - name: Set Google Identity Provider
+      if: inputs.stage == 'qa' || inputs.stage == 'prod'
+      shell: bash
+      env:
+        KEYCLOAK_URL: ${{ steps.urls.outputs.public }}
+        SYSTEM: ${{ inputs.system }}
+        STAGE: ${{ inputs.stage }}
+        PROJECT: ${{ inputs.project }}
+      run: ${{ github.action_path }}/../../scripts/set-keycloak-google-idp.sh

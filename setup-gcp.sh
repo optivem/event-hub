@@ -4,6 +4,7 @@ set -euo pipefail
 # Setup Google Cloud infrastructure using Terraform
 # Prerequisite: gcloud, gh and neonctl authenticated, and a GCP billing account
 # Optional: SYSTEM_NAME=<4-14 chars> overrides the name derived from the repo (prefixes the GCP project, services, secrets, databases)
+# Optional: OAUTH_PROJECT=<project ID> names the long-lived project that owns the "Sign in with Google" OAuth client (default <system>-oauth)
 # Usage: ./setup-gcp.sh [--yes]   (--yes applies Terraform plans that change/destroy resources without asking)
 
 AUTO_APPROVE=false
@@ -289,6 +290,36 @@ for name in keycloak-bootstrap-secret keycloak-deployer-secret; do
   fi
 done
 
+# "Sign in with Google" (qa and prod realms): the OAuth client lives in a long-lived project of its
+# own, which the teardown doesn't delete. Its client ID and secret are copied from that project's
+# Secret Manager into this one's, so the deploy reads them here (set-keycloak-google-idp.sh).
+# Re-running copies a rotated value. Missing: the deploy skips Google login, nothing else changes.
+OAUTH_PROJECT="${OAUTH_PROJECT:-${SYSTEM}-oauth}"
+GOOGLE_LOGIN=false
+oauth_secret() { gcloud secrets versions access latest --secret="$SYSTEM-$1" --project="$OAUTH_PROJECT" 2> /dev/null || true; }
+google_client_id=$(oauth_secret google-oauth-client-id)
+google_client_secret=$(oauth_secret google-oauth-client-secret)
+if [[ -z "$google_client_id" || -z "$google_client_secret" ]]; then
+  echo "  ⚠️  Sign in with Google: $SYSTEM-google-oauth-client-id and -secret not readable in project $OAUTH_PROJECT"
+  echo "     (missing project or secret, or no access). The qa and prod deploys skip Google login until then."
+  echo "     Create them there (or set OAUTH_PROJECT=<project ID>) and re-run ./setup-gcp.sh."
+else
+  copy_oauth_secret() {
+    local current
+    current=$(gcloud secrets versions access latest --secret="$SYSTEM-$1" --project="$PROJECT_ID" 2> /dev/null || true)
+    if [[ "$current" == "$2" ]]; then
+      echo "  ✅ $SYSTEM-$1 already copied from $OAUTH_PROJECT"
+    else
+      printf '%s' "$2" | gcloud secrets versions add "$SYSTEM-$1" --data-file=- --project="$PROJECT_ID" --quiet > /dev/null
+      echo "  ✅ Copied $SYSTEM-$1 from $OAUTH_PROJECT"
+    fi
+  }
+  copy_oauth_secret google-oauth-client-id "$google_client_id"
+  copy_oauth_secret google-oauth-client-secret "$google_client_secret"
+  GOOGLE_LOGIN=true
+fi
+unset google_client_secret
+
 # GitHub secrets the cloud workflows need (not created by this script)
 echo ""
 MISSING_GH_SECRETS=()
@@ -324,6 +355,14 @@ if (( ${#MISSING_GH_SECRETS[@]} > 0 )); then
   echo "    (GHCR_TOKEN: PAT with read:packages; WORKFLOW_TOKEN: PAT with repo + workflow)"
   echo ""
 fi
+if [[ "$GOOGLE_LOGIN" == "true" ]]; then
+  echo "  Sign in with Google: on (qa, prod), OAuth client from project $OAUTH_PROJECT"
+else
+  echo "  Sign in with Google: off. To turn it on, create the OAuth client and its secrets"
+  echo "    $SYSTEM-google-oauth-client-id and $SYSTEM-google-oauth-client-secret in project $OAUTH_PROJECT"
+  echo "    (redirect URIs: https://auth.<domain>/realms/$SYSTEM-{qa,prod}/broker/google/endpoint), then re-run ./setup-gcp.sh."
+fi
+echo ""
 # Custom domains: the deploy maps them (.github/scripts/ensure-domain-mapping.sh); these are the
 # one-time steps outside GCP. The CNAMEs survive a project rebuild; the owner entry does not,
 # because a new project has a new deployer service account.
