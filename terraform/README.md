@@ -172,7 +172,7 @@ A new mapping gets its certificate about 15 minutes after the CNAME exists, and 
 
 ### Latency
 
-Domain mapping is a [preview feature](https://cloud.google.com/run/docs/mapping-custom-domains#limitations), and Google says it adds latency. All services also scale to zero, so the first request after idle waits on cold starts. Both are acceptable at this scale; see `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
+Domain mapping is a [preview feature](https://cloud.google.com/run/docs/mapping-custom-domains#limitations), and Google says it adds latency. Every service except Keycloak scales to zero, so the first request after idle waits on a backend cold start (about 7–11 s, down from about 20 s with the AppCDS archive and C1-only JIT). Keycloak keeps one warm instance, because its cold start was about 22 s. Both are acceptable at this scale; see `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
 
 If the mapping latency becomes a problem, put one of these in front of the Cloud Run services instead:
 
@@ -188,12 +188,14 @@ Either way, delete the domain mappings and point the DNS records (CNAMEs, or A r
 - **Secret Manager**: $0.06/month per active secret version per location; first 6 versions free per billing account (1 secret ≈ $0)
 - **Cloud Run**: Free tier includes 180,000 GB-seconds/month
 
-**Total estimated cost**: ~$0/month at demo scale
+- **Keycloak warm instance**: `min-instances=1` (1 vCPU, 1 GiB) is billed at Cloud Run's idle rate around the clock: about $13/month
+
+**Total estimated cost**: ~$13/month at demo scale (the warm Keycloak; everything else is ~$0)
 
 ### Cost guardrails
 
 - **Budget alerts**: create two on the billing account (Billing > Budgets & alerts): €5 and €20 per month, alerting at 50/90/100%.
-- **Scale to zero**: every Cloud Run service is deployed with `min-instances=0` and small `max-instances`, so idle cost is ~0 (Keycloak cold-starts on first request).
+- **Scale to zero**: every backend and frontend is deployed with `min-instances=0` and small `max-instances`, so their idle cost is ~0. Keycloak is the exception: it is shared by every stack and cold-starts in about 22 s, so it runs with `min-instances=1` (about $13/month). The €5 budget alert will therefore fire every month.
 - **Stages**: acceptance runs a real and a stub stack, and QA and prod run one each. Each stack has its own services and database, and they share the one Keycloak.
 - **Secret versions**: one shared `<system>-db` JSON secret plus `<system>-keycloak-admin-password`, 2 versions in total; only 6 are free.
 - **Reset**: `./teardown-gcp.sh` destroys everything; `./setup-gcp.sh` recreates it.

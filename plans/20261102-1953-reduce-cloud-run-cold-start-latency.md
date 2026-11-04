@@ -1,5 +1,7 @@
 # 2026-11-02 19:53:27 UTC — Reduce Cloud Run cold-start latency
 
+> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-11-04T10:56:51Z`
+
 ## TL;DR
 
 **Why:** After the Cloud Run deployment, prod works (login and order creation succeeded on 2026-11-02) but feels slow. Every service scales to zero, so the first request after idle waits on several cold starts in a row: Keycloak (JVM), the Spring Boot backend (JVM), and a suspended Neon database.
@@ -16,7 +18,7 @@
 
 ## ▶ Next executable step (resume here)
 
-Step 2's re-measure on Cloud Run. The CDS backend and C1 Keycloak are deployed (acceptance run 41812494001, green, at `f5112ef`). After ≥15 min with no stage run and no logins, run `scripts/measure-latency.sh acceptance-stub` and `acceptance-real`, compare with the Step 1 table, and if possible read the startup lines from Cloud Run logs. Then Step 4. Local `gcloud` needs `gcloud auth login` first (it couldn't reauthenticate non-interactively on 2026-11-04). After Steps 1–5, the next unit is Step 6, the shop port (Wave 5, U8).
+Step 5: Step 4 (`--min-instances 1` on Keycloak) is committed and pushed. Dispatch `acceptance-stage` once (`gh workflow run acceptance-stage.yml`) and check it's green. Its deploy redeploys Keycloak with one warm instance; afterwards `gcloud run services describe event-hub-keycloak --region us-central1 --format='value(spec.template.metadata.annotations)'` should show `minScale: 1`. After that, the next unit is Step 6, the shop port (Wave 5, U8).
 
 ## Findings so far (2026-11-02)
 
@@ -43,12 +45,27 @@ Step 2's re-measure on Cloud Run. The CDS backend and C1 Keycloak are deployed (
 - **Keycloak:** it stayed warm through the idle window (something kept calling it, likely an open browser session), so its cold start comes from the deploy log instead. After hours of idle, the 08:48 acceptance run's first well-known request took 24.5 s. Locally with 1 CPU and existing realms, "started in" was ~18 s. The log shows no build step at boot (`start --optimized` is in effect), and `--import-realm` skips both existing realms in <1 s.
 - **Neon:** no measurable wake-up. With the backend kept warm by `/health` only, the first DB query after 8 min without DB traffic took 0.64 s against 0.49 s warm. Open pool connections (backend and Keycloak share the compute) probably keep it from suspending. Neon stays as it is.
 
+## Re-measure (2026-11-04, after Steps 2–3)
+
+Same script and method. acc-stub at 10:57 UTC (backend idle ~30 min). acc-real, and acc-stub again, at 11:26 UTC after 21 min with no stage run and no request from this container. Cloud Run logs still not read (no `gcloud` auth).
+
+| Hop | acc-stub cold (10:57 / 11:26) | acc-real cold | warm |
+|---|---|---|---|
+| frontend `/` | 0.6 / 0.5 | 0.9 | 0.4–0.5 |
+| Keycloak well-known | warm both times | **22.3** | 0.4–0.5 |
+| backend `/health` | **10.3 / 11.3** (was 18.7) | **7.2** (was 21.0) | 0.4–0.5 |
+| backend `/api/orders` (DB) | 1.3 / 1.3 | 1.0 | 0.4–0.5 |
+
+- **Backend:** AppCDS + C1 halved the cold start on Cloud Run (~20 s → 7–11 s).
+- **Keycloak:** C1-only JIT barely helped on Cloud Run (24.5 s → 22.3 s), though it halved the local boot. That's over the ~10 s threshold, so Step 4 applies.
+
 ## Done so far
 
 - Step 1: `scripts/measure-latency.sh` (`73a655d`) and the table above.
 - Step 2 (`997ba59`): `backend/Dockerfile` extracts the jar, makes an AppCDS archive in a training run (`-Dspring.context.exit=onRefresh`, with Hibernate's JDBC metadata access off and dummy auth settings, so it needs no database), and starts with `-XX:SharedArchiveFile`. `JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:TieredStopAtLevel=1"`. Local start (1 CPU / 1 GiB): ~14 s before, ~7–10 s with C1 only, ~4–6 s with CDS as well. Both are kept. The Cloud Run re-measure is still to do.
 - Step 3 (`f5112ef`): `docker/keycloak/Dockerfile.cloud` sets `JAVA_OPTS_APPEND=-XX:TieredStopAtLevel=1`, which took the local boot from ~18 s to ~9 s. `--memory 2Gi` made no difference locally (the boot is CPU-bound), so it isn't applied. Deployed as Keycloak revision `event-hub-keycloak-00002`.
 - Acceptance run 41812494001 (`f5112ef`) is green with both changes. The scheduled run 41814043950 is green as well.
+- Step 4: Keycloak's cold start is 22.3 s, so `deploy-keycloak-cloud/action.yml` sets `--min-instances 1` unconditionally (the shared Keycloak is the prod one; a prod-only flag would be reset by every acceptance or QA deploy). Backends and frontends stay at 0. Cost about $13/month, written into `terraform/README.md` (Latency, Cost total, Scale to zero).
 
 ## Open questions
 
@@ -61,8 +78,6 @@ All resolved before execution (2026-11-03):
 
 ## Steps
 
-- [ ] Re-measure Steps 2–3 on Cloud Run (see ▶).
-- [ ] Step 4: Keep prod warm, only if needed. If Keycloak's cold start is still over ~10 s after Steps 2–3, keep it warm (user decision, 2026-11-04: apply it without asking). Keycloak is one shared service that every stage deploys, and the deploy redeploys it whenever its flags change. A prod-only flag would make every acceptance or QA run set it back to 0. So set `--min-instances 1` unconditionally in `deploy-keycloak-cloud/action.yml`: the shared service is the prod Keycloak. It then takes effect on the next acceptance deploy, with no prod run needed. The backends and frontends stay at 0. Cost: about $13/month (1 vCPU + 1 GiB idle around the clock, at Cloud Run's idle min-instance rate of ~$0.0000025 per vCPU-second and per GiB-second). Write it into the "Scale to zero" bullet and the Cost total in `terraform/README.md`. If the cold start is under ~10 s, change nothing and write that down here. Neon and region stay as they are (Step 1).
 - [ ] Step 5: Run one acceptance dispatch to confirm nothing regressed.
 
 ## Apply to optivem/shop
