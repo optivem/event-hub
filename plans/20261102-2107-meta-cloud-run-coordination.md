@@ -8,7 +8,7 @@
 
 U5 (C Step 8) is done (2026-11-04, `aeb2317`): the domain setup, the teardown ordering, certificates and the latency fallback are documented in `terraform/README.md#custom-domains`. The run.app entries stay in the Keycloak client (user decision).
 
-U6 is partly done (2026-11-04): B Steps 1–3 landed (`73a655d`, `997ba59`, `f5112ef`, `8e10d3f`), and acceptance 41812494001 is green. Next: the Cloud Run re-measure, then B Steps 4–5 (`/execute-plan plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`; its ▶ block has the details). This needs `gcloud auth login` first, so the startup lines can be read from the Cloud Run logs. After U6 come the Keycloak realms plan (`plans/20261103-1951-keycloak-realms-clients-google-login.md`, refine first) and Wave 5 (U7, U8 in `optivem/shop`).
+U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, `3283903`). Backend cold start went from ~20 s to 7–11 s. Keycloak's stayed at 22 s, so it now runs with `--min-instances 1` (~$13/month). Acceptance 41821351077 is green. After U6 come the Keycloak realms plan (`plans/20261103-1951-keycloak-realms-clients-google-login.md`, refine first) and Wave 5 (U7, U8 in `optivem/shop`).
 
 ## Per-plan status snapshot
 

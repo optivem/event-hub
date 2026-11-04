@@ -1,7 +1,5 @@
 # 2026-11-02 19:53:27 UTC — Reduce Cloud Run cold-start latency
 
-> 🤖 **Picked up by agent** — `bfdf944406b0` at `2026-11-04T10:56:51Z`
-
 ## TL;DR
 
 **Why:** After the Cloud Run deployment, prod works (login and order creation succeeded on 2026-11-02) but feels slow. Every service scales to zero, so the first request after idle waits on several cold starts in a row: Keycloak (JVM), the Spring Boot backend (JVM), and a suspended Neon database.
@@ -18,7 +16,7 @@
 
 ## ▶ Next executable step (resume here)
 
-Step 5: Step 4 (`--min-instances 1` on Keycloak) is committed and pushed. Dispatch `acceptance-stage` once (`gh workflow run acceptance-stage.yml`) and check it's green. Its deploy redeploys Keycloak with one warm instance; afterwards `gcloud run services describe event-hub-keycloak --region us-central1 --format='value(spec.template.metadata.annotations)'` should show `minScale: 1`. After that, the next unit is Step 6, the shop port (Wave 5, U8).
+Steps 1–5 are done in event-hub. The only unit left is Step 6, the shop port (Wave 5, U8 in `plans/20261102-2107-meta-cloud-run-coordination.md`). Per the meta-plan it runs after Wave 4 (the Keycloak realms plan) and after U1, so check the meta-plan's order before you start. Shop lives at `/home/vscode/shop`.
 
 ## Findings so far (2026-11-02)
 
@@ -65,7 +63,8 @@ Same script and method. acc-stub at 10:57 UTC (backend idle ~30 min). acc-real, 
 - Step 2 (`997ba59`): `backend/Dockerfile` extracts the jar, makes an AppCDS archive in a training run (`-Dspring.context.exit=onRefresh`, with Hibernate's JDBC metadata access off and dummy auth settings, so it needs no database), and starts with `-XX:SharedArchiveFile`. `JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:TieredStopAtLevel=1"`. Local start (1 CPU / 1 GiB): ~14 s before, ~7–10 s with C1 only, ~4–6 s with CDS as well. Both are kept. The Cloud Run re-measure is still to do.
 - Step 3 (`f5112ef`): `docker/keycloak/Dockerfile.cloud` sets `JAVA_OPTS_APPEND=-XX:TieredStopAtLevel=1`, which took the local boot from ~18 s to ~9 s. `--memory 2Gi` made no difference locally (the boot is CPU-bound), so it isn't applied. Deployed as Keycloak revision `event-hub-keycloak-00002`.
 - Acceptance run 41812494001 (`f5112ef`) is green with both changes. The scheduled run 41814043950 is green as well.
-- Step 4: Keycloak's cold start is 22.3 s, so `deploy-keycloak-cloud/action.yml` sets `--min-instances 1` unconditionally (the shared Keycloak is the prod one; a prod-only flag would be reset by every acceptance or QA deploy). Backends and frontends stay at 0. Cost about $13/month, written into `terraform/README.md` (Latency, Cost total, Scale to zero).
+- Step 4: Keycloak's cold start is 22.3 s, so `deploy-keycloak-cloud/action.yml` sets `--min-instances 1` unconditionally (the shared Keycloak is the prod one; a prod-only flag would be reset by every acceptance or QA deploy). Backends and frontends stay at 0. Cost about $13/month, written into `terraform/README.md` (Latency, Cost total, Scale to zero). Committed as `3283903`.
+- Step 5: the first dispatch (41821154748) skipped everything: the acceptance gate doesn't count a change under `.github/actions/` as a workflow change. Then `force=true` (41821351077) went green and deployed Keycloak revision `event-hub-keycloak-00003` with `--min-instances 1`.
 
 ## Open questions
 
@@ -75,10 +74,6 @@ All resolved before execution (2026-11-03):
 - **Neon autosuspend:** neither a paid plan nor a scheduled ping for now. Step 1 measures the wake-up cost first
 - **Region:** keep `us-central1` unless Step 1 shows network as the main cost
 - **Ordering:** execute only after U4 (Cloud Run plan Step 10 + custom-domains plan Step 7); no `run.app` baseline before that
-
-## Steps
-
-- [ ] Step 5: Run one acceptance dispatch to confirm nothing regressed.
 
 ## Apply to optivem/shop
 
