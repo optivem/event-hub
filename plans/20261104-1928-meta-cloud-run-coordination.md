@@ -1,5 +1,6 @@
 # 2026-11-04 19:28 UTC — Plan coordination meta-plan: Cloud Run follow-ups
 
+
 _First written 2026-11-02 21:07 UTC; renamed on 2026-11-04 so it sorts after every plan it coordinates._
 
 **Plans analysed:** 7 in-scope (plan **E** added 2026-11-03, plans **F** and **G** added 2026-11-04), 3 referenced-only (`plans/deferred/*`; none are dependencies of an in-scope plan)
@@ -8,11 +9,9 @@ _First written 2026-11-02 21:07 UTC; renamed on 2026-11-04 so it sorts after eve
 
 ## ▶ Next executable step (resume here)
 
-U5 (C Step 8) is done (2026-11-04, `aeb2317`): the domain setup, the teardown ordering, certificates and the latency fallback are documented in `terraform/README.md#custom-domains`. The run.app entries stay in the Keycloak client (user decision).
+U10 (plan **F**, `plans/20261103-1951-keycloak-realms-clients-google-login.md`) is in progress. On 2026-11-04 the code landed: per-stage realms and the client rename (`986f1ee`), the deploy service-account client (`69eb6bc`, `1b19e26`), the `/privacy` page (`e84141f`) and Sign in with Google (`b01add1`). No live change yet.
 
-U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, `3283903`). Backend cold start went from ~20 s to 7–11 s. Keycloak's stayed at 22 s. `--min-instances 1` (~$13/month) was tried and reverted the same day so the project stays at $0. Acceptance 41821351077 is green.
-
-**Next:** U10, the Keycloak realms plan **F** (`plans/20261103-1951-keycloak-realms-clients-google-login.md`): refined 2026-11-04, ready to execute. After U10 comes Wave 5 (U7, U8 in `optivem/shop`), which ports F's changes too. U11 (plan **G**, the organizer prototype) touches only `docs/prototype/` and can run at any time, in parallel with anything.
+**Next:** continue F with `/execute-plan plans/20261103-1951-keycloak-realms-clients-google-login.md`. Two user steps first (F Step 4b: privacy contact address + text review; F Step 5: the OAuth project and client), then F Step 6, the rollout, which starts by re-running `./setup-gcp.sh` on `event-hub-ef289c`. After U10 comes Wave 5 (U7, U8 in `optivem/shop`), which ports F's changes too. U11 (plan **G**) can run at any time.
 
 ## Per-plan status snapshot
 
@@ -23,7 +22,7 @@ U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, 
 | `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–8 done | 8 / 9 | `README.md`, `.github/scripts/set-keycloak-client-urls.sh`; Step 9 in `optivem/shop` | Step 7 passed in U4; Step 9 must port the teardown ordering and `--force-override` |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | done, deleted 2026-11-03 (`db0a68c`) | — | — | shop already carried the merge (shop `33c832c8`, `ef3eeba1`); shop checkout is at `/home/vscode/shop` |
 | `20261103-1158-frontend-tag-prefix` (**E**) | done, deleted 2026-11-03 | — | — | prod `v1.0.229` published `frontend-v1.3.215`; QA without `-f version=` resolved `v1.0.229-rc.27` |
-| `20261103-1951-keycloak-realms-clients-google-login` (**F**) | refined 2026-11-04 | 0 / 7 | `docker/keycloak/*`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/scripts/set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, `frontend/src/auth/config.ts`, backend test config, system tests, local compose, `README.md` | U10 (Wave 4 batch C); its Step 6 rolls out to every stage and needs the live environment |
+| `20261103-1951-keycloak-realms-clients-google-login` (**F**) | Steps 1–5 code done; user steps 4b, 5 and rollout left | 5 / 8 | `docker/keycloak/*`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/scripts/set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, `frontend/src/auth/config.ts`, backend test config, system tests, local compose, `README.md` | U10 (Wave 4 batch C); its Step 6 rolls out to every stage and needs the live environment |
 | `20261103-2302-organizer-prototype-assignment-followups` (**G**) | Step 4 done | 1 / 5 | `docs/prototype/organizer/*` | U11; independent of the Cloud Run work, no shared files or environment |
 
 ## Dependency graph
