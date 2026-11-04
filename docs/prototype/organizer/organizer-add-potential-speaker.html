@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add potential speaker | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="organizer-events.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <nav class="nav" aria-label="Organizer">
+      <a href="organizer-events.html">Events</a>
+      <a href="organizer-potential-speakers.html" aria-current="page">Potential speakers</a>
+      <a href="organizer-settings.html">Settings</a>
+    </nav>
+    <details class="account">
+      <summary aria-label="Account menu: Nina Example"><span class="avatar">NE</span></summary>
+      <ul class="account-menu">
+        <li><a href="organizer-profile.html">Profile</a></li>
+        <li><a href="index.html">Log out</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+<main class="page">
+  <div class="narrow">
+    <div class="page-head">
+      <h1>Add potential speaker</h1>
+      <p class="meta">Someone you met or saw speak. They're marked as added by you.</p>
+    </div>
+    <section class="card">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" type="text" value="Kai Example">
+      </div>
+      <div class="field">
+        <label for="email">Email <span class="hint">The invitation goes here if you invite them</span></label>
+        <input id="email" type="email" value="kai.example@example.com">
+      </div>
+      <div class="field">
+        <label for="linkedin">LinkedIn <span class="hint">Optional</span></label>
+        <input id="linkedin" type="url">
+      </div>
+      <div class="field">
+        <label for="topic">Topic <span class="hint">A talk idea, if you have one yet</span></label>
+        <input id="topic" type="text" value="Continuous Delivery Pipelines">
+      </div>
+      <div class="field">
+        <label for="notes">Notes <span class="hint">How you know them, what you talked about</span></label>
+        <textarea id="notes" rows="3">Saw them speak at another meetup. Asked if they'd like to give a talk here.</textarea>
+      </div>
+      <div class="actions">
+        <a class="button" href="organizer-potential-speakers.html?added#organizers">Add</a>
+        <a class="button secondary" href="organizer-potential-speakers.html">Cancel</a>
+      </div>
+    </section>
+    <p class="proto-next">Next in the flow: back to <a href="organizer-potential-speakers.html?added#organizers">potential speakers</a>, where the new person shows under Added by organizers. Adding someone doesn't email them or create an account. That happens only when an organizer invites them.</p>
+  </div>
+</main>
+<script src="../account.js"></script>
+</body>
+</html>

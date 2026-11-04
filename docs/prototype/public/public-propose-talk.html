@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propose a talk | event-hub prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="../community-logo.svg" alt="">Tech Excellence</a>
+    <a class="button secondary help-link" href="../speaker/index.html">Log in</a>
+  </div>
+</header>
+<main class="page">
+  <div class="narrow">
+    <div class="page-head">
+      <h1>Propose a talk</h1>
+      <p class="meta">Technical topics are welcome, practical talks first</p>
+    </div>
+    <div class="notice" id="propose-done" hidden>Thanks, your proposal is in. The organizers will look at it and get back to you by email. If they invite you, the invitation email sets up your account.</div>
+    <section class="card" id="propose-form">
+      <div class="field">
+        <label for="name">Your name</label>
+        <input id="name" type="text" value="Lou Example">
+      </div>
+      <div class="field">
+        <label for="email">Email <span class="hint">Only the organizers see it. They reply here.</span></label>
+        <input id="email" type="email" value="lou.example@example.com">
+      </div>
+      <div class="field">
+        <label for="linkedin">LinkedIn <span class="hint">Optional</span></label>
+        <input id="linkedin" type="url">
+      </div>
+      <div class="field">
+        <label for="title">Talk title</label>
+        <input id="title" type="text" value="Observability for Developers">
+      </div>
+      <div class="field">
+        <label for="topic">What is the talk about?</label>
+        <textarea id="topic" rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label for="practical">Anything practical? <span class="hint">Live coding, a demo, an exercise</span></label>
+        <textarea id="practical" rows="2"></textarea>
+      </div>
+      <div class="actions"><a class="button" href="public-propose-talk.html?done">Send proposal</a></div>
+    </section>
+    <p class="proto-next">Next in the flow: the organizers see the proposal in their <a href="../organizer/organizer-potential-speakers.html?applied#self">potential speakers</a>, marked as "Applied themselves". <a href="index.html">Back to upcoming events</a></p>
+  </div>
+</main>
+<script>
+// Prototype only: ?done shows the screen after the proposal is sent.
+if (new URLSearchParams(location.search).has('done')) {
+  document.getElementById('propose-form').hidden = true;
+  document.getElementById('propose-done').hidden = false;
+}
+</script>
+</body>
+</html>

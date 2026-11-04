@@ -27,50 +27,72 @@
 <main class="page">
   <div class="page-head">
     <h1>Potential speakers</h1>
-    <p class="meta">Proposals from the intake form and people the organizers asked</p>
+    <p class="meta">People who applied themselves through the public page, and people the organizers added</p>
   </div>
+  <div class="notice" id="added-done" hidden>Kai Example is added to the potential speakers, marked as added by you.</div>
   <div class="columns">
     <div>
+      <div class="segmented" role="group" aria-label="Show potential speakers by source">
+        <a href="#all" data-filter="all">All <span class="count"></span></a>
+        <a href="#self" data-filter="self">Applied themselves <span class="count"></span></a>
+        <a href="#organizers" data-filter="organizers">Added by organizers <span class="count"></span></a>
+      </div>
       <section class="card">
         <h2>Proposals and ideas</h2>
         <p class="meta">Technical topics are invited, practical talks first</p>
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>Speaker</th><th>Topic</th><th>From</th><th>Status</th><th>Screen</th></tr>
+              <tr><th>Speaker</th><th>Topic</th><th>Source</th><th>Status</th><th>Screen</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td data-label="Speaker">Mara Sample</td>
-                <td data-label="Topic">Testing Legacy Code Without Fear</td>
-                <td data-label="From">Intake form</td>
-                <td data-label="Status"><span class="status info">New proposal</span></td>
-                <td data-label="Screen"><a class="button secondary" href="organizer-speaker-detail.html">Open</a></td>
-              </tr>
-              <tr>
-                <td data-label="Speaker">Sam Mockup</td>
-                <td data-label="Topic">Refactoring Without a Net</td>
-                <td data-label="From">Organizers</td>
+              <tr data-source="organizers" id="added-row" hidden>
+                <td data-label="Speaker">Kai Example</td>
+                <td data-label="Topic">Continuous Delivery Pipelines</td>
+                <td data-label="Source">Added by you</td>
                 <td data-label="Status"><span class="status">Asking about topics</span></td>
                 <td data-label="Screen">Sample row</td>
               </tr>
-              <tr>
+              <tr data-source="self" id="applied-row" hidden>
+                <td data-label="Speaker">Lou Example</td>
+                <td data-label="Topic">Observability for Developers</td>
+                <td data-label="Source">Applied themselves</td>
+                <td data-label="Status"><span class="status info">New proposal</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr data-source="self">
+                <td data-label="Speaker">Mara Sample</td>
+                <td data-label="Topic">Testing Legacy Code Without Fear</td>
+                <td data-label="Source">Applied themselves</td>
+                <td data-label="Status"><span class="status info">New proposal</span></td>
+                <td data-label="Screen"><a class="button secondary" href="organizer-speaker-detail.html">Open</a></td>
+              </tr>
+              <tr data-source="organizers">
+                <td data-label="Speaker">Sam Mockup</td>
+                <td data-label="Topic">Refactoring Without a Net</td>
+                <td data-label="Source">Added by Omar Example</td>
+                <td data-label="Status"><span class="status">Asking about topics</span></td>
+                <td data-label="Screen">Sample row</td>
+              </tr>
+              <tr data-source="organizers">
                 <td data-label="Speaker">Dana Testcase</td>
                 <td data-label="Topic">Event Storming for Beginners</td>
-                <td data-label="From">Organizers</td>
+                <td data-label="Source">Added by you</td>
                 <td data-label="Status"><span class="status ok">Invited</span></td>
                 <td data-label="Screen">Sample row</td>
               </tr>
-              <tr>
+              <tr data-source="self">
                 <td data-label="Speaker">Jo Fictional</td>
                 <td data-label="Topic">Better Team Conversations</td>
-                <td data-label="From">Intake form</td>
+                <td data-label="Source">Applied themselves</td>
                 <td data-label="Status"><span class="status bad">Not invited</span></td>
                 <td data-label="Screen">Sample row</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="meta" id="none-left" hidden>Nobody here yet.</p>
+        <div class="actions"><a class="button secondary" href="organizer-add-potential-speaker.html">Add potential speaker</a></div>
       </section>
     </div>
     <aside>
@@ -99,8 +121,42 @@
       </section>
     </aside>
   </div>
-  <p class="proto-next">Next in the flow: open <a href="organizer-speaker-detail.html">Mara Sample's new proposal</a>. Proposals don't belong to an event yet, so they have no assignees. Any organizer can invite.</p>
+  <p class="proto-next">Next in the flow: open <a href="organizer-speaker-detail.html">Mara Sample's new proposal</a>. Potential speakers come from two sources. They <a href="../public/public-propose-talk.html">apply themselves</a> from the public events page, without an account, or an organizer <a href="organizer-add-potential-speaker.html">adds them</a> after meeting them or seeing them speak. The Source column says which, and for an added person, which organizer added them. Proposals don't belong to an event yet, so they have no assignees. Any organizer can invite.</p>
 </main>
+<script>
+// Prototype only: filter by source in the URL hash (#all, #self, #organizers).
+// ?applied shows the visitor's proposal from the public page, ?added the person just added.
+(function () {
+  var params = new URLSearchParams(location.search);
+  if (params.has('applied')) { document.getElementById('applied-row').hidden = false; }
+  if (params.has('added')) {
+    document.getElementById('added-row').hidden = false;
+    document.getElementById('added-done').hidden = false;
+  }
+  var rows = Array.prototype.filter.call(document.querySelectorAll('tr[data-source]'), function (tr) { return !tr.hidden; });
+  var tabs = document.querySelectorAll('.segmented a');
+  tabs.forEach(function (tab) {
+    var f = tab.dataset.filter;
+    tab.querySelector('.count').textContent = rows.filter(function (tr) { return f === 'all' || tr.dataset.source === f; }).length;
+  });
+  function show() {
+    var f = location.hash.slice(1);
+    if (['all', 'self', 'organizers'].indexOf(f) === -1) { f = 'all'; }
+    var shown = 0;
+    rows.forEach(function (tr) {
+      var on = f === 'all' || tr.dataset.source === f;
+      tr.style.display = on ? '' : 'none';
+      if (on) { shown++; }
+    });
+    document.getElementById('none-left').hidden = shown > 0;
+    tabs.forEach(function (tab) {
+      if (tab.dataset.filter === f) { tab.setAttribute('aria-current', 'true'); } else { tab.removeAttribute('aria-current'); }
+    });
+  }
+  window.addEventListener('hashchange', show);
+  show();
+})();
+</script>
 <script src="../account.js"></script>
 </body>
 </html>
