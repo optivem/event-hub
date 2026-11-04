@@ -12,7 +12,7 @@ U5 (C Step 8) is done (2026-11-04, `aeb2317`): the domain setup, the teardown or
 
 U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, `3283903`). Backend cold start went from ~20 s to 7–11 s. Keycloak's stayed at 22 s. `--min-instances 1` (~$13/month) was tried and reverted the same day so the project stays at $0. Acceptance 41821351077 is green.
 
-**Next:** U10, the Keycloak realms plan **F** (`plans/20261103-1951-keycloak-realms-clients-google-login.md`): run `/refine-plan` on it first, then execute. After U10 comes Wave 5 (U7, U8 in `optivem/shop`), which ports F's changes too. U11 (plan **G**, the organizer prototype) touches only `docs/prototype/` and can run at any time, in parallel with anything.
+**Next:** U10, the Keycloak realms plan **F** (`plans/20261103-1951-keycloak-realms-clients-google-login.md`): refined 2026-11-04, ready to execute. After U10 comes Wave 5 (U7, U8 in `optivem/shop`), which ports F's changes too. U11 (plan **G**, the organizer prototype) touches only `docs/prototype/` and can run at any time, in parallel with anything.
 
 ## Per-plan status snapshot
 
@@ -23,7 +23,7 @@ U6 is done (2026-11-04): B Steps 1–5 landed (`73a655d`, `997ba59`, `f5112ef`, 
 | `20261102-1954-custom-domains-for-cloud-run` (**C**) | refined; Steps 1–8 done | 8 / 9 | `README.md`, `.github/scripts/set-keycloak-client-urls.sh`; Step 9 in `optivem/shop` | Step 7 passed in U4; Step 9 must port the teardown ordering and `--force-override` |
 | `20261102-2015-sync-gcp-scripts-to-shop` (**D**) | done, deleted 2026-11-03 (`db0a68c`) | — | — | shop already carried the merge (shop `33c832c8`, `ef3eeba1`); shop checkout is at `/home/vscode/shop` |
 | `20261103-1158-frontend-tag-prefix` (**E**) | done, deleted 2026-11-03 | — | — | prod `v1.0.229` published `frontend-v1.3.215`; QA without `-f version=` resolved `v1.0.229-rc.27` |
-| `20261103-1951-keycloak-realms-clients-google-login` (**F**) | not refined; 7 open questions | 0 / 6 | `docker/keycloak/*`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/scripts/set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, `frontend/src/auth/config.ts`, backend test config, system tests, local compose, `README.md` | U10 (Wave 4 batch C); its Step 5 rolls out to every stage and needs the live environment |
+| `20261103-1951-keycloak-realms-clients-google-login` (**F**) | refined 2026-11-04 | 0 / 7 | `docker/keycloak/*`, `.github/actions/deploy-keycloak-cloud/action.yml`, `.github/scripts/set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, `frontend/src/auth/config.ts`, backend test config, system tests, local compose, `README.md` | U10 (Wave 4 batch C); its Step 6 rolls out to every stage and needs the live environment |
 | `20261103-2302-organizer-prototype-assignment-followups` (**G**) | Step 4 done | 1 / 5 | `docs/prototype/organizer/*` | U11; independent of the Cloud Run work, no shared files or environment |
 
 ## Dependency graph
@@ -78,8 +78,8 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 - F renames the realms and the client and switches the deploy to a service-account client, in the same Keycloak config, Keycloak action and `set-keycloak-client-urls.sh` that C Step 9 and B Step 6 port to shop.
 - **Resolution:** F (U10) before Wave 5, so the shop ports copy the final Keycloak setup once, as a two-way merge.
 
-### 8. Plan F Step 5 and the shared live environment
-- F Step 5 runs acceptance → QA → prod, deletes realms and the `admin` user on the shared Keycloak. That collides with any other stage run or rebuild.
+### 8. Plan F Step 6 and the shared live environment
+- F Step 6 runs acceptance → QA → prod, deletes realms and the `admin` user on the shared Keycloak. That collides with any other stage run or rebuild.
 - **Resolution:** the usual rule: one session at a time touches the live environment (see Pre-execute checks).
 
 ## Consolidation findings (decided)
@@ -106,7 +106,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 | U6 | **B** Steps 1–5 | standalone | `scripts/measure-latency.sh`, `backend/Dockerfile`, `_deploy-cloud-run.yml`, `deploy-keycloak-cloud/action.yml`, `README.md` |
 | U7 | **C** Step 9 | standalone, in `optivem/shop` | shop scripts, deploy workflow, Keycloak config |
 | U8 | **B** Step 6 | standalone, in `optivem/shop` | shop `backend/Dockerfile`, deploy workflow, Keycloak action |
-| U10 | **F** (all; refine first) | standalone, user steps in Step 4 (Google OAuth client) | Keycloak config, Keycloak action, `set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, frontend auth config, backend test config, system tests, local compose, `README.md` |
+| U10 | **F** (all) | standalone, user steps in Step 5 (Google OAuth client) | Keycloak config, Keycloak action, `set-keycloak-client-urls.sh`, `_deploy-cloud-run.yml`, frontend auth config and new `/privacy` page, backend test config, system tests, local compose, `README.md` |
 | U11 | **G** (all) | standalone, interactive with the user (screen review) | `docs/prototype/organizer/*` |
 
 ## Needs-decision (all resolved 2026-11-03)
@@ -140,7 +140,7 @@ Declared edges: A Step 10 after C Step 6 (A's own text). Inside C, Step 9 comes 
 
 **Batch A:** **U5** (C Step 8): small, touches `README.md` and the Keycloak config.
 **Batch B (serial after A, shares `README.md`, `_deploy-cloud-run.yml` and the Keycloak action):** **U6** (B Steps 1–5): measure (needs ≥15 min idle for cold numbers), tune, decide min-instances, run acceptance.
-**Batch C (serial after B, shares the same files and the live Keycloak):** **U10** (plan F): `/refine-plan` first, then execute. F's open question 7 (order against B) is settled: B Steps 1–5 are already done.
+**Batch C (serial after B, shares the same files and the live Keycloak):** **U10** (plan F, refined 2026-11-04). F's open question 7 (order against B) is settled: B Steps 1–5 are already done.
 
 ### Wave 5 — shop ports (after Wave 4 including U10, and after U1)
 
