@@ -162,10 +162,13 @@ resource "google_service_account" "runtime" {
   depends_on = [google_project_service.required_apis]
 }
 
-# Shared DB credentials (database names come from convention) plus the Keycloak admin password.
+# Shared DB credentials (database names come from convention) and the Keycloak client secrets:
+# the temporary bootstrap client and the permanent deploy client (ensure-keycloak-deployer.sh).
+# keycloak-admin-password is legacy: only a Keycloak database created before the bootstrap client
+# needs it, once, to create the deploy client; remove it once no such database is left.
 # Secret versions are added out of band (gcloud secrets versions add) so values stay out of state
 resource "google_secret_manager_secret" "runtime" {
-  for_each  = toset([for s in ["db", "keycloak-admin-password"] : "${local.system_name}-${s}"])
+  for_each  = toset([for s in ["db", "keycloak-bootstrap-secret", "keycloak-deployer-secret", "keycloak-admin-password"] : "${local.system_name}-${s}"])
   project   = google_project.this.project_id
   secret_id = each.value
 
@@ -176,8 +179,10 @@ resource "google_secret_manager_secret" "runtime" {
   depends_on = [google_project_service.required_apis]
 }
 
+# Only what the containers read: the backend and migrations the db, Keycloak its bootstrap secret.
+# The other secrets are read by the deploy only (github_secret_accessor).
 resource "google_secret_manager_secret_iam_member" "runtime_accessor" {
-  for_each  = google_secret_manager_secret.runtime
+  for_each  = { for k, v in google_secret_manager_secret.runtime : k => v if contains(["${local.system_name}-db", "${local.system_name}-keycloak-bootstrap-secret"], k) }
   project   = google_project.this.project_id
   secret_id = each.value.secret_id
   role      = "roles/secretmanager.secretAccessor"

@@ -4,7 +4,6 @@ set -euo pipefail
 # Setup Google Cloud infrastructure using Terraform
 # Prerequisite: gcloud, gh and neonctl authenticated, and a GCP billing account
 # Optional: SYSTEM_NAME=<4-14 chars> overrides the name derived from the repo (prefixes the GCP project, services, secrets, databases)
-# Optional: KC_ADMIN_PASSWORD=<password> sets the Keycloak admin password on first setup (default: generated)
 # Usage: ./setup-gcp.sh [--yes]   (--yes applies Terraform plans that change/destroy resources without asking)
 
 AUTO_APPROVE=false
@@ -278,19 +277,17 @@ else
   echo "  ✅ Stored $SYSTEM-db"
 fi
 
-if secret_has_version "$SYSTEM-keycloak-admin-password"; then
-  echo "  ✅ Keycloak admin password already stored"
-else
-  # Nobody types this password (the pipeline reads it from Secret Manager), so generate it unless
-  # KC_ADMIN_PASSWORD is set; a fresh setup then runs without stopping for input
-  if [[ -z "${KC_ADMIN_PASSWORD:-}" ]]; then
-    KC_ADMIN_PASSWORD=$(openssl rand -base64 24)
-    echo "  Generated a Keycloak admin password. Read it back with:"
-    echo "    gcloud secrets versions access latest --secret=$SYSTEM-keycloak-admin-password --project=$PROJECT_ID"
+# Keycloak has no admin user. On a fresh database it creates a temporary bootstrap client with the
+# first secret; the first deploy uses it to create the permanent deploy client <system>-deployer
+# with the second, then deletes it (.github/scripts/ensure-keycloak-deployer.sh). Nobody types them.
+for name in keycloak-bootstrap-secret keycloak-deployer-secret; do
+  if secret_has_version "$SYSTEM-$name"; then
+    echo "  ✅ $SYSTEM-$name already stored"
+  else
+    openssl rand -hex 32 | tr -d '\n' | gcloud secrets versions add "$SYSTEM-$name" --data-file=- --project="$PROJECT_ID" --quiet > /dev/null
+    echo "  ✅ Generated and stored $SYSTEM-$name"
   fi
-  echo -n "$KC_ADMIN_PASSWORD" | gcloud secrets versions add "$SYSTEM-keycloak-admin-password" --data-file=- --project="$PROJECT_ID" --quiet > /dev/null
-  echo "  ✅ Stored $SYSTEM-keycloak-admin-password"
-fi
+done
 
 # GitHub secrets the cloud workflows need (not created by this script)
 echo ""

@@ -3,6 +3,8 @@ description: >-
   Deploys the one Keycloak every stack shares, maps auth.<custom-domain> to it when a domain is
   given, waits for the stage's realm (<system>-<stage>), and sets that realm's <system>-frontend
   client URLs (.github/scripts/set-keycloak-client-urls.sh). Other stages' realms are not touched.
+  The admin API calls use the deploy client <system>-deployer
+  (.github/scripts/ensure-keycloak-deployer.sh), not an admin user.
   Redeploys only when the image, a setting or the db credentials changed, so one workflow
   doesn't restart Keycloak under another's tests. Needs gcloud authenticated, with the beta
   component when a custom domain is given.
@@ -57,6 +59,9 @@ runs:
         PROJECT_NUMBER: ${{ inputs.project-number }}
         REGION: ${{ inputs.region }}
         HOSTNAME_URL: ${{ steps.urls.outputs.public }}
+        BOOTSTRAP_CLIENT_ID: ${{ inputs.system }}-bootstrap
+      # Keycloak creates the bootstrap client only with a new master realm (a fresh database);
+      # the next step swaps it for the permanent deploy client and deletes it.
       run: |
         set -euo pipefail
         db="$(gcloud secrets versions access latest --secret="${SYSTEM}-db")"
@@ -67,14 +72,14 @@ runs:
         jq -n \
           --arg host "$HOSTNAME_URL" \
           --arg dburl "jdbc:postgresql://${db_host}:${db_port}/${SYSTEM//-/_}_keycloak?sslmode=require" \
-          --arg dbuser "$db_user" --arg dbpass "$db_password" \
+          --arg dbuser "$db_user" --arg dbpass "$db_password" --arg bootstrap "$BOOTSTRAP_CLIENT_ID" \
           '{KC_HOSTNAME:$host, KC_DB_URL:$dburl, KC_DB_USERNAME:$dbuser, KC_DB_PASSWORD:$dbpass,
-            KC_BOOTSTRAP_ADMIN_USERNAME:"admin"}' > "$env_file"
+            KC_BOOTSTRAP_ADMIN_CLIENT_ID:$bootstrap}' > "$env_file"
         args=(--image "$IMAGE" --region "$REGION" --project "$PROJECT"
           --service-account "runtime@${PROJECT}.iam.gserviceaccount.com"
           --port 8080 --memory 1Gi --cpu 1 --cpu-boost
           --min-instances 0 --max-instances 2 --allow-unauthenticated
-          --set-secrets "KC_BOOTSTRAP_ADMIN_PASSWORD=${SYSTEM}-keycloak-admin-password:latest")
+          --set-secrets "KC_BOOTSTRAP_ADMIN_CLIENT_SECRET=${SYSTEM}-keycloak-bootstrap-secret:latest")
         fingerprint="$(printf '%s\n' "${args[@]}" | cat - "$env_file" | sha256sum | cut -c1-32)"
         deployed="$(gcloud run services describe "${SYSTEM}-keycloak" --region "$REGION" --project "$PROJECT" \
           --format='value(metadata.labels.deploy_fingerprint)' 2> /dev/null || true)"
@@ -120,6 +125,16 @@ runs:
         max-attempts: '180'
         wait-seconds: '10'
         timeout-seconds: '1800'
+
+    - name: Ensure Deploy Client
+      shell: bash
+      env:
+        KEYCLOAK_URL: ${{ steps.urls.outputs.public }}
+        SYSTEM: ${{ inputs.system }}
+        STAGE: ${{ inputs.stage }}
+        PROJECT: ${{ inputs.project }}
+        BOOTSTRAP_CLIENT_ID: ${{ inputs.system }}-bootstrap
+      run: ${{ github.action_path }}/../../scripts/ensure-keycloak-deployer.sh
 
     - name: Set Frontend Client URLs
       shell: bash

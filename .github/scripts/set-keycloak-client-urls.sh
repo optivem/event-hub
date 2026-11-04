@@ -15,7 +15,9 @@ set -euo pipefail
 # The run.app URLs are kept on purpose, even with CUSTOM_DOMAIN: forks need them, and they help debugging.
 #
 # Env: KEYCLOAK_URL, SYSTEM, STAGE, PROJECT, PROJECT_NUMBER, REGION, CUSTOM_DOMAIN (optional).
-# Needs gcloud authenticated, with access to the <SYSTEM>-keycloak-admin-password secret.
+# Signs in as the deploy client <SYSTEM>-deployer (client-credentials grant), which
+# ensure-keycloak-deployer.sh sets up first. Needs gcloud authenticated, with access to the
+# <SYSTEM>-keycloak-deployer-secret secret.
 
 : "${KEYCLOAK_URL:?}" "${SYSTEM:?}" "${STAGE:?}" "${PROJECT:?}" "${PROJECT_NUMBER:?}" "${REGION:?}"
 CUSTOM_DOMAIN="${CUSTOM_DOMAIN:-}"
@@ -24,11 +26,11 @@ client_id="${SYSTEM}-frontend"
 
 frontend() { echo "https://${SYSTEM}-$1-frontend-${PROJECT_NUMBER}.${REGION}.run.app"; }
 
-password="$(gcloud secrets versions access latest --secret="${SYSTEM}-keycloak-admin-password" --project "$PROJECT")"
-echo "::add-mask::${password}"
+secret="$(gcloud secrets versions access latest --secret="${SYSTEM}-keycloak-deployer-secret" --project "$PROJECT")"
+echo "::add-mask::${secret}"
 token="$(curl -fsS "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
-  --data-urlencode grant_type=password --data-urlencode client_id=admin-cli \
-  --data-urlencode username=admin --data-urlencode "password=${password}" | jq -r .access_token)"
+  --data-urlencode grant_type=client_credentials --data-urlencode "client_id=${SYSTEM}-deployer" \
+  --data-urlencode "client_secret=${secret}" | jq -r .access_token)"
 echo "::add-mask::${token}"
 api() { curl -fsS -H "Authorization: Bearer ${token}" -H 'Content-Type: application/json' "$@"; }
 

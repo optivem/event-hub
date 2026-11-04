@@ -5,7 +5,7 @@ This directory contains the Terraform configuration and helper scripts that set 
 - **GCP Project** with automatic naming
 - **Artifact Registry** for Docker images
 - **Workload Identity Federation** for GitHub Actions authentication
-- **Secret Manager** for the database credentials and the Keycloak admin password
+- **Secret Manager** for the database credentials and the Keycloak client secrets
 - **IAM bindings** for GitHub Actions deployment
 - **Neon Postgres** project with one database per stack (created by `neonctl`, not Terraform)
 
@@ -44,7 +44,7 @@ The script will:
 5. Point Application Default Credentials at the new project as their quota project (skipped without ADC)
 6. Configure GitHub repository variables
 7. Create the Neon project and databases
-8. Store the Neon credentials and Keycloak admin password in Secret Manager
+8. Store the Neon credentials and generate the Keycloak bootstrap and deploy client secrets in Secret Manager
 9. Report any missing GitHub secrets (`GHCR_TOKEN`, `WORKFLOW_TOKEN`)
 
 ### Manual Terraform Usage
@@ -76,7 +76,7 @@ Every name derives from the GitHub repo, or from the `SYSTEM_NAME` environment v
 | System name | `event-hub` |
 | GCP project | `event-hub-<random 6 hex>` |
 | Neon project | `event-hub` |
-| Secrets | `event-hub-db`, `event-hub-keycloak-admin-password` |
+| Secrets | `event-hub-db`, `event-hub-keycloak-bootstrap-secret`, `event-hub-keycloak-deployer-secret` (and the legacy `event-hub-keycloak-admin-password`) |
 | Databases | `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak` |
 
 Hyphens are valid in GCP names but not in unquoted Postgres identifiers, so database names replace them with underscores. The system name is limited to 14 characters because it prefixes Cloud Run service names, which are limited to 49.
@@ -138,7 +138,7 @@ Google Cloud Project
 ├── Artifact Registry (Docker images, last 10 versions per image)
 ├── Workload Identity Pool (GitHub OIDC)
 │   └── Service Account (github-deployer)
-├── Secret Manager (<system>-db, <system>-keycloak-admin-password)
+├── Secret Manager (<system>-db, <system>-keycloak-bootstrap-secret, <system>-keycloak-deployer-secret)
 ├── Service Account (runtime, Cloud Run runtime identity)
 └── IAM Roles
     ├── Cloud Run Admin
@@ -195,7 +195,7 @@ Either way, delete the domain mappings and point the DNS records (CNAMEs, or A r
 - **Budget alerts**: create two on the billing account (Billing > Budgets & alerts): €5 and €20 per month, alerting at 50/90/100%.
 - **Scale to zero**: every Cloud Run service, Keycloak included, is deployed with `min-instances=0` and small `max-instances`, so idle cost is ~0 (Keycloak cold-starts in about 22 s on the first request). The Keycloak deploy sets `--min-instances 0` explicitly, because `gcloud run deploy` keeps a previous value when the flag is left out.
 - **Stages**: acceptance runs a real and a stub stack, and QA and prod run one each. Each stack has its own services and database, and they share the one Keycloak.
-- **Secret versions**: one shared `<system>-db` JSON secret plus `<system>-keycloak-admin-password`, 2 versions in total; only 6 are free.
+- **Secret versions**: one shared `<system>-db` JSON secret plus the Keycloak `<system>-keycloak-bootstrap-secret` and `<system>-keycloak-deployer-secret`, 3 versions in total (4 while the legacy `<system>-keycloak-admin-password` still has one); only 6 are free.
 - **Reset**: `./teardown-gcp.sh` destroys everything; `./setup-gcp.sh` recreates it.
 
 ## Troubleshooting
