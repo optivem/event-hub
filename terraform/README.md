@@ -156,9 +156,30 @@ One-time setup (`./setup-gcp.sh` prints these with the actual values):
 1. Verify the domain in [Google Search Console](https://search.google.com/search-console) (a TXT record at the DNS provider).
 2. In [Webmaster Central](https://www.google.com/webmasters/verification), add the deployer service account (`GCP_SERVICE_ACCOUNT`) as an owner of the domain. Without this, the deploy can't create the mappings.
 3. `gh variable set CUSTOM_DOMAIN --body <domain>`
-4. At the DNS provider, add `CNAME events`, `events-qa`, `events-acc`, `events-e2e` and `auth` → `ghs.googlehosted.com.`. The certificate is provisioned about 15 minutes (up to 24 hours) after the CNAME exists. Until then the deploy logs a warning, not an error.
+4. At the DNS provider, add `CNAME events`, `events-qa`, `events-acc`, `events-e2e` and `auth` → `ghs.googlehosted.com.`. The certificate follows; see [Certificates](#certificates).
 
-After a teardown and setup, only step 2 has to be repeated, because the new project has a new deployer service account. Deleting the project deletes its mappings. `CUSTOM_DOMAIN`, the verification and the CNAMEs belong to the domain, not the project, so the teardown keeps them.
+After a teardown and setup, only step 2 has to be repeated, because the new project has a new deployer service account. `CUSTOM_DOMAIN`, the Search Console verification and the CNAMEs belong to the domain, not the project, so the teardown keeps them. The CNAMEs point to `ghs.googlehosted.com`, not to the project, so they stay valid after a rebuild.
+
+### Teardown and rebuild
+
+- `./teardown-gcp.sh` deletes the domain mappings **before** it deletes the project. A deleted project stays pending deletion for 30 days, and its mappings keep the hostnames reserved, so the next project's deploy would fail with "already in use elsewhere".
+- As a fallback, `ensure-domain-mapping.sh` creates mappings with `--force-override`, which takes a hostname from a mapping in another project (only a verified owner can do this). It also deletes and recreates a mapping that is stuck on `MappingAlreadyExists`, because it was created while another project still held the hostname.
+- The first deploy into the new project creates the mappings again.
+
+### Certificates
+
+A new mapping gets its certificate about 15 minutes after the CNAME exists, and at most 24 hours. `ensure-domain-mapping.sh` only warns while the certificate is pending; the deploy then waits up to 30 minutes for each custom domain to answer, because the system tests use it. If a certificate takes longer, re-run the deploy.
+
+### Latency
+
+Domain mapping is a [preview feature](https://cloud.google.com/run/docs/mapping-custom-domains#limitations), and Google says it adds latency. All services also scale to zero, so the first request after idle waits on cold starts. Both are acceptable at this scale; see `plans/20261102-1953-reduce-cloud-run-cold-start-latency.md`.
+
+If the mapping latency becomes a problem, put one of these in front of the Cloud Run services instead:
+
+- **Firebase Hosting** with [rewrites to Cloud Run](https://firebase.google.com/docs/hosting/cloud-run): free tier, Google-managed certificate.
+- **Global external Application Load Balancer** with serverless NEGs and a Google-managed certificate: about $18/month.
+
+Either way, delete the domain mappings and point the DNS records (CNAMEs, or A records for a load balancer IP) to the new target.
 
 ## Cost
 

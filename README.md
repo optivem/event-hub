@@ -27,7 +27,7 @@
 
 ## GCP deployment
 
-`./setup-gcp.sh` provisions the GCP and Neon projects and `./teardown-gcp.sh` removes them. See [terraform/README.md](terraform/README.md).
+`./setup-gcp.sh` provisions the GCP and Neon projects and `./teardown-gcp.sh` removes them. See [terraform/README.md](terraform/README.md), and [Custom domains](terraform/README.md#custom-domains) for serving the stages at your own domain.
 
 ## License
 

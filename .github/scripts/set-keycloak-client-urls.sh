@@ -10,6 +10,7 @@ set -euo pipefail
 # The deploy owns every https:// entry: they are replaced, so URLs of an old project don't pile up.
 # Other entries (the http://localhost ones of local development) are kept. Idempotent: an
 # unchanged client isn't written. Without CUSTOM_DOMAIN only the run.app URLs are set.
+# The run.app URLs are kept on purpose, even with CUSTOM_DOMAIN: forks need them, and they help debugging.
 #
 # Env: KEYCLOAK_URL, SYSTEM, PROJECT, PROJECT_NUMBER, REGION, CUSTOM_DOMAIN (optional).
 # Needs gcloud authenticated, with access to the <SYSTEM>-keycloak-admin-password secret.

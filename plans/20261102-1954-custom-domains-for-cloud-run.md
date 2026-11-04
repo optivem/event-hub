@@ -19,19 +19,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-All user steps are done (2026-11-03). The deploy maps `events.`, `events-qa.` and `auth.techexcellence.io` (`.github/scripts/ensure-domain-mapping.sh`, called from `.github/workflows/_deploy-cloud-run.yml`), and all three serve HTTPS with Google-managed certificates (prod `v1.0.228`). The main site (`techexcellence.io`, `www`) is never mapped.
-
-Step 5 is done (2026-11-03): the Keycloak image bakes in no frontend URLs, and the deploy sets the `shop-frontend` client's URLs in both realms through the admin API (`.github/scripts/set-keycloak-client-urls.sh`, run by `.github/actions/deploy-keycloak-cloud`): the `run.app` URLs computed at deploy time plus `events-qa.` (realm `shop`) and `events.` (realm `shop-prod`).
-
-Step 6 is done (2026-11-03, `c976257`, acceptance run 41652268692 green): when `CUSTOM_DOMAIN` is set, Keycloak runs at `auth.` for every stack (issuer `https://auth.techexcellence.io/realms/shop`), prod's frontend URL is `events.` and QA's is `events-qa.`; acceptance stays on `run.app`. The deploy waits on `run.app` first, then up to 30 min for each custom domain's certificate.
-
-Step 7 is done (2026-11-03, unit U4): after teardown → setup on the new project `event-hub-ef289c`, acceptance 41673649275, QA 41680237722 and prod 41690401282 (`v1.0.229`) passed, and a real login as `prod-check` works on `events.techexcellence.io`.
-
-Next is **Step 8** (unit U5, Wave 4 of the meta-plan): drop the `run.app` entries from the Keycloak client URLs if they no longer help (`.github/scripts/set-keycloak-client-urls.sh`), and document the domain setup in `README.md`: Search Console owner after every setup, the CNAMEs, `--force-override` / teardown ordering, the cold-start note, and the Firebase Hosting / load balancer fallback.
-
-## Steps
-
-- [ ] Step 8: Remove the `run.app` entries from the Keycloak clients and config (optional; keep them if they help debugging). Document the domain setup and the Firebase Hosting / load balancer fallback in the README or the deploy docs
+Steps 1–8 are done (2026-11-04): all stages serve on their custom domains, and the setup is documented in `terraform/README.md` → Custom domains. Only **Step 9** remains: the port to `optivem/shop` (unit U7, Wave 5 of `plans/20261102-2107-meta-cloud-run-coordination.md`), with the domain decided as `shop.optivem.com`. See **Apply to optivem/shop**.
 
 ## Decisions
 
