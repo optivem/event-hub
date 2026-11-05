@@ -45,7 +45,8 @@ The script will:
 6. Configure GitHub repository variables
 7. Create the Neon project and databases
 8. Store the Neon credentials and generate the Keycloak bootstrap and deploy client secrets in Secret Manager
-9. Report any missing GitHub secrets (`GHCR_TOKEN`, `WORKFLOW_TOKEN`)
+9. Copy the Sign in with Google client ID and secret from the OAuth project, if they exist (see [Sign in with Google](#sign-in-with-google))
+10. Report any missing GitHub secrets (`GHCR_TOKEN`, `WORKFLOW_TOKEN`)
 
 ### Manual Terraform Usage
 
@@ -76,7 +77,10 @@ Every name derives from the GitHub repo, or from the `SYSTEM_NAME` environment v
 | System name | `event-hub` |
 | GCP project | `event-hub-<random 6 hex>` |
 | Neon project | `event-hub` |
-| Secrets | `event-hub-db`, `event-hub-keycloak-bootstrap-secret`, `event-hub-keycloak-deployer-secret` (and the legacy `event-hub-keycloak-admin-password`) |
+| Secrets | `event-hub-db`, `event-hub-keycloak-bootstrap-secret`, `event-hub-keycloak-deployer-secret`, `event-hub-google-oauth-client-id`, `event-hub-google-oauth-client-secret` (and the legacy `event-hub-keycloak-admin-password`) |
+| Keycloak realms | `event-hub-acceptance`, `event-hub-qa`, `event-hub-prod` |
+| Keycloak clients | `event-hub-frontend` (the app), `event-hub-deployer` (the deploy) |
+| OAuth project | `event-hub-oauth` (Sign in with Google, not created by the scripts) |
 | Databases | `event_hub_acceptance_real`, `event_hub_acceptance_stub`, `event_hub_qa`, `event_hub_prod`, `event_hub_keycloak` |
 
 Hyphens are valid in GCP names but not in unquoted Postgres identifiers, so database names replace them with underscores. The system name is limited to 14 characters because it prefixes Cloud Run service names, which are limited to 49.
@@ -138,7 +142,8 @@ Google Cloud Project
 ├── Artifact Registry (Docker images, last 10 versions per image)
 ├── Workload Identity Pool (GitHub OIDC)
 │   └── Service Account (github-deployer)
-├── Secret Manager (<system>-db, <system>-keycloak-bootstrap-secret, <system>-keycloak-deployer-secret)
+├── Secret Manager (<system>-db, <system>-keycloak-bootstrap-secret, <system>-keycloak-deployer-secret,
+│                   <system>-google-oauth-client-id, <system>-google-oauth-client-secret)
 ├── Service Account (runtime, Cloud Run runtime identity)
 └── IAM Roles
     ├── Cloud Run Admin
@@ -181,6 +186,54 @@ If the mapping latency becomes a problem, put one of these in front of the Cloud
 
 Either way, delete the domain mappings and point the DNS records (CNAMEs, or A records for a load balancer IP) to the new target.
 
+## Keycloak
+
+One Keycloak serves every stage. It has one realm per stage, each with the app's client `<system>-frontend`:
+
+| Stage | Realm | Users |
+|-------|-------|-------|
+| Acceptance (real and stub stacks) | `<system>-acceptance` | test users |
+| QA | `<system>-qa` | test users |
+| Prod | `<system>-prod` | no test users |
+
+The image (`docker/keycloak/Dockerfile.cloud`) generates the realms from `docker/keycloak/realm-template.json` with `realm.jq`. The prod realm also goes through `prod-realm.jq`, which keeps only the app's client, removes the test users and drops the test realm's weak settings; `prod-realm-check.jq` fails the build if it regresses. Keycloak imports a realm only when it doesn't exist yet. Each stage's deploy then sets only its own realm's client URLs (`.github/scripts/set-keycloak-client-urls.sh`), so the stages don't touch each other's settings.
+
+### Deploy client
+
+Keycloak has no admin user. The deploy calls the admin API as the client `<system>-deployer` in the `master` realm (client credentials, secret `<system>-keycloak-deployer-secret`). Its roles are narrow: only clients, identity providers and realm settings of the three stage realms. It can't see users.
+
+The step "Ensure Deploy Client" (`.github/scripts/ensure-keycloak-deployer.sh`) creates it when needed:
+
+- **Fresh database:** Keycloak starts with the temporary bootstrap client `<system>-bootstrap` (secret `<system>-keycloak-bootstrap-secret`). The first deploy uses it to create `<system>-deployer`, then deletes it.
+- **Older database:** the legacy `admin` user (secret `<system>-keycloak-admin-password`) creates it once. After that, `admin` can be deleted.
+- **Usual run:** the deploy client already has its roles, so nothing changes.
+
+`./setup-gcp.sh` generates both secrets, so a rebuild needs no manual step. If the deploy client breaks after `admin` is gone (for example its secret was rotated), nothing in the deploy can repair it. Create a temporary admin with `kc.sh bootstrap-admin service`, or start from a fresh database.
+
+### Sign in with Google
+
+The QA and prod login pages offer "Sign in with Google" next to the password login. Acceptance has none: its tests sign in with passwords. The step "Set Google Identity Provider" (`.github/scripts/set-keycloak-google-idp.sh`) sets it up on every QA and prod deploy. Without the OAuth secrets it skips with a warning.
+
+Only invited users can sign in with Google. An admin first creates the user in the realm's console with their Google email (no password needed). The first Google sign-in links to that user when Google reports the email as verified, and the user keeps the roles the admin gave. A Google account with no matching user gets an error, and no user is created.
+
+One-time setup (by hand, outside the scripts):
+
+1. Create a Google Cloud project for the OAuth client, `<system>-oauth` by default. It is long-lived: the teardown doesn't delete it. To use another project, run `OAUTH_PROJECT=<id> ./setup-gcp.sh`.
+2. In it, set up the OAuth consent screen: home page `https://events.<domain>`, privacy policy `https://events.<domain>/privacy`, scopes `openid email profile` only. Publish it "In production".
+3. Create a web OAuth client with these redirect URIs:
+   - `https://auth.<domain>/realms/<system>-qa/broker/google/endpoint`
+   - `https://auth.<domain>/realms/<system>-prod/broker/google/endpoint`
+4. Enable Secret Manager in the OAuth project and store the client ID and secret, without a trailing newline:
+   ```bash
+   printf %s '<client id>' | gcloud secrets create <system>-google-oauth-client-id --data-file=- --project=<system>-oauth
+   printf %s '<client secret>' | gcloud secrets create <system>-google-oauth-client-secret --data-file=- --project=<system>-oauth
+   ```
+   The account that runs `./setup-gcp.sh` needs read access to them.
+5. Re-run `./setup-gcp.sh`. It copies both secrets into the stage project; its summary says `Sign in with Google: on`.
+6. Run the QA and prod deploys. The step "Set Google Identity Provider" logs `Sign in with Google is set up`.
+
+The teardown keeps the OAuth project, so after a rebuild `./setup-gcp.sh` copies the secrets again and nothing has to be repeated. Re-running it also copies a rotated secret.
+
 ## Cost
 
 - **Free tier eligible**: Most resources are free or have generous free quotas
@@ -195,7 +248,7 @@ Either way, delete the domain mappings and point the DNS records (CNAMEs, or A r
 - **Budget alerts**: create two on the billing account (Billing > Budgets & alerts): €5 and €20 per month, alerting at 50/90/100%.
 - **Scale to zero**: every Cloud Run service, Keycloak included, is deployed with `min-instances=0` and small `max-instances`, so idle cost is ~0 (Keycloak cold-starts in about 22 s on the first request). The Keycloak deploy sets `--min-instances 0` explicitly, because `gcloud run deploy` keeps a previous value when the flag is left out.
 - **Stages**: acceptance runs a real and a stub stack, and QA and prod run one each. Each stack has its own services and database, and they share the one Keycloak.
-- **Secret versions**: one shared `<system>-db` JSON secret plus the Keycloak `<system>-keycloak-bootstrap-secret` and `<system>-keycloak-deployer-secret`, 3 versions in total (4 while the legacy `<system>-keycloak-admin-password` still has one); only 6 are free.
+- **Secret versions**: one shared `<system>-db` JSON secret plus the Keycloak `<system>-keycloak-bootstrap-secret` and `<system>-keycloak-deployer-secret`, 3 versions in total, plus 2 for the Sign in with Google client ID and secret (and 1 while the legacy `<system>-keycloak-admin-password` still has one); only 6 are free.
 - **Reset**: `./teardown-gcp.sh` destroys everything; `./setup-gcp.sh` recreates it.
 
 ## Troubleshooting

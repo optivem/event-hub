@@ -1,5 +1,6 @@
 # 2026-11-03 19:51:54 UTC — Keycloak: per-stage realms, deploy service account, Sign in with Google
 
+> 🤖 **Picked up by agent** — `2956da487131` at `2026-11-05T07:42:49Z`
 
 ## TL;DR
 
@@ -24,7 +25,7 @@ What we get out of this — the goals and deliverables:
 
 ## ▶ Next executable step (resume here)
 
-Refined 2026-11-04 (all open questions resolved, see **Resolved decisions**). Steps 1–4 and the code of Step 5 done 2026-11-04 (see **Done so far**). Next are two user steps, in parallel: Step 4b (privacy contact + text review) and Step 5 (the OAuth project, client and its two secrets). Then Step 6, whose first action is re-running `./setup-gcp.sh` on the live project (see Step 6); Step 6 may start before Step 5 is done (Google login is then skipped with a warning and turned on by a later `./setup-gcp.sh` + QA/prod run), but prod needs Step 4b. Per the meta-plan (`plans/20261104-1928-meta-cloud-run-coordination.md`), this plan is unit U10, Wave 4 batch C. C Step 8 (U5) and B Steps 1–5 (U6) are done, so it is next once refined. The shop ports (U7, U8) wait for it.
+Refined 2026-11-04 (all open questions resolved, see **Resolved decisions**). Steps 1–4 and the code of Step 5 done 2026-11-04, and the docs (`terraform/README.md`, section Keycloak) 2026-11-05 (see **Done so far**). Next are two user steps, in parallel: Step 4b (privacy contact + text review) and Step 5 (the OAuth project, client and its two secrets). Then Step 6, whose first action is re-running `./setup-gcp.sh` on the live project (see Step 6); Step 6 may start before Step 5 is done (Google login is then skipped with a warning and turned on by a later `./setup-gcp.sh` + QA/prod run), but prod needs Step 4b. Per the meta-plan (`plans/20261104-1928-meta-cloud-run-coordination.md`), this plan is unit U10, Wave 4 batch C. C Step 8 (U5) and B Steps 1–5 (U6) are done, so it is next once refined. The shop ports (U7, U8) wait for it.
 
 ## Steps
 
@@ -36,7 +37,6 @@ Refined 2026-11-04 (all open questions resolved, see **Resolved decisions**). St
   - **Google login (needs Step 5):** `./setup-gcp.sh` copies the two OAuth secrets from `event-hub-oauth` into the stage project's Secret Manager only if they exist when it runs: run it (again) after Step 5, and check its summary says `Sign in with Google: on`. The Terraform plan of that run adds the empty secrets `event-hub-google-oauth-client-id`/`-secret` (additions only). Then the QA and prod deploys' step "Set Google Identity Provider" logs `Sign in with Google is set up`; if it logs the `::warning::` about missing secrets instead, the copy didn't happen. Check on `events-qa.` and `events.`: the login page shows "Google"; an invited user (created in the realm's console with their Google email, no password needed) signs in with Google and keeps their roles; a Google account with no matching user ends on "... does not exist. Please contact your administrator." and no user appears in the realm. A QA/prod deploy that ran before the copy just needs re-running (the step is idempotent)
   - **Old realms:** the deployer has no rights on `shop`/`shop-prod`; delete them in the console as `admin`, before deleting `admin`
   - **After `admin` is deleted:** remove `keycloak-admin-password` from `terraform/main.tf` (and the fallback 3 in `ensure-keycloak-deployer.sh` may stay, it is a no-op). From then on nothing can repair the deployer if its secret is rotated or a realm is added: the fix is Keycloak's `kc.sh bootstrap-admin service` (or a fresh database)
-- [ ] Step 7: **Docs.** README: realms per stage, the deploy client, the Google setup (user steps). (The meta-plan already lists this plan as U10 and tells the shop ports to include it.)
 
 ## Done so far
 
