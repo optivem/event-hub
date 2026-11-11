@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-**Why:** On 2026-11-11 the GHCR cleanup actions got three fixes: package names are now URL-encoded (actions `b0a9502`), orphan-manifest inspection fails hard (actions `3253c81`), and event-hub's package list is corrected. Only dry runs have exercised the fixes so far. Shop has been skipping its 7 packages for months, so its first real run will delete things for the first time.
+**Why:** On 2026-11-11 the GHCR cleanup actions got three fixes: package names are now URL-encoded (actions `b0a9502`), orphan-manifest inspection fails hard (actions `3253c81`), the rate-limit probe warns with its reason and jq output has CRs stripped (actions `fe18833`, in all 3 `cleanup-*` scripts), and event-hub's package list is corrected. Only dry runs have exercised the fixes so far. Shop has been skipping its 7 packages for months, so its first real run will delete things for the first time.
 **End result:** The first scheduled, real `cleanup` runs (23:00 UTC, 2026-11-11) in event-hub and shop are confirmed green. They deleted roughly what the dry runs predicted, and every image that is still tagged remains intact.
 
 ## Outcomes
