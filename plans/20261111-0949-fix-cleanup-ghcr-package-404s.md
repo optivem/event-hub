@@ -13,11 +13,8 @@
 
 ## ▶ Next executable step (resume here)
 
-Step 1. In the optivem/actions checkout (`<workspace>/academy/actions`), replace `$package` with a URL-encoded copy (`pkg_enc="${package//\//%2F}"`) in the `/orgs/$owner/packages/container/$package/...` paths at `cleanup-prereleases/cleanup-prereleases.sh:109` (list) and `:245` (DELETE), and at `cleanup-ghcr-orphan-manifests/cleanup-ghcr-orphan-manifests.sh:94` (list) and `:161` (DELETE). Keep the human-readable `$package` in log messages. Ship it first, because shop and event-hub both fail hard until it lands.
+Step 4. The code is landed: actions `b0a9502` (auto-retagged to `v1` by `update-v1.yml`) and event-hub `cleanup.yml`. Dispatch event-hub `cleanup` with `dry-run=true` and confirm all three steps go green. Then dispatch shop's `cleanup` with `dry-run=true` and confirm all 7 packages list with no 404. If both pass, delete this plan.
 
 ## Steps
 
-- [ ] Step 1: optivem/actions: URL-encode the package name at the 4 sites listed above. Then grep every action for other `packages/container/$` sites (for example any `check-*`/ghcr helpers) and fix them the same way.
-- [ ] Step 2: optivem/actions: run `cleanup-prereleases.sh` locally with dry-run against `optivem/event-hub` and packages `event-hub/backend,event-hub/frontend`. Confirm both list their versions (`event-hub%2Fbackend` returned 12 versions in the diagnosis) and that there are no 404s. Commit via `/commit`, then move the `v1` tag per the actions repo's release convention.
-- [ ] Step 3: event-hub: in `.github/workflows/cleanup.yml:58` and `:67`, set `container-packages: event-hub/backend,event-hub/frontend`. Commit via `/commit`.
 - [ ] Step 4: Verify: `workflow_dispatch` event-hub `cleanup` with `dry-run=true`. All three steps should go green and list both packages. Then dispatch shop's `cleanup` with `dry-run=true` and confirm all 7 packages list with no 404.
